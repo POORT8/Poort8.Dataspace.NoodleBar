@@ -29,6 +29,7 @@ The first 3 journeys comprise the launch of a first (prototype) of a data space.
 The Dataspace provides services for the authorization registry, the party registry and the definition of the dataspace data model.  
 Initially (and optionally), the Dataspace provides additional services to support data providers with caching, mapping to the dataspace data model, and Identification, Authentication and Authorisation (IAA). These are expected to be made redundant as data providers create independent solutions. 
 Finally (and optionally), the Dataspace provides services that facilitate a prototype app: logic, IAA, and multiple front-end channels for the end user. These are expected to be made obsolete as additional apps are added to the dataspace.
+See the [architectural](/Poort8.Dataspace.Wiki/architecture.md) outline of these functions for more detail.
 
 7. **Challenges**:  
 To make the software modular and customizable so as to allow stakeholders to evolve independently but in compliance with the principles and regulations of the dataspace.
