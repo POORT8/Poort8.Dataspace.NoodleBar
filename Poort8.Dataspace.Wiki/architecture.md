@@ -3,12 +3,12 @@
 graph TB
 
 %% Dataspace Adapter
-subgraph Dataspace Adapter
-    APIGateway[API Gateway]
+subgraph Dataspace Adapter for non-BDI sources
+    DataFetcher[Data fetcher]
     DataMapper[Data Mapper]
     AuthService[Authentication Service]
     AuthzService[Authorization Service]
-    EventService[Event Service]
+    BDIService[BDI Service]
 end
 
 %% Dataspace Core
@@ -19,20 +19,20 @@ subgraph Dataspace Core
 end
 
 %% Dataspace Apps
-subgraph Dataspace Apps
-    RESTSrc[Retrieve Data from REST]
+subgraph Dataspace Prototype Apps
+    RESTSrc[Retrieve Data from BDI-services]
     AuthUsers[Authenticate Users]
-    PEP[Policy Enforcement Point]
+    PEP[Authorize Users]
     DataStore[Data Storage/Caching]
     Logic[Add Logic]
     FrontEnds[Multiple Frontends]
 end
 
 %% Connections within Dataspace Adapter
-APIGateway-->DataMapper
+DataFetcher-->DataMapper
 DataMapper-->AuthService
 AuthService-->AuthzService
-AuthzService-->EventService
+AuthzService-->BDIService
 
 %% Connections within Dataspace Core
 PartyRegister-->CoreManager
@@ -50,6 +50,7 @@ AuthzService-->|Uses|AuthRegister
 AuthRegister-->|Used By|PEP
 AuthService-->|Uses|PartyRegister
 PartyRegister-->|Used By|AuthUsers
+BDIService-->RESTSrc
 ```
 
 ## Dataspace Adapter
