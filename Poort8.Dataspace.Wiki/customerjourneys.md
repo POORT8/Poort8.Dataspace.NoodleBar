@@ -17,7 +17,7 @@ _Optionally_ the Dataspace initiator can decide to provide a Dataspace Adapter t
 5. _Data Provisioning_: Data sources provide raw data in one of the formats supported by the dataspace (API, Data dump, Custom, etc.)
 6. _Data Standardization_: The Dataspace Adapter is configured to map the raw data to the Dataspace data model and provide a BDI service for it, including IAA.
 
-## 3. Onboarding Data Owners and Consumers Launching Prototype Apps (Depends on Journey 2) 
+## 3. Onboarding Data Owners and Consumers (Depends on Journey 2) 
 1. **Onboarding**: Parties use the Dataspace onboarding service to become a member of the Dataspace
 2. **Authentication and registration**: A representative of the party use an accepted Identity Provider to authenticate themselves as formal representation, and may provide additional details.
 3. **Party Register**: Verify compliancy and register Data Sources in the party register, preferably automatically.
@@ -35,7 +35,7 @@ _Optionally_ the Dataspace initiator can decide to provide a Dataspace Adapter t
 3. **Usage Terms**: Set conditions under which the prototype app can be used. _(Can use Authorization Registry from 1.4)_
 4. **User Onboarding**: Registered users can now use these new apps to interact with data sources.
 
-## 6. _Optionally_ Create a prototpye service
+## 6. _Optionally_ Launching a Prototype App
 The Dataspace initiator can decide to connect a service to the onboarding process to kickstart usage of the dataspace.
 1. _Initial App Design_: Decide on functionalities and commands to transform the raw data into valuable insights. _(Uses 2.2 and 2.3)_
 2. _Demonstration Setup_: Develop a demonstration flow to guide users through the features of the app.
