@@ -2,6 +2,19 @@
 ```mermaid
 graph TB
 
+%% Dataspace Core
+subgraph Core[Dataspace Core]
+    PartyRegister[Party Register]
+    AuthRegister[Authorization Register]
+    CoreManager[Core Manager]
+end
+
+%% BDI Source
+subgraph BDIServiceExt[BDI Source]
+    BDIServiceEndpoint[BDI Service]
+end
+
+
 %% Dataspace Adapter
 subgraph Dataspace Adapter for non-BDI sources
     DataFetcher[Data fetcher]
@@ -11,15 +24,10 @@ subgraph Dataspace Adapter for non-BDI sources
     BDIService[BDI Service]
 end
 
-%% Dataspace Core
-subgraph Dataspace Core
-    PartyRegister[Party Register]
-    AuthRegister[Authorization Register]
-    CoreManager[Core Manager]
-end
+
 
 %% Dataspace Apps
-subgraph Dataspace Prototype Apps
+subgraph Dataspace Prototype App
     RESTSrc[Retrieve Data from BDI-services]
     AuthUsers[Authenticate Users]
     PEP[Authorize Users]
@@ -50,7 +58,11 @@ AuthzService-->|Uses|AuthRegister
 AuthRegister-->|Used By|PEP
 AuthService-->|Uses|PartyRegister
 PartyRegister-->|Used By|AuthUsers
+BDIServiceEndpoint-->RESTSrc
 BDIService-->RESTSrc
+BDIServiceExt-->|Uses|Core
+%%BDIServiceExt-->|May Use|AuthRegister
+
 ```
 
 ## Dataspace Adapter
@@ -139,5 +151,3 @@ BDIService-->RESTSrc
 
 1. Integrated within a monolithic application with REST-like interfaces.
 2. Separate backend system.
-
-Does this technical design align with your expectations and requirements? Please confirm or elaborate further.
