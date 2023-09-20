@@ -22,3 +22,7 @@ graph TD
     
     F --> D
 ```
+
+A typical way of how a dataspace is used, includes the functionality that a data owner or a service provider assigns certain offers to another organisation. This authorizes the other organisation to use features of that offer as a data service consumer. Although data owners can manage this directly with their data service provider, the dataspace incubater stack includes optional components that can be used for this.
+
+This mock-up page shows basic functionality how a data owner or service provider could use this to manage access to their resources.
