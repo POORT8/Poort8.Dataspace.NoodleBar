@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Organisation and Employees</title>
+    <script>
+        function addField(containerId, fieldName) {
+            var container = document.getElementById(containerId);
+            var newFieldSet = document.createElement('fieldset');
+            
+            newFieldSet.innerHTML = `
+                <label for="${fieldName}Name">Identifier Name:</label>
+                <input type="text" name="${fieldName}Name[]"><br>
+                
+                <label for="${fieldName}Value">Identifier Value:</label>
+                <input type="text" name="${fieldName}Value[]"><br>
+            `;
+            
+            container.appendChild(newFieldSet);
+        }
+
+        function addEmployee() {
+            var container = document.getElementById('employeeContainer');
+            var newEmployeeSet = document.createElement('fieldset');
+            
+            newEmployeeSet.innerHTML = `
+                <legend>Employee</legend>
+                <label for="givenName">First Name:</label>
+                <input type="text" name="givenName[]"><br>
+                
+                <label for="familyName">Last Name:</label>
+                <input type="text" name="familyName[]"><br>
+
+                <label for="telephone">Telephone:</label>
+                <input type="text" name="telephone[]"><br>
+
+                <label for="email">Email:</label>
+                <input type="text" name="email[]"><br>
+
+                <fieldset id="employeeIdentifierContainer">
+                    <legend>Employee Identifiers</legend>
+                    <label for="employeeIdentifierName">Identifier Name:</label>
+                    <input type="text" name="employeeIdentifierName[]"><br>
+                    
+                    <label for="employeeIdentifierValue">Identifier Value:</label>
+                    <input type="text" name="employeeIdentifierValue[]"><br>
+                </fieldset>
+
+                <button type="button" onclick="addField('employeeIdentifierContainer', 'employeeIdentifier')">Add More Identifier</button>
+            `;
+            
+            container.appendChild(newEmployeeSet);
+        }
+    </script>
+</head>
+<body>
+
+<h1>Create Organisation and Employees</h1>
+
+<form>
+    <!-- Organisation Section -->
+    <fieldset>
+        <legend>Organisation</legend>
+        <label for="orgName">Organization Name:</label>
+        <input type="text" id="orgName" name="orgName"><br>
+        
+        <label for="domainName">Domain Name:</label>
+        <input type="text" id="domainName" name="domainName"><br>
+
+        <fieldset id="orgIdentifierContainer">
+            <legend>Organisation Identifiers</legend>
+            <label for="orgIdentifierName">Identifier Name:</label>
+            <input type="text" name="orgIdentifierName[]"><br>
+            
+            <label for="orgIdentifierValue">Identifier Value:</label>
+            <input type="text" name="orgIdentifierValue[]"><br>
+        </fieldset>
+        
+        <button type="button" onclick="addField('orgIdentifierContainer', 'orgIdentifier')">Add More Identifier</button>
+    </fieldset>
+
+    <!-- Employee Section -->
+    <fieldset id="employeeContainer">
+        <legend>Employees</legend>
+        <!-- Dynamic employee fields will go here -->
+    </fieldset>
+
+    <button type="button" onclick="addEmployee()">Add Employee</button>
+
+    <input type="submit" value="Save Organisation and Employees">
+</form>
+
+</body>
+</html>
