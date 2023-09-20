@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.CoreManager", "Poort8.Dataspace.CoreManager\Poort8.Dataspace.CoreManager.csproj", "{77650E30-A947-4D52-851D-CE585B6E580A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poort8.Dataspace.PartyRegistry", "Poort8.Dataspace.PartyRegistry\Poort8.Dataspace.PartyRegistry.csproj", "{92E3370D-CAAA-4CC9-86D6-C83A2BE79B5F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{77650E30-A947-4D52-851D-CE585B6E580A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77650E30-A947-4D52-851D-CE585B6E580A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77650E30-A947-4D52-851D-CE585B6E580A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77650E30-A947-4D52-851D-CE585B6E580A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92E3370D-CAAA-4CC9-86D6-C83A2BE79B5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92E3370D-CAAA-4CC9-86D6-C83A2BE79B5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92E3370D-CAAA-4CC9-86D6-C83A2BE79B5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92E3370D-CAAA-4CC9-86D6-C83A2BE79B5F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {69915F6C-BC0B-4068-AD9A-10DB442BA1E1}
+	EndGlobalSection
+EndGlobal
