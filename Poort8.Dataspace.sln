@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.CoreManager", "Poort8.Dataspace.CoreManager\Poort8.Dataspace.CoreManager.csproj", "{77650E30-A947-4D52-851D-CE585B6E580A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poort8.Dataspace.PartyRegistry", "Poort8.Dataspace.PartyRegistry\Poort8.Dataspace.PartyRegistry.csproj", "{92E3370D-CAAA-4CC9-86D6-C83A2BE79B5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.OrganizationRegistry", "Poort8.Dataspace.OrganizationRegistry\Poort8.Dataspace.OrganizationRegistry.csproj", "{92E3370D-CAAA-4CC9-86D6-C83A2BE79B5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

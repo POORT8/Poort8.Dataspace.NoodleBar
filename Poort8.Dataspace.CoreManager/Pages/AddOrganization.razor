@@ -1,0 +1,45 @@
+﻿@page "/addorganization"
+
+@using Microsoft.EntityFrameworkCore;
+@using Poort8.Dataspace.OrganizationRegistry;
+
+@inject IDbContextFactory<OrganizationContext> DbFactory
+
+<PageTitle>Add Organization</PageTitle>
+
+<h1>Add Organization</h1>
+
+<EditForm Model="@Organization" OnSubmit="@Submit">
+    <InputText @bind-Value="Organization!.Identifier" />
+    <InputText @bind-Value="Organization!.Name" />
+    <InputText @bind-Value="Organization!.Properties[0].Key" />
+    <InputText @bind-Value="Organization!.Properties[0].Value" />
+    <button type="submit">Submit</button>
+</EditForm>
+
+@foreach (var organization in Organizations)
+{
+    <div>@organization.Identifier: @organization.Name - @string.Join(",", organization.Properties.Select(p => p.Value))</div>
+}
+
+@code {
+    public Organization Organization { get; set; } = new Organization("id", "name", new List<OrganizationProperty>() { new OrganizationProperty(Guid.NewGuid().ToString(), "key", "value") });
+    public List<Organization> Organizations { get; set; } = new List<Organization>();
+
+    protected override void OnInitialized()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Organizations = context.Organizations.Include(p => p.Properties).ToList();
+
+        base.OnInitialized();
+    }
+
+    private void Submit()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Organizations.Add(Organization);
+        context.SaveChanges();
+
+        Organizations.Add(Organization);
+    }
+}

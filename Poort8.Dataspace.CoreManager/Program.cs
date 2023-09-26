@@ -1,17 +1,20 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Poort8.Dataspace.CoreManager.Data;
+using Microsoft.EntityFrameworkCore;
+using Poort8.Dataspace.OrganizationRegistry;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
+
+builder.Services.AddDbContextFactory<OrganizationContext>(options =>
+    options.UseSqlite("Data Source=OrganizationRegistry.db"));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
+var db = scope.ServiceProvider.GetRequiredService<OrganizationContext>();
+db.Database.Migrate();
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
