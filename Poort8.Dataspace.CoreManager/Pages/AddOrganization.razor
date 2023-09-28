@@ -3,7 +3,8 @@
 @using Microsoft.EntityFrameworkCore;
 @using Poort8.Dataspace.OrganizationRegistry;
 
-@inject IDbContextFactory<OrganizationContext> DbFactory
+@* @inject IDbContextFactory<OrganizationContext> DbFactory *@
+@inject IOrganizationRegistry OrganizationRegistry
 
 <PageTitle>Add Organization</PageTitle>
 
@@ -26,20 +27,34 @@
     public Organization Organization { get; set; } = new Organization("id", "name", new List<OrganizationProperty>() { new OrganizationProperty(Guid.NewGuid().ToString(), "key", "value") });
     public List<Organization> Organizations { get; set; } = new List<Organization>();
 
-    protected override void OnInitialized()
-    {
-        using var context = DbFactory.CreateDbContext();
-        Organizations = context.Organizations.Include(p => p.Properties).ToList();
+    // protected override void OnInitialized()
+    // {
+    //     using var context = DbFactory.CreateDbContext();
+    //     Organizations = context.Organizations.Include(p => p.Properties).ToList();
 
-        base.OnInitialized();
+    //     base.OnInitialized();
+    // }
+
+    // private void Submit()
+    // {
+    //     using var context = DbFactory.CreateDbContext();
+    //     context.Organizations.Add(Organization);
+    //     context.SaveChanges();
+
+    //     Organizations.Add(Organization);
+    // }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Organizations = await OrganizationRegistry.ReadOrganizations();
+
+        await base.OnInitializedAsync();
     }
 
-    private void Submit()
+    private async Task Submit()
     {
-        using var context = DbFactory.CreateDbContext();
-        context.Organizations.Add(Organization);
-        context.SaveChanges();
+        await OrganizationRegistry.CreateOrganization(Organization);
 
-        Organizations.Add(Organization);
+        Organizations = await OrganizationRegistry.ReadOrganizations();
     }
 }

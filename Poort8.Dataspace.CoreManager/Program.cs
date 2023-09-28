@@ -1,19 +1,20 @@
-using Microsoft.EntityFrameworkCore;
-using Poort8.Dataspace.OrganizationRegistry;
+using Poort8.Dataspace.OrganizationRegistry.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddDbContextFactory<OrganizationContext>(options =>
-    options.UseSqlite("Data Source=OrganizationRegistry.db"));
+//builder.Services.AddDbContextFactory<OrganizationContext>(options =>
+//    options.UseSqlite("Data Source=OrganizationRegistry.db"));
+
+builder.Services.AddOrganizationRegistrySqlite(options => options.ConnectionString = "Data Source=OrganizationRegistry.db");
 
 var app = builder.Build();
 
-await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
-var db = scope.ServiceProvider.GetRequiredService<OrganizationContext>();
-db.Database.Migrate();
+//await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
+//var db = scope.ServiceProvider.GetRequiredService<OrganizationContext>();
+//db.Database.Migrate();
 
 if (!app.Environment.IsDevelopment())
 {

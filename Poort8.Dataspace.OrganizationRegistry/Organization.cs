@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Poort8.Dataspace.OrganizationRegistry;
-public class Organization
+public class Organization //https://schema.org/Organization
 {
     [Key]
     public string Identifier { get; set; }
