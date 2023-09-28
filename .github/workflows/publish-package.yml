@@ -31,7 +31,7 @@ jobs:
         VERSION=${{github.event.release.tag_name}}
         echo "VERSION=${VERSION:1}" >> $GITHUB_ENV
     - name: Pack package
-      run: dotnet pack Poort8.Dataspace.OrganizationRegistry\Poort8.Dataspace.OrganizationRegistry.csproj --configuration Release -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg -p:PackageVersion=${{env.VERSION}}
+      run: dotnet pack Poort8.Dataspace.OrganizationRegistry/Poort8.Dataspace.OrganizationRegistry.csproj --configuration Release -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg -p:PackageVersion=${{env.VERSION}}
     - name: Publish to NuGet
       run: dotnet nuget push **/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
     - uses: actions/upload-artifact@v3
