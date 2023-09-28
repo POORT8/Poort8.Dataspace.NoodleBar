@@ -6,6 +6,7 @@ public class Organization //https://schema.org/Organization
     [Key]
     public string Identifier { get; set; }
     public string Name { get; set; }
+    public string? Domain { get; set; }
     public List<OrganizationProperty> Properties { get; set; }
 
     public Organization(string identifier, string name)
