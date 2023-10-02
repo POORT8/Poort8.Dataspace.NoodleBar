@@ -1,12 +1,11 @@
-﻿@page "/addorganization"
+﻿@page "/organizationregistry"
 
 @using Microsoft.EntityFrameworkCore;
 @using Poort8.Dataspace.OrganizationRegistry;
 
-@* @inject IDbContextFactory<OrganizationContext> DbFactory *@
-@inject IOrganizationRegistry OrganizationRegistry
+@inject IOrganizationRegistry OrganizationRegistryService
 
-<PageTitle>Add Organization</PageTitle>
+<PageTitle>Organization Registery</PageTitle>
 
 <h1>Add Organization</h1>
 
@@ -27,23 +26,6 @@
     public Organization Organization { get; set; }
     public IReadOnlyList<Organization> Organizations { get; set; } = new List<Organization>();
 
-    // protected override void OnInitialized()
-    // {
-    //     using var context = DbFactory.CreateDbContext();
-    //     Organizations = context.Organizations.Include(p => p.Properties).ToList();
-
-    //     base.OnInitialized();
-    // }
-
-    // private void Submit()
-    // {
-    //     using var context = DbFactory.CreateDbContext();
-    //     context.Organizations.Add(Organization);
-    //     context.SaveChanges();
-
-    //     Organizations.Add(Organization);
-    // }
-
     protected override async Task OnInitializedAsync()
     {
         var adherence = new Adherence();
@@ -51,15 +33,15 @@
         var properties = new List<OrganizationProperty>() { new OrganizationProperty("key", "value") };
         Organization = new Organization("id", "name", adherence, roles, properties);
 
-        Organizations = await OrganizationRegistry.ReadOrganizations();
+        Organizations = await OrganizationRegistryService.ReadOrganizations();
 
         await base.OnInitializedAsync();
     }
 
     private async Task Submit()
     {
-        await OrganizationRegistry.CreateOrganization(Organization);
+        await OrganizationRegistryService.CreateOrganization(Organization);
 
-        Organizations = await OrganizationRegistry.ReadOrganizations();
+        Organizations = await OrganizationRegistryService.ReadOrganizations();
     }
 }
