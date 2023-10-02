@@ -32,9 +32,13 @@ public class OrganizationRegistry : IOrganizationRegistry
             .SingleOrDefaultAsync(o => o.Identifier == identifier);
     }
 
-    public async Task<IReadOnlyList<Organization>> ReadOrganizations(string? name = default, string? adherenceStatus = default, string? propertyKey = default, string? propertyValue = default)
+    public async Task<IReadOnlyList<Organization>> ReadOrganizations(
+        string? name = default,
+        string? adherenceStatus = default,
+        string? propertyKey = default,
+        string? propertyValue = default)
     {
-        if (propertyKey != default && propertyValue == default)
+        if ((propertyKey != default && propertyValue == default) || (propertyKey == default && propertyValue != default))
             throw new ArgumentException("PropertyValue must be set when propertyKey is set.");
 
         using var context = await _contextFactory.CreateDbContextAsync();

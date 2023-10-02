@@ -55,7 +55,7 @@ public class OrganizationRegistryTests
 
         var adherence2 = new Adherence("active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now));
         var roles2 = new List<OrganizationRole>();
-        var properties2 = new List<OrganizationProperty>() { new OrganizationProperty("key2", "value2") };
+        var properties2 = new List<OrganizationProperty>() { new OrganizationProperty("keyB", "valueB") };
         var organization2 = new Organization("B", "Organization B", adherence2, roles2, properties2);
 
         await _organizationRegistry.CreateOrganization(organization2);
@@ -69,6 +69,9 @@ public class OrganizationRegistryTests
 
         organizations = await _organizationRegistry.ReadOrganizations(propertyKey: "key", propertyValue: "value");
         Assert.Single(organizations);
+
+        await Assert.ThrowsAsync<ArgumentException>(() => _organizationRegistry.ReadOrganizations(propertyKey: "key"));
+        await Assert.ThrowsAsync<ArgumentException>(() => _organizationRegistry.ReadOrganizations(propertyValue: "value"));
 
         var success = await _organizationRegistry.DeleteOrganization(organization.Identifier);
         Assert.True(success);
