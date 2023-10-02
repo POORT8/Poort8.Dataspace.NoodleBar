@@ -4,7 +4,7 @@ graph TB
 
 %% Dataspace Core
 subgraph Core[Dataspace Core]
-    organizationRegister[Organization Register]
+    PartyRegister[Party Register]
     AuthRegister[Authorization Register]
     CoreManager[Core Manager]
 end
@@ -43,7 +43,7 @@ AuthService-->AuthzService
 AuthzService-->BDIService
 
 %% Connections within Dataspace Core
-organizationRegister-->CoreManager
+PartyRegister-->CoreManager
 AuthRegister-->CoreManager
 
 %% Connections within Dataspace Apps
@@ -56,8 +56,8 @@ Logic-->FrontEnds
 %% Dependencies
 AuthzService-->|Uses|AuthRegister
 AuthRegister-->|Used By|PEP
-AuthService-->|Uses|organizationRegister
-organizationRegister-->|Used By|AuthUsers
+AuthService-->|Uses|PartyRegister
+PartyRegister-->|Used By|AuthUsers
 BDIServiceEndpoint-->RESTSrc
 BDIService-->RESTSrc
 BDIServiceExt-->|Uses|Core
@@ -71,7 +71,7 @@ BDIServiceExt-->|Uses|Core
 
 1. Convert non-BDI data sources into RESTful APIs.
 2. Map data to Dataspace Schema (DCSA, P4, etc.).
-3. Implement iSHARE authentication based on the organization Register.
+3. Implement iSHARE authentication based on the Party Register.
 4. Other authentication mechanisms like API-key.
 5. Policy Enforcement Point (PEP) based on the Authorization Register.
 6. Support for events and Pub/Sub mechanisms.
@@ -85,7 +85,7 @@ BDIServiceExt-->|Uses|Core
    - Maps raw data to dataspace schema (DCSA, P4, etc.).
 
 3. **Authentication Service**
-   - Implements iSHARE authentication based on the organization Register.
+   - Implements iSHARE authentication based on the Party Register.
    - Supports other authentication methods like API keys.
 
 4. **Authorization Service**
@@ -111,9 +111,9 @@ BDIServiceExt-->|Uses|Core
 
 ### Components
 
-1. **Organization Register**
+1. **Party Register**
     - Entails:
-      - Organizations
+      - Parties
       - EP Creation?
       - Trusted List?
     - Requirements:
@@ -125,14 +125,14 @@ BDIServiceExt-->|Uses|Core
     - Entails:
       - Permissions
       - Products and features
-      - Organizations and users
+      - Companies (parties) and users
     - Requirements:
       - iSHARE endpoints
       - REST
       - Independent database?
   
 3. **Core Manager**
-    - Web app for managing the Organization Register and Authorization Register.
+    - Web app for managing the Party Register and Authorization Register.
     - IAA of the app?
     - Use of Keyper?
 
