@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Poort8.Dataspace.OrganizationRegistry.Extensions;
+using System.Reflection;
 
 namespace Poort8.Dataspace.OrganizationRegistry.Tests;
 
@@ -14,6 +15,14 @@ public class OrganizationRegistryTests
         serviceCollection.AddOrganizationRegistrySqlite(options => { });
         _serviceProvider = serviceCollection.BuildServiceProvider();
         _organizationRegistry = _serviceProvider.GetRequiredService<IOrganizationRegistry>();
+
+        RunMigrations().Wait();
+    }
+
+    private async Task RunMigrations()
+    {
+        var runMigrations = _organizationRegistry.GetType().GetMethod("RunMigrations", BindingFlags.Public | BindingFlags.Instance);
+        await (Task)runMigrations.Invoke(_organizationRegistry, null);
     }
 
     [Fact]
