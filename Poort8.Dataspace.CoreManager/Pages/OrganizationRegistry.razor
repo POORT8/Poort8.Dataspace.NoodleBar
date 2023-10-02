@@ -35,6 +35,12 @@
 
         Organizations = await OrganizationRegistryService.ReadOrganizations();
 
+        // var org = await OrganizationRegistryService.CreateOrganization(Organization);
+        // org = await OrganizationRegistryService.ReadOrganization("id");
+        // var orgs = await OrganizationRegistryService.ReadOrganizations();
+        // org = await OrganizationRegistryService.UpdateOrganization(Organization);
+        // var success = await OrganizationRegistryService.DeleteOrganization("id");
+
         await base.OnInitializedAsync();
     }
 
