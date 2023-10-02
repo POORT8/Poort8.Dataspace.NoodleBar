@@ -22,6 +22,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.RunMigrations();
+
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 

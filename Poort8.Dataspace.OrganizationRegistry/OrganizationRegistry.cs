@@ -8,10 +8,6 @@ public class OrganizationRegistry : IOrganizationRegistry
     public OrganizationRegistry(IDbContextFactory<OrganizationContext> dbContextFactory)
     {
         _contextFactory = dbContextFactory;
-
-        //TODO: Run once on startup
-        using var context = _contextFactory.CreateDbContext();
-        context.Database.Migrate();
     }
 
     public async Task<Organization> CreateOrganization(Organization organization)
