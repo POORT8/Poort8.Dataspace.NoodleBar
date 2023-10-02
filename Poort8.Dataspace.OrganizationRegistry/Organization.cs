@@ -6,7 +6,7 @@ public class Organization //https://schema.org/Organization
     [Key]
     public string Identifier { get; set; }
     public string Name { get; set; }
-    public Adherence Adherence { get; set; } = new();
+    public Adherence Adherence { get; set; } = new Adherence("active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now.AddYears(1)));
     public ICollection<OrganizationRole> Roles { get; set; } = new List<OrganizationRole>();
     public ICollection<OrganizationProperty> Properties { get; set; } = new List<OrganizationProperty>();
 
@@ -30,16 +30,28 @@ public class Adherence
 {
     [Key]
     public string AdherenceId { get; set; } = Guid.NewGuid().ToString();
-    public string Status { get; set; } = "active";
-    public DateOnly ValidFrom { get; set; } = DateOnly.FromDateTime(DateTime.Now);
-    public DateOnly ValidUntil { get; set; } = DateOnly.FromDateTime(DateTime.Now.AddYears(1));
+    public string Status { get; set; }
+    public DateOnly ValidFrom { get; set; }
+    public DateOnly ValidUntil { get; set; }
+
+    public Adherence(string status, DateOnly validFrom, DateOnly validUntil)
+    {
+        Status = status;
+        ValidFrom = validFrom;
+        ValidUntil = validUntil;
+    }
 }
 
 public class OrganizationRole
 {
     [Key]
     public string RoleId { get; set; } = Guid.NewGuid().ToString();
-    public string Role { get; set; } = "member";
+    public string Role { get; set; }
+
+    public OrganizationRole(string role)
+    {
+        Role = role;
+    }
 }
 
 public class OrganizationProperty

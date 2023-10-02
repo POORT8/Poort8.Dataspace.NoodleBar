@@ -32,14 +32,22 @@ public class OrganizationRegistry : IOrganizationRegistry
             .SingleOrDefaultAsync(o => o.Identifier == identifier);
     }
 
-    public async Task<IReadOnlyList<Organization>> ReadOrganizations()
+    public async Task<IReadOnlyList<Organization>> ReadOrganizations(string? name = default, string? adherenceStatus = default, string? propertyKey = default, string? propertyValue = default)
     {
+        if (propertyKey != default && propertyValue == default)
+            throw new ArgumentException("PropertyValue must be set when propertyKey is set.");
+
         using var context = await _contextFactory.CreateDbContextAsync();
-        return context.Organizations
+
+        var organizations = context.Organizations
+            .Where(o => name == default || name == o.Name)
+            .Where(o => adherenceStatus == default || adherenceStatus == o.Adherence.Status)
+            .Where(o => propertyKey == default || o.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
             .Include(o => o.Adherence)
             .Include(o => o.Roles)
-            .Include(o => o.Properties)
-            .ToList();
+            .Include(o => o.Properties);
+
+        return organizations.ToList();
     }
 
     public async Task<Organization> UpdateOrganization(Organization organization)
@@ -53,7 +61,11 @@ public class OrganizationRegistry : IOrganizationRegistry
     public async Task<bool> DeleteOrganization(string identifier)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
-        var organizationEntity = await context.Organizations.FindAsync(identifier);
+        var organizationEntity = await context.Organizations
+            .Include(o => o.Adherence)
+            .Include(o => o.Roles)
+            .Include(o => o.Properties)
+            .SingleOrDefaultAsync(o => o.Identifier == identifier);
 
         if (identifier == null)  return false;
 

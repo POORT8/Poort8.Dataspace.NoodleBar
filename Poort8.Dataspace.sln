@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.Organizati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.OrganizationRegistry.Tests", "Poort8.Dataspace.OrganizationRegistry.Tests\Poort8.Dataspace.OrganizationRegistry.Tests.csproj", "{DD38E4EA-B7C1-467B-BB5E-F50C0A2E059E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poort8.Dataspace.Api", "Poort8.Dataspace.Api\Poort8.Dataspace.Api.csproj", "{01164FEE-678C-4CCA-AB44-8FDFE11D0BDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.Api", "Poort8.Dataspace.Api\Poort8.Dataspace.Api.csproj", "{01164FEE-678C-4CCA-AB44-8FDFE11D0BDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

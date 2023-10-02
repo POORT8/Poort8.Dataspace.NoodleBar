@@ -28,7 +28,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var adherence = new Adherence();
+        var adherence = new Adherence("active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now));
         var roles = new List<OrganizationRole>();
         var properties = new List<OrganizationProperty>() { new OrganizationProperty("key", "value") };
         Organization = new Organization("id", "name", adherence, roles, properties);
