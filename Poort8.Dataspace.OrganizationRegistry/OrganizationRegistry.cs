@@ -9,6 +9,7 @@ public class OrganizationRegistry : IOrganizationRegistry
     {
         _contextFactory = dbContextFactory;
 
+        //TODO: Run once on startup
         using var context = _contextFactory.CreateDbContext();
         context.Database.Migrate();
     }
@@ -25,14 +26,18 @@ public class OrganizationRegistry : IOrganizationRegistry
     {
         using var context = await _contextFactory.CreateDbContextAsync();
         return await context.Organizations
+            .Include(o => o.Adherence)
+            .Include(o => o.Roles)
             .Include(o => o.Properties)
             .SingleOrDefaultAsync(o => o.Identifier == identifier);
     }
 
-    public async Task<List<Organization>> ReadOrganizations()
+    public async Task<IReadOnlyList<Organization>> ReadOrganizations()
     {
         using var context = await _contextFactory.CreateDbContextAsync();
         return context.Organizations
+            .Include(o => o.Adherence)
+            .Include(o => o.Roles)
             .Include(o => o.Properties)
             .ToList();
     }

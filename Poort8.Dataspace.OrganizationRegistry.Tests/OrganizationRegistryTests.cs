@@ -19,8 +19,10 @@ public class OrganizationRegistryTests
     [Fact]
     public async Task CreateAndReadOrganization()
     {
-        var properties = new List<OrganizationProperty>() { new OrganizationProperty("id", "key", "value") };
-        var organization = new Organization("urn:organization:1", "Organization 1", properties);
+        var adherence = new Adherence();
+        var roles = new List<OrganizationRole>();
+        var properties = new List<OrganizationProperty>() { new OrganizationProperty("key", "value") };
+        var organization = new Organization("urn:organization:1", "Organization 1", adherence, roles, properties);
 
         var entity = await _organizationRegistry.CreateOrganization(organization);
         var readEntity = await _organizationRegistry.ReadOrganization(entity.Identifier);
@@ -32,9 +34,9 @@ public class OrganizationRegistryTests
         Assert.Equal(organization.Identifier, readEntity.Identifier);
         Assert.Equal(organization.Name, readEntity.Name);
         Assert.NotNull(readEntity.Properties);
-        Assert.Equal(organization.Properties.Count, readEntity.Properties.Count);
-        Assert.Equal(organization.Properties[0].PropertyId, readEntity.Properties[0].PropertyId);
-        Assert.Equal(organization.Properties[0].Key, readEntity.Properties[0].Key);
-        Assert.Equal(organization.Properties[0].Value, readEntity.Properties[0].Value);
+        Assert.Equal(organization.Properties.Count(), readEntity.Properties.Count());
+        Assert.Equal(organization.Properties.First().PropertyId, readEntity.Properties.First().PropertyId);
+        Assert.Equal(organization.Properties.First().Key, readEntity.Properties.First().Key);
+        Assert.Equal(organization.Properties.First().Value, readEntity.Properties.First().Value);
     }
 }
