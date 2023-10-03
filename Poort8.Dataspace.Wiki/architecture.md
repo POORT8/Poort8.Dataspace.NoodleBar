@@ -135,6 +135,7 @@ BDIServiceExt-->|Uses|Core
     - Web app for managing the Organization Register and Authorization Register.
     - IAA of the app?
     - Use of Keyper?
+    - The Core manager also hosts a 'overview page' of available data sources and apps.
 
 ---
 
