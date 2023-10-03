@@ -5,8 +5,8 @@
 1. **Dataspace Initiator Engagement**: The dataspace initiator goes through the incubator program to align with the principles and governance of a dataspace.
 2. **Authentication Decision**: Decide what modes of authentication will be allowed for companies and employees.
 3. **Organization Register Setup**: Define what data needs to be collected for users in the dataspace organization register.
-4. **Authorization Registry Setup**: Optionally, establish an authorization registry that will define permissions and access controls for the dataspace.
-5. **Data model**: The dataspace initiator can define data model(s) that are used in the dataspace. If not, data sources can define their own data models and must organise authorizations accordingly.
+4. **Data model**: The dataspace initiator can define data model(s) that are used in the dataspace. If not, data sources can define their own data models and must organise authorizations accordingly.
+5. **Authorization model**: Optionally, establish an authorization registry for permissions and access controls in the dataspace. _Based on the access control rules, the correct authorization model and authorization rules can be selected from existing models or a new one must be developed._
 
 ## 2. Onboarding Data Sources (Depends on Journey 1)
 
