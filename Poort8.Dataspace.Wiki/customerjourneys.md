@@ -20,9 +20,9 @@ _Optionally_ the Dataspace initiator can decide to provide a Dataspace Adapter t
 6. _Data Standardization_: The Dataspace Adapter is configured to map the raw data to the Dataspace data model and provide a BDI service for it, including IAA.
 
 ## 3. Onboarding Data Owners and Consumers (Depends on Journey 2) 
-1. **Onboarding**: Organizations use the Dataspace onboarding service to become a member of the Dataspace
+1. **Onboarding**: Organizations use the Dataspace onboarding service(s) from 1.6. to become a member of the Dataspace.
 2. **Authentication and registration**: A representative of the organization uses an accepted Identity Provider to authenticate themselves as formal representation, and may provide additional details.
-3. **Organization Register**: Verify compliancy and register Data Sources in the organization register using the method(s) from 1.6.
+3. **Organization Register**: Verify compliancy and register Data Sources in the organization register.
 
 ## 4. Data Sources Becoming Independent
 
