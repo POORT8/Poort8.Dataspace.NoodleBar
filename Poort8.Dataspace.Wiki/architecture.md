@@ -27,10 +27,14 @@ end
 
 
 %% Dataspace Apps
+subgraph Dataspace Onboarding App
+    OnboardingUsers[Onboarding Users]
+    AuthUsers2[Authenticate Users]
+end
 subgraph Dataspace Prototype App
-    RESTSrc[Retrieve Data from BDI-services]
     AuthUsers[Authenticate Users]
     PEP[Authorize Users]
+    RESTSrc[Retrieve Data from BDI-services]
     DataStore[Data Storage/Caching]
     Logic[Add Logic]
     FrontEnds[Multiple Frontends]
@@ -47,13 +51,16 @@ organizationRegister-->CoreManager
 AuthRegister-->CoreManager
 
 %% Connections within Dataspace Apps
-RESTSrc-->AuthUsers
+OnboardingUsers-->AuthUsers2
+RESTSrc-->DataStore
 AuthUsers-->PEP
-PEP-->DataStore
+PEP-->RESTSrc
 DataStore-->Logic
 Logic-->FrontEnds
 
 %% Dependencies
+OnboardingUsers-->|Registers in|organizationRegister
+AuthUsers2-->AuthUsers
 AuthzService-->|Uses|AuthRegister
 AuthRegister-->|Used By|PEP
 AuthService-->|Uses|organizationRegister
