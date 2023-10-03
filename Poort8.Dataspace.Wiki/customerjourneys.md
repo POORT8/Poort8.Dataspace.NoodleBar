@@ -13,7 +13,7 @@
 1. **Data Source Selection**: Identify potential data sources that align with the dataspace objectives.
 2. **Register Data Sources**: Verify compliancy and register Data Sources in the organization register.
 3. **Mapping Specification**: Data sources specify how their data should be mapped to the dataspace data model.
-4. **Access Control**: Data sources define conditions under which their data can be accessed by data consumers. _(Uses Organization Registry from 1.3 and can use Authorization Registry from 1.4)_  
+4. **Access Control**: Data owners define conditions under which their data can be accessed by data consumers. _(Uses Organization Registry from 1.3 and can use Authorization Registry from 1.5)_  
 _Optionally_ the Dataspace initiator can decide to provide a Dataspace Adapter to kickstart Data sources in the Dataspace
 5. _Data Provisioning_: Data sources provide raw data in one of the formats supported by the dataspace (API, Data dump, Custom, etc.)
 6. _Data Standardization_: The Dataspace Adapter is configured to map the raw data to the Dataspace data model and provide a BDI service for it, including IAA.
