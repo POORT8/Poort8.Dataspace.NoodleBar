@@ -5,8 +5,9 @@
 1. **Dataspace Initiator Engagement**: The dataspace initiator goes through the incubator program to align with the principles and governance of a dataspace.
 2. **Authentication Decision**: Decide what modes of authentication will be allowed for companies and employees.
 3. **Organization Register Setup**: Define what data needs to be collected for users in the dataspace organization register.
-4. **Data model**: The dataspace initiator can define data model(s) that are used in the dataspace. If not, data sources can define their own data models and must organise authorizations accordingly.
-5. **Authorization model**: Optionally, establish an authorization registry for permissions and access controls in the dataspace. _Based on the access control rules, the correct authorization model and authorization rules can be selected from existing models or a new one must be developed._
+4. **Onboarding**: Onboarding of new data consumers can be done a) manually in the dataspace core manager, b) automatically via an onboarding flow in the Dataspace Core and/or c) automatically via an onboarding flow in a federated app.
+5. **Data model**: The dataspace initiator can define data model(s) that are used in the dataspace. If not, data sources can define their own data models and must organise authorizations accordingly.
+6. **Authorization model**: Optionally, establish an authorization registry for permissions and access controls in the dataspace. _Based on the access control rules, the correct authorization model and authorization rules can be selected from existing models or a new one must be developed._
 
 ## 2. Onboarding Data Sources (Depends on Journey 1)
 
@@ -21,7 +22,7 @@ _Optionally_ the Dataspace initiator can decide to provide a Dataspace Adapter t
 ## 3. Onboarding Data Owners and Consumers (Depends on Journey 2) 
 1. **Onboarding**: Organizations use the Dataspace onboarding service to become a member of the Dataspace
 2. **Authentication and registration**: A representative of the organization uses an accepted Identity Provider to authenticate themselves as formal representation, and may provide additional details.
-3. **Organization Register**: Verify compliancy and register Data Sources in the organization register, preferably automatically.
+3. **Organization Register**: Verify compliancy and register Data Sources in the organization register using the method(s) from 1.6.
 
 ## 4. Data Sources Becoming Independent
 
