@@ -5,7 +5,7 @@
 1. **Dataspace Initiator Engagement**: The dataspace initiator goes through the incubator program to align with the principles and governance of a dataspace.
 2. **Authentication Decision**: Decide what modes of authentication will be allowed for companies and employees.
 3. **Organization Register Setup**: Define what data needs to be collected for users in the dataspace organization register.
-4. **Onboarding**: Onboarding of new data consumers can be done a) manually in the dataspace core manager, b) automatically via an onboarding flow in the Dataspace Core and/or c) automatically via an onboarding flow in a federated app.
+4. **Onboarding**: Onboarding of new data consumers can be done a) manually in the dataspace core manager, b) automatically via an onboarding app.
 5. **Data model**: The dataspace initiator can define data model(s) that are used in the dataspace. If not, data sources can define their own data models and must organise authorizations accordingly.
 6. **Authorization model**: Optionally, establish an authorization registry for permissions and access controls in the dataspace. _Based on the access control rules, the correct authorization model and authorization rules can be selected from existing models or a new one must be developed._
 
@@ -20,10 +20,9 @@ _Optionally_ the Dataspace initiator can decide to provide a Dataspace Adapter t
 6. _Data Standardization_: The Dataspace Adapter is configured to map the raw data to the Dataspace data model and provide a BDI service for it, including IAA.
 
 ## 3. Launching a Prototype App
-The Dataspace initiator can decide to connect a service to the onboarding process to kickstart usage of the dataspace.
-1. _Initial App Design_: Decide on functionalities and commands to transform the raw data into valuable insights. _(Uses 2.2 and 2.3)_
-2. _Demonstration Setup_: Develop a demonstration flow to guide users through the features of the app.
-3. _Dataspace Prototyping_: Create the service using functionalities of the Dataspace Prototyping stack
+1. _Dataspace Prototype_ The Dataspace initiator can decide to connect a prototype app to the onboarding process (1.4) to kickstart usage of the dataspace.
+2. _Initial App Design_: Decide on functionalities and commands to transform the raw data into valuable insights. _(Uses 2.2 and 2.3)_
+3. _Demonstration Setup_: Develop a demonstration flow to guide users through the features of the app.
 
 ## 4. Onboarding Data Owners and Consumers (Depends on Journey 2) 
 1. **Onboarding**: Organizations use the Dataspace onboarding service(s) from 1.6. to become a member of the Dataspace.
