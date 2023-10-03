@@ -6,6 +6,7 @@
 2. **Authentication Decision**: Decide what modes of authentication will be allowed for companies and employees.
 3. **Organization Register Setup**: Define what data needs to be collected for users in the dataspace organization register.
 4. **Authorization Registry Setup**: Optionally, establish an authorization registry that will define permissions and access controls for the dataspace.
+5. **Data model**: The dataspace initiator can define data model(s) that are used in the dataspace. If not, data sources can define their own data models and must organise authorizations accordingly.
 
 ## 2. Onboarding Data Sources (Depends on Journey 1)
 
