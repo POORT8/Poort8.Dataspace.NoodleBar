@@ -3,13 +3,14 @@
 graph TD
 
 %% Dataspace Core
-
+style Core fill:transparent,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5;
 subgraph Core[Dataspace Core]
+subgraph Admin[Administration]
     CoreManager[Core Manager]
     organizationRegister[Organization Register]
-    AuthRegister[Authorization Register]
 end
-
+AuthRegister[Authorization Register]
+end
 
 %% BDI Source
 style BDIServiceExt fill:transparent,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5;
@@ -29,8 +30,9 @@ end
 style Dataspace_Apps fill:transparent,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5;
 subgraph Dataspace_Apps[Dataspace Apps]
     subgraph Onboarding[Dataspace Onboarding App]
-        OnboardingUsers[Onboarding Users]
+        RegisteringUsers[Registering Users]
         AuthUsers2[Authenticate Users]
+        AuthMan[Registering Authorizations]
     end
     subgraph Prototype[Dataspace Prototype App]
         AuthUsers[Authenticate Users]
@@ -54,17 +56,19 @@ CoreManager-->organizationRegister
 CoreManager-->AuthRegister
 
 %% Dependencies
-OnboardingUsers-->|Registers in|organizationRegister
-AuthzService-->|Uses|AuthRegister
-AuthRegister-->|Used By|PEP
-AuthService-->|Uses|organizationRegister
-organizationRegister-->|Used By|AuthUsers
+RegisteringUsers-->|Registers in|organizationRegister
+AuthRegister-->|Checked By|PEP
+AuthService-->|Checks|organizationRegister
+organizationRegister-->|Checked By|AuthUsers
 AuthzService-->BDIServiceEndpoint
 BDIServiceEndpoint-->RESTSrc
+AuthMan-->|Registers in|AuthRegister
+AuthzService-->|Checks|AuthRegister
 
 
 %% Connections within Dataspace Apps
-OnboardingUsers-->AuthUsers2
+AuthUsers2-->RegisteringUsers
+RegisteringUsers-->AuthMan
 RESTSrc-->DataStore
 AuthUsers-->PEP
 PEP-->RESTSrc
