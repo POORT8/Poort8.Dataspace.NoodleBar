@@ -1,54 +1,67 @@
 # Architecture
 ```mermaid
-graph TB
+graph TD
 
 %% Dataspace Core
+
 subgraph Core[Dataspace Core]
+    CoreManager[Core Manager]
     organizationRegister[Organization Register]
     AuthRegister[Authorization Register]
-    CoreManager[Core Manager]
 end
+
 
 %% BDI Source
+style BDIServiceExt fill:transparent,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5;
 subgraph BDIServiceExt[BDI Source]
+    subgraph Dataspace_Adapter[Dataspace Adapter for non-BDI sources]
+        DataFetcher[Data fetcher]
+        DataMapper[Data Mapper]
+        AuthService[Authentication Service]
+        AuthzService[Authorization Service]
+    end
     BDIServiceEndpoint[BDI Service]
-end
-
-
-%% Dataspace Adapter
-subgraph Dataspace Adapter for non-BDI sources
-    DataFetcher[Data fetcher]
-    DataMapper[Data Mapper]
-    AuthService[Authentication Service]
-    AuthzService[Authorization Service]
-    BDIService[BDI Service]
 end
 
 
 
 %% Dataspace Apps
-subgraph Dataspace Onboarding App
-    OnboardingUsers[Onboarding Users]
-    AuthUsers2[Authenticate Users]
+style Dataspace_Apps fill:transparent,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5;
+subgraph Dataspace_Apps[Dataspace Apps]
+    subgraph Onboarding[Dataspace Onboarding App]
+        OnboardingUsers[Onboarding Users]
+        AuthUsers2[Authenticate Users]
+    end
+    subgraph Prototype[Dataspace Prototype App]
+        AuthUsers[Authenticate Users]
+        PEP[Authorize Users]
+        RESTSrc[Retrieve Data from BDI-services]
+        DataStore[Data Storage/Caching]
+        Logic[Add Logic]
+        FrontEnds[Multiple Frontends]
+    end
 end
-subgraph Dataspace Prototype App
-    AuthUsers[Authenticate Users]
-    PEP[Authorize Users]
-    RESTSrc[Retrieve Data from BDI-services]
-    DataStore[Data Storage/Caching]
-    Logic[Add Logic]
-    FrontEnds[Multiple Frontends]
-end
+
+
 
 %% Connections within Dataspace Adapter
 DataFetcher-->DataMapper
 DataMapper-->AuthService
 AuthService-->AuthzService
-AuthzService-->BDIService
 
 %% Connections within Dataspace Core
-organizationRegister-->CoreManager
-AuthRegister-->CoreManager
+CoreManager-->organizationRegister
+CoreManager-->AuthRegister
+
+%% Dependencies
+OnboardingUsers-->|Registers in|organizationRegister
+AuthzService-->|Uses|AuthRegister
+AuthRegister-->|Used By|PEP
+AuthService-->|Uses|organizationRegister
+organizationRegister-->|Used By|AuthUsers
+AuthzService-->BDIServiceEndpoint
+BDIServiceEndpoint-->RESTSrc
+
 
 %% Connections within Dataspace Apps
 OnboardingUsers-->AuthUsers2
@@ -57,18 +70,9 @@ AuthUsers-->PEP
 PEP-->RESTSrc
 DataStore-->Logic
 Logic-->FrontEnds
+Onboarding-->Prototype
 
-%% Dependencies
-OnboardingUsers-->|Registers in|organizationRegister
-AuthUsers2-->AuthUsers
-AuthzService-->|Uses|AuthRegister
-AuthRegister-->|Used By|PEP
-AuthService-->|Uses|organizationRegister
-organizationRegister-->|Used By|AuthUsers
-BDIServiceEndpoint-->RESTSrc
-BDIService-->RESTSrc
-BDIServiceExt-->|Uses|Core
-%%BDIServiceExt-->|May Use|AuthRegister
+
 
 ```
 
