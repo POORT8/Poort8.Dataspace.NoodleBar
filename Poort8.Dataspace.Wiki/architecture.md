@@ -1,67 +1,82 @@
 # Architecture
 ```mermaid
-graph TB
+graph TD
 
 %% Dataspace Core
+style Core fill:transparent,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5;
 subgraph Core[Dataspace Core]
-    PartyRegister[Party Register]
-    AuthRegister[Authorization Register]
+subgraph Admin[Administration]
     CoreManager[Core Manager]
+    organizationRegister[Organization Register]
+end
+AuthRegister[Authorization Register]
 end
 
 %% BDI Source
+style BDIServiceExt fill:transparent,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5;
 subgraph BDIServiceExt[BDI Source]
+    subgraph Dataspace_Adapter[Dataspace Adapter for non-BDI sources]
+        DataFetcher[Data fetcher]
+        DataMapper[Data Mapper]
+        AuthService[Authentication Service]
+        AuthzService[Authorization Service]
+    end
     BDIServiceEndpoint[BDI Service]
-end
-
-
-%% Dataspace Adapter
-subgraph Dataspace Adapter for non-BDI sources
-    DataFetcher[Data fetcher]
-    DataMapper[Data Mapper]
-    AuthService[Authentication Service]
-    AuthzService[Authorization Service]
-    BDIService[BDI Service]
 end
 
 
 
 %% Dataspace Apps
-subgraph Dataspace Prototype App
-    RESTSrc[Retrieve Data from BDI-services]
-    AuthUsers[Authenticate Users]
-    PEP[Authorize Users]
-    DataStore[Data Storage/Caching]
-    Logic[Add Logic]
-    FrontEnds[Multiple Frontends]
+style Dataspace_Apps fill:transparent,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5;
+subgraph Dataspace_Apps[Dataspace Apps]
+    subgraph Onboarding[Dataspace Onboarding App]
+        RegisteringUsers[Registering Users]
+        AuthUsers2[Authenticate Users]
+        AuthMan[Registering Authorizations]
+    end
+    subgraph Prototype[Dataspace Prototype App]
+        AuthUsers[Authenticate Users]
+        PEP[Authorize Users]
+        RESTSrc[Retrieve Data from BDI-services]
+        DataStore[Data Storage/Caching]
+        Logic[Add Logic]
+        FrontEnds[Multiple Frontends]
+    end
 end
+
+
 
 %% Connections within Dataspace Adapter
 DataFetcher-->DataMapper
 DataMapper-->AuthService
 AuthService-->AuthzService
-AuthzService-->BDIService
 
 %% Connections within Dataspace Core
-PartyRegister-->CoreManager
-AuthRegister-->CoreManager
-
-%% Connections within Dataspace Apps
-RESTSrc-->AuthUsers
-AuthUsers-->PEP
-PEP-->DataStore
-DataStore-->Logic
-Logic-->FrontEnds
+CoreManager-->organizationRegister
+CoreManager-->AuthRegister
 
 %% Dependencies
-AuthzService-->|Uses|AuthRegister
-AuthRegister-->|Used By|PEP
-AuthService-->|Uses|PartyRegister
-PartyRegister-->|Used By|AuthUsers
+RegisteringUsers-->|Registers in|organizationRegister
+AuthRegister-->|Checked By|PEP
+AuthService-->|Checks|organizationRegister
+organizationRegister-->|Checked By|AuthUsers
+AuthzService-->BDIServiceEndpoint
 BDIServiceEndpoint-->RESTSrc
-BDIService-->RESTSrc
-BDIServiceExt-->|Uses|Core
-%%BDIServiceExt-->|May Use|AuthRegister
+AuthMan-->|Registers in|AuthRegister
+AuthzService-->|Checks|AuthRegister
+
+
+%% Connections within Dataspace Apps
+AuthUsers2-->RegisteringUsers
+RegisteringUsers-->AuthMan
+RESTSrc-->DataStore
+AuthUsers-->PEP
+PEP-->RESTSrc
+DataStore-->Logic
+Logic-->FrontEnds
+Onboarding-->Prototype
+
+
 
 ```
 
@@ -71,7 +86,7 @@ BDIServiceExt-->|Uses|Core
 
 1. Convert non-BDI data sources into RESTful APIs.
 2. Map data to Dataspace Schema (DCSA, P4, etc.).
-3. Implement iSHARE authentication based on the Party Register.
+3. Implement iSHARE authentication based on the organization Register.
 4. Other authentication mechanisms like API-key.
 5. Policy Enforcement Point (PEP) based on the Authorization Register.
 6. Support for events and Pub/Sub mechanisms.
@@ -85,7 +100,7 @@ BDIServiceExt-->|Uses|Core
    - Maps raw data to dataspace schema (DCSA, P4, etc.).
 
 3. **Authentication Service**
-   - Implements iSHARE authentication based on the Party Register.
+   - Implements iSHARE authentication based on the organization Register.
    - Supports other authentication methods like API keys.
 
 4. **Authorization Service**
@@ -111,9 +126,9 @@ BDIServiceExt-->|Uses|Core
 
 ### Components
 
-1. **Party Register**
+1. **Organization Register**
     - Entails:
-      - Parties
+      - Organizations
       - EP Creation?
       - Trusted List?
     - Requirements:
@@ -125,16 +140,17 @@ BDIServiceExt-->|Uses|Core
     - Entails:
       - Permissions
       - Products and features
-      - Companies (parties) and users
+      - Organizations and users
     - Requirements:
       - iSHARE endpoints
       - REST
       - Independent database?
   
 3. **Core Manager**
-    - Web app for managing the Party Register and Authorization Register.
+    - Web app for managing the Organization Register and Authorization Register.
     - IAA of the app?
     - Use of Keyper?
+    - The Core manager also hosts a 'overview page' of available data sources and apps.
 
 ---
 
