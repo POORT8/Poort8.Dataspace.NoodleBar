@@ -1,5 +1,5 @@
 ﻿namespace Poort8.Dataspace.OrganizationRegistry;
-public interface IOrganizationRegistry
+public interface IOrganizationRegistry //TODO: Add authorizations for managing the registry itself
 {
     Task<Organization> CreateOrganization(Organization organization);
     Task<Organization?> ReadOrganization(string identifier);

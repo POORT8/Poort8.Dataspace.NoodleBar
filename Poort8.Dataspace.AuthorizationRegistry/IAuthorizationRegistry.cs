@@ -1,7 +1,7 @@
 ﻿using Poort8.Dataspace.AuthorizationRegistry.Entities;
 
 namespace Poort8.Dataspace.AuthorizationRegistry;
-public interface IAuthorizationRegistry
+public interface IAuthorizationRegistry //TODO: Add authorizations for managing the registry itself
 {
     //Organization
     Task<Organization> CreateOrganization(Organization organization);
