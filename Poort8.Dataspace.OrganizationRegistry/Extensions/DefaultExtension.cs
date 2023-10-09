@@ -23,7 +23,7 @@ public static class DefaultExtension
         public string ConnectionString { get; set; } = "DataSource=file::memory:?cache=shared";
     }
 
-    public static void RunMigrations(this IApplicationBuilder app)
+    public static void RunOrganizationRegistryMigrations(this IApplicationBuilder app)
     {
         var factory = app.ApplicationServices.GetRequiredService<IDbContextFactory<OrganizationContext>>();
 
