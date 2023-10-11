@@ -12,12 +12,25 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Features",
+                columns: table => new
+                {
+                    FeatureId = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Features", x => x.FeatureId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Organizations",
                 columns: table => new
                 {
                     Identifier = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Domain = table.Column<string>(type: "TEXT", nullable: false),
+                    Url = table.Column<string>(type: "TEXT", nullable: false),
                     Representative = table.Column<string>(type: "TEXT", nullable: false),
                     InvoicingContact = table.Column<string>(type: "TEXT", nullable: false)
                 },
@@ -31,12 +44,13 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 columns: table => new
                 {
                     PolicyId = table.Column<string>(type: "TEXT", nullable: false),
+                    UseCase = table.Column<string>(type: "TEXT", nullable: false),
                     IssuedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     NotBefore = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Expiration = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Issuer = table.Column<string>(type: "TEXT", nullable: false),
-                    Subject = table.Column<string>(type: "TEXT", nullable: false),
-                    Resource = table.Column<string>(type: "TEXT", nullable: false),
+                    IssuerId = table.Column<string>(type: "TEXT", nullable: false),
+                    SubjectId = table.Column<string>(type: "TEXT", nullable: false),
+                    ResourceId = table.Column<string>(type: "TEXT", nullable: false),
                     Action = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -57,20 +71,6 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.ProductId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Services",
-                columns: table => new
-                {
-                    ServiceId = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    ProductId = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Services", x => x.ServiceId);
                 });
 
             migrationBuilder.CreateTable(
@@ -96,45 +96,26 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Actions",
+                name: "FeatureProduct",
                 columns: table => new
                 {
-                    ActionId = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    AdditionalType = table.Column<string>(type: "TEXT", nullable: false),
-                    ProductId = table.Column<string>(type: "TEXT", nullable: true)
+                    FeaturesFeatureId = table.Column<string>(type: "TEXT", nullable: false),
+                    ProductsProductId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Actions", x => x.ActionId);
+                    table.PrimaryKey("PK_FeatureProduct", x => new { x.FeaturesFeatureId, x.ProductsProductId });
                     table.ForeignKey(
-                        name: "FK_Actions_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductService",
-                columns: table => new
-                {
-                    ProductsProductId = table.Column<string>(type: "TEXT", nullable: false),
-                    ServicesServiceId = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductService", x => new { x.ProductsProductId, x.ServicesServiceId });
+                        name: "FK_FeatureProduct_Features_FeaturesFeatureId",
+                        column: x => x.FeaturesFeatureId,
+                        principalTable: "Features",
+                        principalColumn: "FeatureId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductService_Products_ProductsProductId",
+                        name: "FK_FeatureProduct_Products_ProductsProductId",
                         column: x => x.ProductsProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProductService_Services_ServicesServiceId",
-                        column: x => x.ServicesServiceId,
-                        principalTable: "Services",
-                        principalColumn: "ServiceId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -145,11 +126,12 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                     PropertyId = table.Column<string>(type: "TEXT", nullable: false),
                     Key = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
+                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
                     EmployeeId = table.Column<string>(type: "TEXT", nullable: true),
+                    FeatureId = table.Column<string>(type: "TEXT", nullable: true),
                     OrganizationIdentifier = table.Column<string>(type: "TEXT", nullable: true),
                     PolicyId = table.Column<string>(type: "TEXT", nullable: true),
-                    ProductId = table.Column<string>(type: "TEXT", nullable: true),
-                    ServiceId = table.Column<string>(type: "TEXT", nullable: true)
+                    ProductId = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -159,6 +141,11 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "EmployeeId");
+                    table.ForeignKey(
+                        name: "FK_Property_Features_FeatureId",
+                        column: x => x.FeatureId,
+                        principalTable: "Features",
+                        principalColumn: "FeatureId");
                     table.ForeignKey(
                         name: "FK_Property_Organizations_OrganizationIdentifier",
                         column: x => x.OrganizationIdentifier,
@@ -174,17 +161,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId");
-                    table.ForeignKey(
-                        name: "FK_Property_Services_ServiceId",
-                        column: x => x.ServiceId,
-                        principalTable: "Services",
-                        principalColumn: "ServiceId");
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Actions_ProductId",
-                table: "Actions",
-                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_OrganizationId",
@@ -192,14 +169,19 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductService_ServicesServiceId",
-                table: "ProductService",
-                column: "ServicesServiceId");
+                name: "IX_FeatureProduct_ProductsProductId",
+                table: "FeatureProduct",
+                column: "ProductsProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Property_EmployeeId",
                 table: "Property",
                 column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Property_FeatureId",
+                table: "Property",
+                column: "FeatureId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Property_OrganizationIdentifier",
@@ -215,21 +197,13 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "IX_Property_ProductId",
                 table: "Property",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Property_ServiceId",
-                table: "Property",
-                column: "ServiceId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Actions");
-
-            migrationBuilder.DropTable(
-                name: "ProductService");
+                name: "FeatureProduct");
 
             migrationBuilder.DropTable(
                 name: "Property");
@@ -238,13 +212,13 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "Employees");
 
             migrationBuilder.DropTable(
+                name: "Features");
+
+            migrationBuilder.DropTable(
                 name: "Policies");
 
             migrationBuilder.DropTable(
                 name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "Services");
 
             migrationBuilder.DropTable(
                 name: "Organizations");

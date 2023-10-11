@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Poort8.Dataspace.AuthorizationRegistry.Entities;
-public class Employee //https://schema.org/employee
+public class Employee //https://schema.org/Person
 {
     [Key]
     public string EmployeeId { get; set; }
@@ -18,22 +18,18 @@ public class Employee //https://schema.org/employee
     {
     }
 
-    public Employee(string employeeId, string organizationId, Organization organization, string givenName, string familyName, string telephone, string email)
+    public Employee(string employeeId, string givenName, string familyName, string telephone, string email)
     {
         EmployeeId = employeeId;
-        OrganizationId = organizationId;
-        Organization = organization;
         GivenName = givenName;
         FamilyName = familyName;
         Telephone = telephone;
         Email = email;
     }
 
-    public Employee(string employeeId, string organizationId, Organization organization, string givenName, string familyName, string telephone, string email, ICollection<Property> properties)
+    public Employee(string employeeId, string givenName, string familyName, string telephone, string email, ICollection<Property> properties)
     {
         EmployeeId = employeeId;
-        OrganizationId = organizationId;
-        Organization = organization;
         GivenName = givenName;
         FamilyName = familyName;
         Telephone = telephone;

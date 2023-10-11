@@ -17,22 +17,76 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         await context.Database.MigrateAsync();
     }
 
-    //Organization
+    #region Create
+
     public async Task<Organization> CreateOrganization(Organization organization)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
+
         var organizationEntity = await context.Organizations.AddAsync(organization);
         await context.SaveChangesAsync();
         return organizationEntity.Entity;
     }
 
+    public async Task<Product> CreateProduct(Product product)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var productEntity = await context.Products.AddAsync(product);
+        await context.SaveChangesAsync();
+        return productEntity.Entity;
+    }
+
+    public async Task<Policy> CreatePolicy(Policy policy)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var policyEntity = await context.Policies.AddAsync(policy);
+        await context.SaveChangesAsync();
+        return policyEntity.Entity;
+    }
+
+    public async Task<Employee> AddEmployee(string organizationId, Employee employee)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organization = await context.Organizations
+            .FirstAsync(o => o.Identifier == organizationId);
+        organization.Employees.Add(employee);
+        await context.SaveChangesAsync();
+        return employee;
+    }
+
+    public async Task<Feature> AddFeature(string productId, Feature feature)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var product = await context.Products
+            .FirstAsync(p => p.ProductId == productId);
+        product.Features.Add(feature);
+        await context.SaveChangesAsync();
+        return feature;
+    }
+
+    #endregion
+    #region Read
+
     public async Task<Organization?> ReadOrganization(string identifier)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organization = await context.Organizations
+            .Include(o => o.Employees)
+            .Include(o => o.Properties)
+            .FirstOrDefaultAsync(o => o.Identifier == identifier);
+
+        if (organization is not null)
+            return organization;
+
         return await context.Organizations
             .Include(o => o.Employees)
             .Include(o => o.Properties)
-            .SingleOrDefaultAsync(o => o.Identifier == identifier);
+            .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == identifier));
     }
 
     public async Task<IReadOnlyList<Organization>> ReadOrganizations(
@@ -45,54 +99,30 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var organizations = context.Organizations
+        return await context.Organizations
             .Where(o => name == default || name == o.Name)
             .Where(o => propertyKey == default || o.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
             .Include(o => o.Employees)
-            .Include(o => o.Properties);
-
-        return organizations.ToList();
-    }
-
-    public async Task<Organization> UpdateOrganization(Organization organization)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var organizationEntity = context.Organizations.Update(organization);
-        await context.SaveChangesAsync();
-        return organizationEntity.Entity;
-    }
-
-    public async Task<bool> DeleteOrganization(string identifier)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var organizationEntity = await context.Organizations
-            .Include(o => o.Employees)
             .Include(o => o.Properties)
-            .SingleOrDefaultAsync(o => o.Identifier == identifier);
-
-        if (identifier == null) return false;
-
-        context.Remove(organizationEntity!);
-        await context.SaveChangesAsync();
-        return true;
-    }
-
-    //Employee
-    public async Task<Employee> CreateEmployee(Employee employee)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var employeeEntity = await context.Employees.AddAsync(employee);
-        await context.SaveChangesAsync();
-        return employeeEntity.Entity;
+            .ToListAsync();
     }
 
     public async Task<Employee?> ReadEmployee(string employeeId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
+
+        var employee = await context.Employees
+            .Include(e => e.Organization)
+            .Include(e => e.Properties)
+            .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
+
+        if (employee is not null)
+            return employee;
+
         return await context.Employees
             .Include(e => e.Organization)
             .Include(e => e.Properties)
-            .SingleOrDefaultAsync(e => e.EmployeeId == employeeId);
+            .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == employeeId));
     }
 
     public async Task<IReadOnlyList<Employee>> ReadEmployees(
@@ -107,106 +137,39 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var employees = context.Employees
-            .Where(e => organizationId == default || organizationId == e.OrganizationId)
+        var organizationEntityIdentifier = "";
+        if (organizationId != default)
+        {
+            var organizationEntity = await ReadOrganization(organizationId);
+            organizationEntityIdentifier = organizationEntity?.Identifier;
+        }
+
+        return await context.Employees
+            .Where(e => organizationId == default || organizationId == organizationEntityIdentifier)
             .Where(e => familyName == default || familyName == e.FamilyName)
             .Where(e => email == default || email == e.Email)
             .Where(e => propertyKey == default || e.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
             .Include(e => e.Organization)
-            .Include(e => e.Properties);
-
-        return employees.ToList();
-    }
-
-    public async Task<Employee> UpdateEmployee(Employee employee)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var employeeEntity = context.Employees.Update(employee);
-        await context.SaveChangesAsync();
-        return employeeEntity.Entity;
-    }
-
-    public async Task<bool> DeleteEmployee(string employeeId)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var employeeEntity = await context.Employees
-            .Include(e => e.Organization)
             .Include(e => e.Properties)
-            .SingleOrDefaultAsync(e => e.EmployeeId == employeeId);
-
-        if (employeeId == null) return false;
-
-        context.Remove(employeeEntity!);
-        await context.SaveChangesAsync();
-        return true;
-    }
-
-    //Action
-    public async Task<Entities.Action> CreateAction(Entities.Action action)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var actionEntity = await context.Actions.AddAsync(action);
-        await context.SaveChangesAsync();
-        return actionEntity.Entity;
-    }
-
-    public async Task<Entities.Action?> ReadAction(string actionId)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        return await context.Actions.SingleOrDefaultAsync(a => a.ActionId == actionId);
-    }
-
-    public async Task<IReadOnlyList<Entities.Action>> ReadActions(
-        string? name = default,
-        string? additionalType = default)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-
-        var actions = context.Actions
-            .Where(a => name == default || name == a.Name)
-            .Where(a => additionalType == default || additionalType == a.AdditionalType);
-
-        return actions.ToList();
-    }
-
-    public async Task<Entities.Action> UpdateAction(Entities.Action action)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var actionEntity = context.Actions.Update(action);
-        await context.SaveChangesAsync();
-        return actionEntity.Entity;
-    }
-
-    public async Task<bool> DeleteAction(string actionId)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var actionEntity = await context.Actions
-            .SingleOrDefaultAsync(a => a.ActionId == actionId);
-
-        if (actionId == null) return false;
-
-        context.Remove(actionEntity!);
-        await context.SaveChangesAsync();
-        return true;
-    }
-
-    //Product
-    public async Task<Product> CreateProduct(Product product)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var productEntity = await context.Products.AddAsync(product);
-        await context.SaveChangesAsync();
-        return productEntity.Entity;
+            .ToListAsync();
     }
 
     public async Task<Product?> ReadProduct(string productId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
-        return await context.Products
-            .Include(p => p.PotentialActions)
-            .Include(p => p.Services)
+
+        var product = await context.Products
+            .Include(p => p.Features)
             .Include(p => p.Properties)
-            .SingleOrDefaultAsync(p => p.ProductId == productId);
+            .FirstOrDefaultAsync(p => p.ProductId == productId);
+
+        if (product is not null)
+            return product;
+
+        return await context.Products
+            .Include(p => p.Features)
+            .Include(p => p.Properties)
+            .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == productId));
     }
 
     public async Task<IReadOnlyList<Product>> ReadProducts(
@@ -219,59 +182,33 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var products = context.Products
+        return await context.Products
             .Where(p => name == default || name == p.Name)
             .Where(p => propertyKey == default || p.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
-            .Include(p => p.PotentialActions)
-            .Include(p => p.Services)
-            .Include(p => p.Properties);
-
-        return products.ToList();
-    }
-
-    public async Task<Product> UpdateProduct(Product product)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var productEntity = context.Products.Update(product);
-        await context.SaveChangesAsync();
-        return productEntity.Entity;
-    }
-
-    public async Task<bool> DeleteProduct(string productId)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var productEntity = await context.Products
-            .Include(p => p.PotentialActions)
-            .Include(p => p.Services)
+            .Include(p => p.Features)
             .Include(p => p.Properties)
-            .SingleOrDefaultAsync(p => p.ProductId == productId);
-
-        if (productId == null) return false;
-
-        context.Remove(productEntity!);
-        await context.SaveChangesAsync();
-        return true;
+            .ToListAsync();
     }
 
-    //Service
-    public async Task<Service> CreateService(Service service)
+    public async Task<Feature?> ReadFeature(string featureId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
-        var serviceEntity = await context.Services.AddAsync(service);
-        await context.SaveChangesAsync();
-        return serviceEntity.Entity;
+
+        var feature = await context.Features
+            .Include(e => e.Products)
+            .Include(e => e.Properties)
+            .FirstOrDefaultAsync(e => e.FeatureId == featureId);
+
+        if (feature is not null)
+            return feature;
+
+        return await context.Features
+            .Include(e => e.Products)
+            .Include(e => e.Properties)
+            .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == featureId));
     }
 
-    public async Task<Service?> ReadService(string serviceId)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        return await context.Services
-            .Include(s => s.Products)
-            .Include(s => s.Properties)
-            .SingleOrDefaultAsync(s => s.ServiceId == serviceId);
-    }
-
-    public async Task<IReadOnlyList<Service>> ReadServices(
+    public async Task<IReadOnlyList<Feature>> ReadFeatures(
         string? name = default,
         string? propertyKey = default,
         string? propertyValue = default)
@@ -281,58 +218,26 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var services = context.Services
-            .Where(s => name == default || name == s.Name)
-            .Where(s => propertyKey == default || s.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
-            .Include(s => s.Products)
-            .Include(s => s.Properties);
-
-        return services.ToList();
-    }
-
-    public async Task<Service> UpdateService(Service service)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var serviceEntity = context.Services.Update(service);
-        await context.SaveChangesAsync();
-        return serviceEntity.Entity;
-    }
-
-    public async Task<bool> DeleteService(string serviceId)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var serviceEntity = await context.Services
-            .Include(s => s.Products)
-            .Include(s => s.Properties)
-            .SingleOrDefaultAsync(s => s.ServiceId == serviceId);
-
-        if (serviceId == null) return false;
-
-        context.Remove(serviceEntity!);
-        await context.SaveChangesAsync();
-        return true;
-    }
-
-    //Policy
-    public async Task<Policy> CreatePolicy(Policy policy)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        var policyEntity = await context.Policies.AddAsync(policy);
-        await context.SaveChangesAsync();
-        return policyEntity.Entity;
+        return await context.Features
+            .Where(f => name == default || name == f.Name)
+            .Where(f => propertyKey == default || f.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
+            .Include(f => f.Products)
+            .Include(f => f.Properties)
+            .ToListAsync();
     }
 
     public async Task<Policy?> ReadPolicy(string policyId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
         return await context.Policies
-            .SingleOrDefaultAsync(p => p.PolicyId == policyId);
+            .FirstOrDefaultAsync(p => p.PolicyId == policyId);
     }
 
     public async Task<IReadOnlyList<Policy>> ReadPolicies(
-        string? issuer = null,
-        string? subject = null,
-        string? resource = null,
+        string? useCase = null,
+        string? issuerId = null,
+        string? subjectId = null,
+        string? resourceId = null,
         string? action = null,
         string? propertyKey = null,
         string? propertyValue = null)
@@ -342,34 +247,171 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var policies = context.Policies
-            .Where(p => issuer == default || issuer == p.Issuer)
-            .Where(p => subject == default || subject == p.Subject)
-            .Where(p => resource == default || resource == p.Resource)
+        return await context.Policies
+            .Where(p => useCase == default || useCase == p.UseCase)
+            .Where(p => issuerId == default || issuerId == p.IssuerId)
+            .Where(p => subjectId == default || subjectId == p.SubjectId)
+            .Where(p => resourceId == default || resourceId == p.ResourceId)
             .Where(p => action == default || action == p.Action)
-            .Where(p => propertyKey == default || p.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value));
+            .Where(p => propertyKey == default || p.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
+            .ToListAsync();
+    }
 
-        return policies.ToList();
+    #endregion
+    #region Update
+
+    public async Task<Organization> UpdateOrganization(Organization organization)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organizationEntity = await context.Organizations
+            .FirstAsync(o => o.Identifier == organization.Identifier);
+
+        context.Organizations.Remove(organizationEntity);
+        var updatedOrganizationEntity = await context.Organizations.AddAsync(organization);
+        await context.SaveChangesAsync();
+        return updatedOrganizationEntity.Entity;
+    }
+
+    public async Task<Employee> UpdateEmployee(Employee employee)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var employeeEntity = await context.Employees
+            .Include(e => e.Organization)
+            .FirstAsync(e => e.EmployeeId == employee.EmployeeId);
+
+        var organization = employeeEntity.Organization;
+
+        context.Employees.Remove(employeeEntity);
+        organization.Employees.Add(employee);
+        await context.SaveChangesAsync();
+        return employee;
+    }
+
+    public async Task<Product> UpdateProduct(Product product)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var productEntity = await context.Products
+            .FirstAsync(p => p.ProductId == product.ProductId);
+
+        context.Products.Remove(productEntity);
+        var updatedProductEntity = await context.Products.AddAsync(product);
+        await context.SaveChangesAsync();
+        return updatedProductEntity.Entity;
+    }
+
+    public async Task<Feature> UpdateFeature(Feature feature)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var featureEntity = await context.Features
+            .Include(f => f.Products)
+            .FirstAsync(f => f.FeatureId == feature.FeatureId);
+
+        var products = featureEntity.Products;
+
+        context.Features.Remove(featureEntity);
+        foreach (var product in products)
+        {
+            product.Features.Add(feature);
+        }
+
+        await context.SaveChangesAsync();
+        return feature;
     }
 
     public async Task<Policy> UpdatePolicy(Policy policy)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
-        var policyEntity = context.Policies.Update(policy);
+
+        context.Policies.Remove(policy);
+        var updatedPolicyEntity = await context.Policies.AddAsync(policy);
         await context.SaveChangesAsync();
-        return policyEntity.Entity;
+        return updatedPolicyEntity.Entity;
+    }
+
+    #endregion
+    #region Delete
+
+    public async Task<bool> DeleteOrganization(string identifier)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organizationEntity = await context.Organizations
+            .Include(o => o.Employees)
+            .Include(o => o.Properties)
+            .FirstOrDefaultAsync(o => o.Identifier == identifier);
+
+        if (organizationEntity == null) return false;
+
+        context.Remove(organizationEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> DeleteEmployee(string employeeId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var employeeEntity = await context.Employees
+            .Include(e => e.Organization)
+            .Include(e => e.Properties)
+            .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
+
+        if (employeeEntity == null) return false;
+
+        context.Remove(employeeEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> DeleteProduct(string productId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var productEntity = await context.Products
+            .Include(p => p.Features)
+            .Include(p => p.Properties)
+            .FirstOrDefaultAsync(p => p.ProductId == productId);
+
+        if (productEntity == null) return false;
+
+        context.Remove(productEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> DeleteFeature(string featureId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var featureEntity = await context.Features
+            .Include(f => f.Products)
+            .Include(f => f.Properties)
+            .FirstOrDefaultAsync(f => f.FeatureId == featureId);
+
+        if (featureId == null) return false;
+
+        context.Remove(featureEntity);
+        await context.SaveChangesAsync();
+        return true;
     }
 
     public async Task<bool> DeletePolicy(string policyId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
+
         var policyEntity = await context.Policies
-            .SingleOrDefaultAsync(p => p.PolicyId == policyId);
+            .FirstOrDefaultAsync(p => p.PolicyId == policyId);
 
         if (policyId == null) return false;
 
-        context.Remove(policyEntity!);
+        context.Remove(policyEntity);
         await context.SaveChangesAsync();
         return true;
     }
+
+    #endregion
 }

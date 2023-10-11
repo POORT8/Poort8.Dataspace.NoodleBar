@@ -9,8 +9,7 @@ public class Product //https://schema.org/Product
     public string Description { get; set; }
     public string? Provider { get; set; }
     public string? Url { get; set; }
-    public ICollection<Action> PotentialActions { get; set; } = new List<Action>();
-    public ICollection<Service> Services { get; set; } = new List<Service>();
+    public ICollection<Feature> Features { get; set; } = new List<Feature>();
     public ICollection<Property> Properties { get; set; } = new List<Property>();
 
     public Product(string productId, string name, string description, string? provider, string? url)
