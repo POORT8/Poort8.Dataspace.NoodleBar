@@ -52,6 +52,12 @@ public class AuthorizationRegistryTests
         Assert.NotNull(readByPropIdEntity);
         Assert.Equal(id, readByPropIdEntity.Identifier);
 
+        var readByPropEntity = await _authorizationRegistry.ReadOrganizations(propertyKey: "key", propertyValue: "value");
+
+        Assert.NotNull(readByPropEntity);
+        Assert.Single(readByPropEntity);
+        Assert.Equal(id, readByPropEntity[0].Identifier);
+
         var readByNameEntity = await _authorizationRegistry.ReadOrganizations(name: name);
 
         Assert.NotNull(readByNameEntity);

@@ -39,4 +39,5 @@ public interface IAuthorizationRegistry //TODO: Add authorizations for managing 
     Task<bool> DeletePolicy(string policyId);
 
     //TODO: Add enforce
+    //TOOD: Audit
 }
