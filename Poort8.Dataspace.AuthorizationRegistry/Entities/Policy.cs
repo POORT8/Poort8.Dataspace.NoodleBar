@@ -6,9 +6,9 @@ public class Policy
     [Key]
     public string PolicyId { get; init; } = Guid.NewGuid().ToString();
     public string UseCase { get; set; } = "default"; //TODO: Check with Casbin implementation
-    public DateTime IssuedAt { get; set; } = DateTime.Now;
-    public DateTime NotBefore { get; set; } = DateTime.Now;
-    public DateTime Expiration { get; set; } = DateTime.Now.AddYears(1);
+    public long IssuedAt { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
+    public long NotBefore { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
+    public long Expiration { get; set; } = DateTimeOffset.Now.AddYears(1).ToUnixTimeSeconds();
     public string IssuerId { get; set; }
     public string SubjectId { get; set; }
     public string ResourceId { get; set; }
