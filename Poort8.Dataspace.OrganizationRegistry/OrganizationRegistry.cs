@@ -19,6 +19,7 @@ public class OrganizationRegistry : IOrganizationRegistry
     public async Task<Organization> CreateOrganization(Organization organization)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
+
         var organizationEntity = await context.Organizations.AddAsync(organization);
         await context.SaveChangesAsync();
         return organizationEntity.Entity;
@@ -27,11 +28,21 @@ public class OrganizationRegistry : IOrganizationRegistry
     public async Task<Organization?> ReadOrganization(string identifier)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organization = await context.Organizations
+            .Include(o => o.Adherence)
+            .Include(o => o.Roles)
+            .Include(o => o.Properties)
+            .FirstOrDefaultAsync(o => o.Identifier == identifier);
+
+        if (organization is not null)
+            return organization;
+
         return await context.Organizations
             .Include(o => o.Adherence)
             .Include(o => o.Roles)
             .Include(o => o.Properties)
-            .SingleOrDefaultAsync(o => o.Identifier == identifier);
+            .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == identifier));
     }
 
     public async Task<IReadOnlyList<Organization>> ReadOrganizations(
@@ -45,23 +56,27 @@ public class OrganizationRegistry : IOrganizationRegistry
 
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var organizations = context.Organizations
+        return await context.Organizations
             .Where(o => name == default || name == o.Name)
             .Where(o => adherenceStatus == default || adherenceStatus == o.Adherence.Status)
             .Where(o => propertyKey == default || o.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
             .Include(o => o.Adherence)
             .Include(o => o.Roles)
-            .Include(o => o.Properties);
-
-        return organizations.ToList();
+            .Include(o => o.Properties)
+            .ToListAsync();
     }
 
     public async Task<Organization> UpdateOrganization(Organization organization)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
-        var organizationEntity = context.Organizations.Update(organization);
+
+        var organizationEntity = await context.Organizations
+            .FirstAsync(o => o.Identifier == organization.Identifier);
+
+        context.Organizations.Remove(organizationEntity);
+        var updatedOrganizationEntity = await context.Organizations.AddAsync(organization);
         await context.SaveChangesAsync();
-        return organizationEntity.Entity;
+        return updatedOrganizationEntity.Entity;
     }
 
     public async Task<bool> DeleteOrganization(string identifier)
@@ -71,11 +86,11 @@ public class OrganizationRegistry : IOrganizationRegistry
             .Include(o => o.Adherence)
             .Include(o => o.Roles)
             .Include(o => o.Properties)
-            .SingleOrDefaultAsync(o => o.Identifier == identifier);
+            .FirstOrDefaultAsync(o => o.Identifier == identifier);
 
         if (identifier == null)  return false;
 
-        context.Remove(organizationEntity!);
+        context.Remove(organizationEntity);
         await context.SaveChangesAsync();
         return true;
     }

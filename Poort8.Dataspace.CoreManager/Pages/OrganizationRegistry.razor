@@ -5,7 +5,7 @@
 
 @inject IOrganizationRegistry OrganizationRegistryService
 
-<PageTitle>Organization Registery</PageTitle>
+<PageTitle>Organization Registry</PageTitle>
 
 <h1>Add Organization</h1>
 
@@ -30,7 +30,7 @@
     {
         var adherence = new Adherence("active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now));
         var roles = new List<OrganizationRole>();
-        var properties = new List<OrganizationProperty>() { new OrganizationProperty("key", "value") };
+        var properties = new List<Property>() { new Property("key", "value") };
         Organization = new Organization("id", "name", adherence, roles, properties);
 
         Organizations = await OrganizationRegistryService.ReadOrganizations();

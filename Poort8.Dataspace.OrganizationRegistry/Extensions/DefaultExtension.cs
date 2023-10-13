@@ -13,7 +13,7 @@ public static class DefaultExtension
         options?.Invoke(sqliteOptions);
 
         services.AddDbContextFactory<OrganizationContext>(options => options.UseSqlite(sqliteOptions.ConnectionString));
-        services.AddScoped<IOrganizationRegistry, OrganizationRegistry>();
+        services.AddSingleton<IOrganizationRegistry, OrganizationRegistry>();
 
         return services;
     }
@@ -23,7 +23,7 @@ public static class DefaultExtension
         public string ConnectionString { get; set; } = "DataSource=file::memory:?cache=shared";
     }
 
-    public static void RunMigrations(this IApplicationBuilder app)
+    public static void RunOrganizationRegistryMigrations(this IApplicationBuilder app)
     {
         var factory = app.ApplicationServices.GetRequiredService<IDbContextFactory<OrganizationContext>>();
 

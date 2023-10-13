@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Poort8.Dataspace.AuthorizationRegistry\Poort8.Dataspace.AuthorizationRegistry.csproj" />
     <ProjectReference Include="..\Poort8.Dataspace.OrganizationRegistry\Poort8.Dataspace.OrganizationRegistry.csproj" />
   </ItemGroup>
 

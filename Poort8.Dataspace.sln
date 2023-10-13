@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.Organizati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.Api", "Poort8.Dataspace.Api\Poort8.Dataspace.Api.csproj", "{01164FEE-678C-4CCA-AB44-8FDFE11D0BDB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.AuthorizationRegistry", "Poort8.Dataspace.AuthorizationRegistry\Poort8.Dataspace.AuthorizationRegistry.csproj", "{A1E5B06A-DCDB-42E2-BF78-5E603DCBF509}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poort8.Dataspace.AuthorizationRegistry.Tests", "Poort8.Dataspace.AuthorizationRegistry.Tests\Poort8.Dataspace.AuthorizationRegistry.Tests.csproj", "{0C4987CF-94BB-46EF-A7B5-3FA8B4A0F94E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{01164FEE-678C-4CCA-AB44-8FDFE11D0BDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01164FEE-678C-4CCA-AB44-8FDFE11D0BDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01164FEE-678C-4CCA-AB44-8FDFE11D0BDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1E5B06A-DCDB-42E2-BF78-5E603DCBF509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1E5B06A-DCDB-42E2-BF78-5E603DCBF509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1E5B06A-DCDB-42E2-BF78-5E603DCBF509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1E5B06A-DCDB-42E2-BF78-5E603DCBF509}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C4987CF-94BB-46EF-A7B5-3FA8B4A0F94E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C4987CF-94BB-46EF-A7B5-3FA8B4A0F94E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C4987CF-94BB-46EF-A7B5-3FA8B4A0F94E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C4987CF-94BB-46EF-A7B5-3FA8B4A0F94E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

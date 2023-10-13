@@ -1,3 +1,4 @@
+using Poort8.Dataspace.AuthorizationRegistry.Extensions;
 using Poort8.Dataspace.OrganizationRegistry.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 builder.Services.AddOrganizationRegistrySqlite(options => options.ConnectionString = "Data Source=OrganizationRegistry.db");
+builder.Services.AddAuthorizationRegistrySqlite(options => options.ConnectionString = "Data Source=AuthorizationRegistry.db");
 
 var app = builder.Build();
 
@@ -22,7 +24,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.RunMigrations();
+app.RunOrganizationRegistryMigrations();
+app.RunAuthorizationRegistryMigrations();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
