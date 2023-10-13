@@ -11,8 +11,8 @@ using Poort8.Dataspace.OrganizationRegistry;
 namespace Poort8.Dataspace.OrganizationRegistry.Migrations
 {
     [DbContext(typeof(OrganizationContext))]
-    [Migration("20231002132957_ChangedModel")]
-    partial class ChangedModel
+    [Migration("20231011123301_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,6 +40,39 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                     b.ToTable("Adherence");
                 });
 
+            modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.AuditRecord", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Caller")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Entity")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EntityId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditRecords");
+                });
+
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Organization", b =>
                 {
                     b.Property<string>("Identifier")
@@ -57,29 +90,6 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                     b.HasIndex("AdherenceId");
 
                     b.ToTable("Organizations");
-                });
-
-            modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.OrganizationProperty", b =>
-                {
-                    b.Property<string>("PropertyId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OrganizationIdentifier")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("PropertyId");
-
-                    b.HasIndex("OrganizationIdentifier");
-
-                    b.ToTable("OrganizationProperty");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.OrganizationRole", b =>
@@ -101,6 +111,32 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                     b.ToTable("OrganizationRole");
                 });
 
+            modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Property", b =>
+                {
+                    b.Property<string>("PropertyId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsIdentifier")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OrganizationIdentifier")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("PropertyId");
+
+                    b.HasIndex("OrganizationIdentifier");
+
+                    b.ToTable("Property");
+                });
+
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Organization", b =>
                 {
                     b.HasOne("Poort8.Dataspace.OrganizationRegistry.Adherence", "Adherence")
@@ -110,17 +146,17 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                     b.Navigation("Adherence");
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.OrganizationProperty", b =>
-                {
-                    b.HasOne("Poort8.Dataspace.OrganizationRegistry.Organization", null)
-                        .WithMany("Properties")
-                        .HasForeignKey("OrganizationIdentifier");
-                });
-
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.OrganizationRole", b =>
                 {
                     b.HasOne("Poort8.Dataspace.OrganizationRegistry.Organization", null)
                         .WithMany("Roles")
+                        .HasForeignKey("OrganizationIdentifier");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Property", b =>
+                {
+                    b.HasOne("Poort8.Dataspace.OrganizationRegistry.Organization", null)
+                        .WithMany("Properties")
                         .HasForeignKey("OrganizationIdentifier");
                 });
 

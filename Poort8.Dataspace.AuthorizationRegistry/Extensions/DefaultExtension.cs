@@ -13,7 +13,7 @@ public static class DefaultExtension
         options?.Invoke(sqliteOptions);
 
         services.AddDbContextFactory<AuthorizationContext>(options => options.UseSqlite(sqliteOptions.ConnectionString));
-        services.AddScoped<IAuthorizationRegistry, AuthorizationRegistry>();
+        services.AddSingleton<IAuthorizationRegistry, AuthorizationRegistry>();
 
         return services;
     }

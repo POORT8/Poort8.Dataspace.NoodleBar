@@ -8,7 +8,7 @@ public class Organization //https://schema.org/Organization
     public string Name { get; set; }
     public Adherence Adherence { get; set; } = new Adherence("active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now.AddYears(1)));
     public ICollection<OrganizationRole> Roles { get; set; } = new List<OrganizationRole>();
-    public ICollection<OrganizationProperty> Properties { get; set; } = new List<OrganizationProperty>();
+    public ICollection<Property> Properties { get; set; } = new List<Property>();
 
     public Organization(string identifier, string name)
     {
@@ -16,7 +16,7 @@ public class Organization //https://schema.org/Organization
         Name = name;
     }
 
-    public Organization(string identifier, string name, Adherence adherence, ICollection<OrganizationRole> roles, ICollection<OrganizationProperty> properties)
+    public Organization(string identifier, string name, Adherence adherence, ICollection<OrganizationRole> roles, ICollection<Property> properties)
     {
         Identifier = identifier;
         Name = name;
@@ -54,16 +54,24 @@ public class OrganizationRole
     }
 }
 
-public class OrganizationProperty
+public class Property
 {
     [Key]
-    public string PropertyId { get; set; } = Guid.NewGuid().ToString();
+    public string PropertyId { get; init; } = Guid.NewGuid().ToString();
     public string Key { get; set; }
     public string Value { get; set; }
+    public bool IsIdentifier { get; set; } = false;
 
-    public OrganizationProperty(string key, string value)
+    public Property(string key, string value)
     {
         Key = key;
         Value = value;
+    }
+
+    public Property(string key, string value, bool isIdentifier)
+    {
+        Key = key;
+        Value = value;
+        IsIdentifier = isIdentifier;
     }
 }
