@@ -1,53 +1,119 @@
 ﻿@page "/organizationregistry"
 
-@using Microsoft.EntityFrameworkCore;
-@using Poort8.Dataspace.OrganizationRegistry;
-
-@inject IOrganizationRegistry OrganizationRegistryService
-
 <PageTitle>Organization Registry</PageTitle>
 
-<h1>Add Organization</h1>
+<TableMolecule TItem=Organization Items=_organizations Context="organization" RowClick="OnRowClick">
+    <TableHeader>
+        <th>Identifier</th>
+        <th>Name</th>
+    </TableHeader>
+    <RowTemplate>
+        <td>@organization.Identifier</td>
+        <td>@organization.Name</td>
+    </RowTemplate>
+</TableMolecule>
 
-<EditForm Model="@Organization" OnSubmit="@Submit">
-    <InputText @bind-Value="Organization!.Identifier" />
-    <InputText @bind-Value="Organization!.Name" />
-    <InputText @bind-Value="Organization!.Properties.FirstOrDefault().Key" />
-    <InputText @bind-Value="Organization!.Properties.FirstOrDefault().Value" />
-    <button type="submit">Submit</button>
-</EditForm>
+<button type="button" @onclick=AddNew disabled=@(_newOrganization is not null)>Voeg toe</button>
 
-@foreach (var organization in Organizations)
+<br>
+
+@if (EditedOrganization is not null)
 {
-    <div>@organization.Identifier: @organization.Name - @string.Join(",", organization.Properties.Select(p => p.Value))</div>
-}
+    <EditForm Model="@EditedOrganization">
+        <h3>Organization</h3>
+        <div class="form-group row">
+            <label for="identifier" class="col-sm-2 col-form-label">
+                Identifier
+            </label>
+            <div class="col-sm-10">
+                @if (EditedOrganization == _selectedOrganization)
+                {
+                    <CustomInputText id="identifier" class="form-control" placeholder="Identifier" disabled @bind-Value=@EditedOrganization.Identifier />
+                }
+                else
+                {
+                    <CustomInputText id="identifier" class="form-control" placeholder="Identifier" @bind-Value=@EditedOrganization.Identifier />
+                }
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="name" class="col-sm-2 col-form-label">
+                Name
+            </label>
+            <div class="col-sm-10">
+                <CustomInputText id="name" class="form-control" placeholder="Name" @bind-Value="EditedOrganization.Name" />
+            </div>
+        </div>
+        <br>
+        <h4>Adherence</h4>
+        <div class="form-group row">
+            <div class="radio-button-group">
+                <div>
+                    <label for="active" class="col-sm-2 col-form-label">Active</label>
+                    <input type="radio" id="active" name="state" checked="@(EditedOrganization.Adherence.Status == "active")" @onchange="@(() => EditedOrganization.Adherence.Status = "active")" />
+                </div>
+                <div>
+                    <label for="inactive" class="col-sm-2 col-form-label">Inactive</label>
+                    <input type="radio" id="inactive" name="state" checked="@(EditedOrganization.Adherence.Status == "inactive")" @onchange="@(() => EditedOrganization.Adherence.Status = "inactive")" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="validFrom">Valid from:</label>
+            <input type="date" id="validFrom" name="validFrom" @bind-value=@EditedOrganization.Adherence.ValidFrom />
+        </div>
+        <div class="form-group row">
+            <label for="validUntil">Valid until:</label>
+            <input type="date" id="validUntil" name="validUntil" @bind-value=@EditedOrganization.Adherence.ValidUntil />
+        </div>
 
-@code {
-    public Organization Organization { get; set; }
-    public IReadOnlyList<Organization> Organizations { get; set; } = new List<Organization>();
+        <br>
 
-    protected override async Task OnInitializedAsync()
+        <TableMolecule TItem=OrganizationRole Items=EditedOrganization.Roles.ToList() Context="role">
+            <TableHeader>
+                <th>Role</th>
+            </TableHeader>
+            <RowTemplate>
+                <td>@role.Role</td>
+            </RowTemplate>
+        </TableMolecule>
+
+        <CustomInputText id="role" class="form-control" placeholder="Role" @bind-Value=@_role />
+        <button type="button" @onclick=AddRole disabled=@(string.IsNullOrWhiteSpace(_role) || EditedOrganization.Roles.Any(r => r.Role.Equals(_role, StringComparison.OrdinalIgnoreCase)))>Voeg rol toe</button>
+        <button type="button" @onclick=DeleteRole disabled=@(!EditedOrganization.Roles.Any(r => r.Role.Equals(_role, StringComparison.OrdinalIgnoreCase)))>Verwijder rol</button>
+
+        <br>
+
+        <TableMolecule TItem=Property Items=EditedOrganization.Properties.ToList() Context="property">
+            <TableHeader>
+                <th>Key</th>
+                <th>Value</th>
+                <th>Identifier</th>
+            </TableHeader>
+            <RowTemplate>
+                <td>@property.Key</td>
+                <td>@property.Value</td>
+                <td>@property.IsIdentifier</td>
+            </RowTemplate>
+        </TableMolecule>
+
+        <CustomInputText id="key" class="form-control" placeholder="Key" @bind-Value=@_key />
+        <CustomInputText id="value" class="form-control" placeholder="Value" @bind-Value=@_value />
+        <input type="checkbox" id="isIdentifier" name="isIdentifier" @bind=@_isIdentifier />
+        <label for="isIdentifier">Identifier</label><br>
+        <button type="button" @onclick=AddProperty disabled=@(string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_value) || EditedOrganization.Properties.Any(p => p.Key.Equals(_key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
+        <button type="button" @onclick=DeleteProperty disabled=@(!EditedOrganization.Properties.Any(p => p.Key.Equals(_key, StringComparison.OrdinalIgnoreCase)))>Verwijder property</button>
+    </EditForm>
+
+    <br>
+
+    if (EditedOrganization == _selectedOrganization)
     {
-        var adherence = new Adherence("active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now));
-        var roles = new List<OrganizationRole>();
-        var properties = new List<Property>() { new Property("key", "value") };
-        Organization = new Organization("id", "name", adherence, roles, properties);
-
-        Organizations = await OrganizationRegistryService.ReadOrganizations();
-
-        // var org = await OrganizationRegistryService.CreateOrganization(Organization);
-        // org = await OrganizationRegistryService.ReadOrganization("id");
-        // var orgs = await OrganizationRegistryService.ReadOrganizations();
-        // org = await OrganizationRegistryService.UpdateOrganization(Organization);
-        // var success = await OrganizationRegistryService.DeleteOrganization("id");
-
-        await base.OnInitializedAsync();
+        <button type="button" @onclick=Update disabled=@DisableUpdate(EditedOrganization)>Update organization</button>
+        <button type="button" @onclick=Delete>Verwijder organization</button>
     }
-
-    private async Task Submit()
+    else
     {
-        await OrganizationRegistryService.CreateOrganization(Organization);
-
-        Organizations = await OrganizationRegistryService.ReadOrganizations();
+        <button type="button" @onclick=Create disabled=@DisableCreate(EditedOrganization)>Maak organization aan</button>
     }
 }
