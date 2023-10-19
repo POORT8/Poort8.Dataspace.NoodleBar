@@ -11,10 +11,8 @@ public partial class OrganizationRegistry
     private Organization? _selectedOrganization;
     private Organization? _newOrganization;
     private Organization? EditedOrganization => _selectedOrganization ?? _newOrganization;
-    private string _role = string.Empty;
-    private string _key = string.Empty;
-    private string _value = string.Empty;
-    private bool _isIdentifier = false;
+    private OrganizationRole _role = new(string.Empty);
+    private Property _property = new(string.Empty, string.Empty);
     private static bool DisableUpdate(Organization organization) => string.IsNullOrWhiteSpace(organization.Name);
     private bool DisableCreate(Organization organization) => DisableUpdate(organization) || string.IsNullOrWhiteSpace(organization.Identifier) || _organizations?.Any(o => organization.Identifier.Equals(o.Identifier, StringComparison.OrdinalIgnoreCase)) == true;
 
@@ -56,7 +54,7 @@ public partial class OrganizationRegistry
     private void AddNew()
     {
         Logger?.LogInformation("P8.inf - OrganizationRegistry - AddNew button clicked");
-        _newOrganization = new Organization("id", "name");
+        _newOrganization = new Organization(string.Empty, string.Empty);
         _selectedOrganization = null;
         StateHasChanged();
     }
@@ -70,27 +68,30 @@ public partial class OrganizationRegistry
 
     private void AddRole()
     {
-        EditedOrganization!.Roles.Add(new OrganizationRole(_role));
-        _role = string.Empty;
+        EditedOrganization!.Roles.Add(_role);
+        _role = new(string.Empty);
     }
 
     private void DeleteRole()
     {
-        EditedOrganization!.Roles.Remove(EditedOrganization.Roles.First(r => r.Role.Equals(_role, StringComparison.OrdinalIgnoreCase)));
-        _role = string.Empty;
+        EditedOrganization!.Roles.Remove(EditedOrganization.Roles.First(r => r.Role.Equals(_role.Role, StringComparison.OrdinalIgnoreCase)));
+        _role = new(string.Empty);
+    }
+
+    private void ResetProperty()
+    {
+        _property = new(string.Empty, string.Empty);
     }
 
     private void AddProperty()
     {
-        EditedOrganization!.Properties.Add(new Property(_key, _value, _isIdentifier));
-        _key = string.Empty;
-        _value = string.Empty;
+        EditedOrganization!.Properties.Add(_property);
+        ResetProperty();
     }
 
     private void DeleteProperty()
     {
-        EditedOrganization!.Properties.Remove(EditedOrganization.Properties.First(p => p.Key.Equals(_key, StringComparison.OrdinalIgnoreCase)));
-        _key = string.Empty;
-        _value = string.Empty;
+        EditedOrganization!.Properties.Remove(EditedOrganization.Properties.First(p => p.Key.Equals(_property.Key, StringComparison.OrdinalIgnoreCase)));
+        ResetProperty();
     }
 }

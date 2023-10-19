@@ -1,4 +1,5 @@
 ﻿@page "/organizationregistry"
+@using Poort8.Dataspace.OrganizationRegistry;
 
 <PageTitle>Organization Registry</PageTitle>
 
@@ -68,7 +69,7 @@
         </div>
 
         <br>
-
+        <h4>Roles</h4>
         <TableMolecule TItem=OrganizationRole Items=EditedOrganization.Roles.ToList() Context="role">
             <TableHeader>
                 <th>Role</th>
@@ -78,12 +79,12 @@
             </RowTemplate>
         </TableMolecule>
 
-        <CustomInputText id="role" class="form-control" placeholder="Role" @bind-Value=@_role />
-        <button type="button" @onclick=AddRole disabled=@(string.IsNullOrWhiteSpace(_role) || EditedOrganization.Roles.Any(r => r.Role.Equals(_role, StringComparison.OrdinalIgnoreCase)))>Voeg rol toe</button>
-        <button type="button" @onclick=DeleteRole disabled=@(!EditedOrganization.Roles.Any(r => r.Role.Equals(_role, StringComparison.OrdinalIgnoreCase)))>Verwijder rol</button>
+        <CustomInputText id="role" class="form-control" placeholder="Role" @bind-Value=@_role.Role />
+        <button type="button" @onclick=AddRole disabled=@(string.IsNullOrWhiteSpace(_role.Role) || EditedOrganization.Roles.Any(r => r.Role.Equals(_role.Role, StringComparison.OrdinalIgnoreCase)))>Voeg rol toe</button>
+        <button type="button" @onclick=DeleteRole disabled=@(!EditedOrganization.Roles.Any(r => r.Role.Equals(_role.Role, StringComparison.OrdinalIgnoreCase)))>Verwijder rol</button>
 
         <br>
-
+        <h4>Properties</h4>
         <TableMolecule TItem=Property Items=EditedOrganization.Properties.ToList() Context="property">
             <TableHeader>
                 <th>Key</th>
@@ -97,12 +98,12 @@
             </RowTemplate>
         </TableMolecule>
 
-        <CustomInputText id="key" class="form-control" placeholder="Key" @bind-Value=@_key />
-        <CustomInputText id="value" class="form-control" placeholder="Value" @bind-Value=@_value />
-        <input type="checkbox" id="isIdentifier" name="isIdentifier" @bind=@_isIdentifier />
+        <CustomInputText id="key" class="form-control" placeholder="Key" @bind-Value=@_property.Key />
+        <CustomInputText id="value" class="form-control" placeholder="Value" @bind-Value=@_property.Value />
+        <input type="checkbox" id="isIdentifier" name="isIdentifier" @bind=@_property.IsIdentifier />
         <label for="isIdentifier">Identifier</label><br>
-        <button type="button" @onclick=AddProperty disabled=@(string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_value) || EditedOrganization.Properties.Any(p => p.Key.Equals(_key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
-        <button type="button" @onclick=DeleteProperty disabled=@(!EditedOrganization.Properties.Any(p => p.Key.Equals(_key, StringComparison.OrdinalIgnoreCase)))>Verwijder property</button>
+        <button type="button" @onclick=AddProperty disabled=@(string.IsNullOrWhiteSpace(_property.Key) || string.IsNullOrWhiteSpace(_property.Value) || EditedOrganization.Properties.Any(p => p.Key.Equals(_property.Key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
+        <button type="button" @onclick=DeleteProperty disabled=@(!EditedOrganization.Properties.Any(p => p.Key.Equals(_property.Key, StringComparison.OrdinalIgnoreCase)))>Verwijder property</button>
     </EditForm>
 
     <br>

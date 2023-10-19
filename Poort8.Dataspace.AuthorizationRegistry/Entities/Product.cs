@@ -30,4 +30,18 @@ public class Product //https://schema.org/Product
         Url = url;
         Properties = properties;
     }
+
+    public Product DeepCopy()
+    {
+        return new(
+            ProductId,
+            Name,
+            Description,
+            Provider,
+            Url,
+            Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList())
+        {
+            Features = Features.Select(f => f).ToList()
+        };
+    }
 }
