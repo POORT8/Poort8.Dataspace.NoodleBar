@@ -23,11 +23,41 @@ public partial class AuthorizationRegistry
     private Property _productProperty = new(string.Empty, string.Empty);
     private static bool DisableUpdateProduct(Product product) => string.IsNullOrWhiteSpace(product.Name);
     private bool DisableCreateProduct(Product product) => DisableUpdateProduct(product) || string.IsNullOrWhiteSpace(product.ProductId) || _products?.Any(p => product.ProductId.Equals(p.ProductId, StringComparison.OrdinalIgnoreCase)) == true;
+    private List<Feature>? _features = new();
+    private Feature? _selectedFeature;
+    private Feature? _newFeature;
+    private Feature? EditedFeature => _selectedFeature ?? _newFeature;
+    private Property _featureProperty = new(string.Empty, string.Empty);
+    private static bool DisableUpdateFeature(Feature feature) => string.IsNullOrWhiteSpace(feature.Name) || !feature.Products.Any();
+    private bool DisableCreateFeature(Feature feature) => DisableUpdateFeature(feature) || string.IsNullOrWhiteSpace(feature.FeatureId) || _features?.Any(f => feature.FeatureId.Equals(f.FeatureId, StringComparison.OrdinalIgnoreCase)) == true || feature.Products.Count != 1;
+    private string _featureProductId = string.Empty;
+    private List<Policy>? _policies = new();
+    private Policy? _selectedPolicy;
+    private Policy? _newPolicy;
+    private Policy? EditedPolicy => _selectedPolicy ?? _newPolicy;
+    private Property _policyProperty = new(string.Empty, string.Empty);
+    private static bool DisableUpdatePolicy(Policy policy) =>
+        string.IsNullOrWhiteSpace(policy.UseCase) ||
+        string.IsNullOrWhiteSpace(policy.IssuerId) ||
+        string.IsNullOrWhiteSpace(policy.SubjectId) ||
+        string.IsNullOrWhiteSpace(policy.ResourceId) ||
+        string.IsNullOrWhiteSpace(policy.Action) ||
+        policy.IssuedAt < DateTimeOffset.MinValue.ToUnixTimeSeconds() ||
+        policy.NotBefore < DateTimeOffset.MinValue.ToUnixTimeSeconds() ||
+        policy.Expiration < DateTimeOffset.MinValue.ToUnixTimeSeconds() ||
+        policy.IssuedAt > DateTimeOffset.MaxValue.ToUnixTimeSeconds() ||
+        policy.NotBefore > DateTimeOffset.MaxValue.ToUnixTimeSeconds() ||
+        policy.Expiration > DateTimeOffset.MaxValue.ToUnixTimeSeconds();
+    private static bool DisableCreatePolicy(Policy policy) => DisableUpdatePolicy(policy);
+    private DateTime policyNotBefore { get => DateTimeOffset.FromUnixTimeSeconds(EditedPolicy!.NotBefore).LocalDateTime; set => EditedPolicy!.NotBefore = ((DateTimeOffset)value).ToUnixTimeSeconds(); }
+    private DateTime policyExpiration { get => DateTimeOffset.FromUnixTimeSeconds(EditedPolicy!.Expiration).LocalDateTime; set => EditedPolicy!.Expiration = ((DateTimeOffset)value).ToUnixTimeSeconds(); }
 
     protected override async Task OnInitializedAsync()
     {
         _organizations = (await AuthorizationRegistryService!.ReadOrganizations()).ToList();
         _products = (await AuthorizationRegistryService.ReadProducts()).ToList();
+        _features = (await AuthorizationRegistryService.ReadFeatures()).ToList();
+        _policies = (await AuthorizationRegistryService.ReadPolicies()).ToList(); 
 
         _ = base.OnInitializedAsync();
     }
@@ -47,6 +77,20 @@ public partial class AuthorizationRegistry
         _newProduct = null;
     }
 
+    private void OnFeatureRowClick(Feature feature)
+    {
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with feature {identifier} ({name})", feature!.FeatureId, feature.Name);
+        _selectedFeature = feature.DeepCopy();
+        _newFeature = null;
+    }
+
+    private void OnPolicyRowClick(Policy policy)
+    {
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with policy {identifier} ({issuer}, {subject}, {resource}, {action})", policy!.PolicyId, policy.IssuerId, policy.SubjectId, policy.ResourceId, policy.Action);
+        _selectedPolicy = policy.DeepCopy();
+        _newPolicy = null;
+    }
+
     private void AddNewOrganization()
     {
         Logger?.LogInformation("P8.inf - AuthorizationRegistry - AddNewOrganization button clicked");
@@ -61,6 +105,22 @@ public partial class AuthorizationRegistry
         Logger?.LogInformation("P8.inf - AuthorizationRegistry - AddNewProduct button clicked");
         _newProduct = new Product(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
         _selectedProduct = null;
+        StateHasChanged();
+    }
+
+    private void AddNewFeature()
+    {
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - AddNewFeature button clicked");
+        _newFeature = new Feature(string.Empty, string.Empty, string.Empty);
+        _selectedFeature = null;
+        StateHasChanged();
+    }
+
+    private void AddNewPolicy()
+    {
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - AddNewPolicy button clicked");
+        _newPolicy = new Policy(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+        _selectedPolicy = null;
         StateHasChanged();
     }
 
@@ -120,6 +180,64 @@ public partial class AuthorizationRegistry
         StateHasChanged();
     }
 
+    private async Task CreateFeature()
+    {
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Create button clicked for feature {identifier} ({name})", _newFeature!.FeatureId, _newFeature.Name);
+        var feature = await AuthorizationRegistryService!.AddFeature(_newFeature!.Products.First().ProductId, _newFeature);
+        _features?.Add(feature);
+        _newFeature = null;
+        StateHasChanged();
+    }
+
+    private async Task DeleteFeature()
+    {
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Delete button clicked for feature {identifier} ({name})", _selectedFeature!.FeatureId, _selectedFeature.Name);
+        await AuthorizationRegistryService!.DeleteFeature(_selectedFeature!.FeatureId);
+        _features?.RemoveAll(f => f.FeatureId.Equals(_selectedFeature!.FeatureId, StringComparison.OrdinalIgnoreCase));
+        _selectedFeature = null;
+        StateHasChanged();
+    }
+
+    private async Task UpdateFeature()
+    {
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Update button clicked for feature {identifier} ({name})", _selectedFeature!.FeatureId, _selectedFeature.Name);
+        var feature = await AuthorizationRegistryService!.UpdateFeature(_selectedFeature!);
+        _features?.RemoveAll(f => f.FeatureId.Equals(feature.FeatureId, StringComparison.OrdinalIgnoreCase));
+        _features?.Add(feature);
+        _selectedFeature = null;
+        StateHasChanged();
+    }
+
+    private async Task CreatePolicy()
+    {
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Create button clicked for policy {identifier} ({issuer}, {subject}, {resource}, {action})", _newPolicy!.PolicyId, _newPolicy.IssuerId, _newPolicy.SubjectId, _newPolicy.ResourceId, _newPolicy.Action);
+        _newPolicy!.IssuedAt = DateTimeOffset.Now.ToUnixTimeSeconds();
+        var policy = await AuthorizationRegistryService!.CreatePolicy(_newPolicy!);
+        _policies?.Add(policy);
+        _newPolicy = null;
+        StateHasChanged();
+    }
+
+    private async Task DeletePolicy()
+    {
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Delete button clicked for policy {identifier} ({issuer}, {subject}, {resource}, {action})", _selectedPolicy!.PolicyId, _selectedPolicy.IssuerId, _selectedPolicy.SubjectId, _selectedPolicy.ResourceId, _selectedPolicy.Action);
+        await AuthorizationRegistryService!.DeletePolicy(_selectedPolicy!.PolicyId);
+        _policies?.RemoveAll(p => p.PolicyId.Equals(_selectedPolicy!.PolicyId, StringComparison.OrdinalIgnoreCase));
+        _selectedPolicy = null;
+        StateHasChanged();
+    }
+
+    private async Task UpdatePolicy()
+    {
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Update button clicked for policy {identifier} ({issuer}, {subject}, {resource}, {action})", _selectedPolicy!.PolicyId, _selectedPolicy.IssuerId, _selectedPolicy.SubjectId, _selectedPolicy.ResourceId, _selectedPolicy.Action);
+        _selectedPolicy!.IssuedAt = DateTimeOffset.Now.ToUnixTimeSeconds();
+        var policy = await AuthorizationRegistryService!.UpdatePolicy(_selectedPolicy!);
+        _policies?.RemoveAll(p => p.PolicyId.Equals(policy.PolicyId, StringComparison.OrdinalIgnoreCase));
+        _policies?.Add(policy);
+        _selectedPolicy = null;
+        StateHasChanged();
+    }
+
     private void ResetEmployee()
     {
         _employee = new(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty)
@@ -173,5 +291,51 @@ public partial class AuthorizationRegistry
     {
         EditedProduct!.Properties.Remove(EditedProduct.Properties.First(p => p.Key.Equals(_productProperty.Key, StringComparison.OrdinalIgnoreCase)));
         ResetProductProperty();
+    }
+
+    private void AddFeatureProduct()
+    {
+        EditedFeature!.Products.Add(_products!.First(p => p.ProductId.Equals(_featureProductId, StringComparison.OrdinalIgnoreCase)));
+        _featureProductId = string.Empty;
+    }
+
+    private void DeleteFeatureProduct()
+    {
+        EditedFeature!.Products.Remove(EditedFeature.Products.First(p => p.ProductId.Equals(_featureProductId, StringComparison.OrdinalIgnoreCase)));
+        _featureProductId = string.Empty;
+    }
+
+    private void ResetFeatureProperty()
+    {
+        _featureProperty = new(string.Empty, string.Empty);
+    }
+
+    private void AddFeatureProperty()
+    {
+        EditedFeature!.Properties.Add(_featureProperty);
+        ResetFeatureProperty();
+    }
+
+    private void DeleteFeatureProperty()
+    {
+        EditedFeature!.Properties.Remove(EditedFeature.Properties.First(p => p.Key.Equals(_featureProperty.Key, StringComparison.OrdinalIgnoreCase)));
+        ResetFeatureProperty();
+    }
+
+    private void ResetPolicyProperty()
+    {
+        _policyProperty = new(string.Empty, string.Empty);
+    }
+
+    private void AddPolicyProperty()
+    {
+        EditedPolicy!.Properties.Add(_policyProperty);
+        ResetPolicyProperty();
+    }
+
+    private void DeletePolicyProperty()
+    {
+        EditedPolicy!.Properties.Remove(EditedPolicy.Properties.First(p => p.Key.Equals(_policyProperty.Key, StringComparison.OrdinalIgnoreCase)));
+        ResetPolicyProperty();
     }
 }

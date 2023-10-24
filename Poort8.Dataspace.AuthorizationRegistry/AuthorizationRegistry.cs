@@ -265,6 +265,8 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var organizationEntity = await context.Organizations
+            .Include(o => o.Properties)
+            .Include(o => o.Employees)
             .FirstAsync(o => o.Identifier == organization.Identifier);
 
         context.Organizations.Remove(organizationEntity);

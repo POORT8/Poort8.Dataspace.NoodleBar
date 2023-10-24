@@ -28,4 +28,16 @@ public class Feature //https://schema.org/Service
         Description = description;
         Properties = properties;
     }
+
+    public Feature DeepCopy()
+    {
+        return new Feature(
+            FeatureId,
+            Name,
+            Description,
+            Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList())
+        {
+            Products = Products.Select(p => p).ToList()
+        };
+    }
 }
