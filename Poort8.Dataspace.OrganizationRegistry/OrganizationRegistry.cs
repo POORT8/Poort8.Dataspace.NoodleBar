@@ -13,6 +13,7 @@ public class OrganizationRegistry : IOrganizationRegistry
     public async Task RunMigrations()
     {
         using var context = await _contextFactory.CreateDbContextAsync();
+
         await context.Database.MigrateAsync();
     }
 
@@ -71,17 +72,25 @@ public class OrganizationRegistry : IOrganizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var organizationEntity = await context.Organizations
+            .Include(o => o.Adherence)
+            .Include(o => o.Roles)
+            .Include(o => o.Properties)
             .FirstAsync(o => o.Identifier == organization.Identifier);
 
-        context.Organizations.Remove(organizationEntity);
-        var updatedOrganizationEntity = await context.Organizations.AddAsync(organization);
+        organizationEntity.Name = organization.Name;
+
+        organizationEntity.Adherence = organization.Adherence;
+        organizationEntity.Roles = organization.Roles;
+        organizationEntity.Properties = organization.Properties;
+
         await context.SaveChangesAsync();
-        return updatedOrganizationEntity.Entity;
+        return organizationEntity;
     }
 
     public async Task<bool> DeleteOrganization(string identifier)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
+
         var organizationEntity = await context.Organizations
             .Include(o => o.Adherence)
             .Include(o => o.Roles)
