@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -45,9 +44,9 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 {
                     PolicyId = table.Column<string>(type: "TEXT", nullable: false),
                     UseCase = table.Column<string>(type: "TEXT", nullable: false),
-                    IssuedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    NotBefore = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Expiration = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    IssuedAt = table.Column<long>(type: "INTEGER", nullable: false),
+                    NotBefore = table.Column<long>(type: "INTEGER", nullable: false),
+                    Expiration = table.Column<long>(type: "INTEGER", nullable: false),
                     IssuerId = table.Column<string>(type: "TEXT", nullable: false),
                     SubjectId = table.Column<string>(type: "TEXT", nullable: false),
                     ResourceId = table.Column<string>(type: "TEXT", nullable: false),
