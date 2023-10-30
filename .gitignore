@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+**/AuthorizationRegistry.db
+**/AuthorizationRegistry.db-shm
+**/AuthorizationRegistry.db-wal
+**/OrganizationRegistry.db
+**/OrganizationRegistry.db-shm
+**/OrganizationRegistry.db-wal

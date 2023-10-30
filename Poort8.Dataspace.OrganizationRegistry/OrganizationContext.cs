@@ -13,11 +13,12 @@ public class OrganizationContext : DbContext
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
-        var auditRecords = HandleAudit();
+        //TODO: Fix audit
+        //var auditRecords = HandleAudit();
 
         var result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        await SaveAuditRecordChanges(auditRecords);
+        //await SaveAuditRecordChanges(auditRecords);
 
         return result;
     }

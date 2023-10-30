@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Poort8.Dataspace.OrganizationRegistry;
 public class Organization //https://schema.org/Organization
@@ -36,10 +37,9 @@ public class Organization //https://schema.org/Organization
     }
 }
 
+[Owned]
 public class Adherence
 {
-    [Key]
-    public string AdherenceId { get; set; } = Guid.NewGuid().ToString();
     public string Status { get; set; }
     public DateOnly ValidFrom { get; set; }
     public DateOnly ValidUntil { get; set; }
@@ -56,6 +56,8 @@ public class OrganizationRole
 {
     [Key]
     public string RoleId { get; set; } = Guid.NewGuid().ToString();
+    public string OrganizationId { get; set; }
+    public Organization Organization { get; set; }
     public string Role { get; set; }
 
     public OrganizationRole(string role)
@@ -68,6 +70,8 @@ public class Property
 {
     [Key]
     public string PropertyId { get; init; } = Guid.NewGuid().ToString();
+    public string OrganizationId { get; set; }
+    public Organization Organization { get; set; }
     public string Key { get; set; }
     public string Value { get; set; }
     public bool IsIdentifier { get; set; } = false;

@@ -82,6 +82,45 @@ public class AuthorizationRegistryTests
     }
 
     [Fact]
+    public async Task OrganizationUpdate()
+    {
+        var id = Guid.NewGuid().ToString();
+        var propId = Guid.NewGuid().ToString();
+        var name = Guid.NewGuid().ToString();
+        var properties = new List<Property>() { new Property("key", "value"), new Property("otherIdentifier", propId, true) };
+        var employees = new List<Employee>() { new Employee("id1", "givenName", "familyName", "telephone", "email") };
+        var organization = new Organization(id, name, "url", "representative", "invoicingContact", properties);
+        organization.Employees = employees;
+
+        var entity = await _authorizationRegistry.CreateOrganization(organization);
+
+        Assert.NotNull(entity);
+        Assert.Equal(id, entity.Identifier);
+        Assert.NotNull(entity.Properties);
+        Assert.Equal(organization.Properties.Count, entity.Properties.Count);
+        Assert.Equal(employees.Count, entity.Employees.Count);
+
+        var newName = Guid.NewGuid().ToString();
+        var organizationUpdate = new Organization(id, newName, "url", "representative", "invoicingContact", properties);
+        employees.Add(new Employee("id2", "givenName", "familyName", "telephone", "email"));
+        organizationUpdate.Employees = employees;
+        var updateEntity = await _authorizationRegistry.UpdateOrganization(organizationUpdate);
+
+        Assert.NotNull(updateEntity);
+        Assert.Equal(id, updateEntity.Identifier);
+
+        var readEntity = await _authorizationRegistry.ReadOrganization(id);
+
+        Assert.NotNull(readEntity);
+        Assert.Equal(id, readEntity.Identifier);
+        Assert.Equal(newName, readEntity.Name);
+        Assert.Equal(employees.Count, entity.Employees.Count);
+
+        var success = await _authorizationRegistry.DeleteOrganization(id);
+        Assert.True(success);
+    }
+
+    [Fact]
     public async Task EmployeeCrud()
     {
         var organizationId = Guid.NewGuid().ToString();
@@ -140,6 +179,9 @@ public class AuthorizationRegistryTests
 
         Assert.NotNull(organizationEntity);
         Assert.Empty(organizationEntity.Employees);
+
+        success = await _authorizationRegistry.DeleteOrganization(organizationId);
+        Assert.True(success);
     }
 
     [Fact]
@@ -250,5 +292,8 @@ public class AuthorizationRegistryTests
 
         Assert.NotNull(productEntity);
         Assert.Empty(productEntity.Features);
+
+        success = await _authorizationRegistry.DeleteProduct(productId);
+        Assert.True(success);
     }
 }

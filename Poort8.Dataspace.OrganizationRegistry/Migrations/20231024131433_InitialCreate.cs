@@ -12,20 +12,6 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Adherence",
-                columns: table => new
-                {
-                    AdherenceId = table.Column<string>(type: "TEXT", nullable: false),
-                    Status = table.Column<string>(type: "TEXT", nullable: false),
-                    ValidFrom = table.Column<DateOnly>(type: "TEXT", nullable: false),
-                    ValidUntil = table.Column<DateOnly>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Adherence", x => x.AdherenceId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AuditRecords",
                 columns: table => new
                 {
@@ -48,16 +34,13 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                 {
                     Identifier = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    AdherenceId = table.Column<string>(type: "TEXT", nullable: true)
+                    Adherence_Status = table.Column<string>(type: "TEXT", nullable: false),
+                    Adherence_ValidFrom = table.Column<DateOnly>(type: "TEXT", nullable: false),
+                    Adherence_ValidUntil = table.Column<DateOnly>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Organizations", x => x.Identifier);
-                    table.ForeignKey(
-                        name: "FK_Organizations_Adherence_AdherenceId",
-                        column: x => x.AdherenceId,
-                        principalTable: "Adherence",
-                        principalColumn: "AdherenceId");
                 });
 
             migrationBuilder.CreateTable(
@@ -65,17 +48,18 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                 columns: table => new
                 {
                     RoleId = table.Column<string>(type: "TEXT", nullable: false),
-                    Role = table.Column<string>(type: "TEXT", nullable: false),
-                    OrganizationIdentifier = table.Column<string>(type: "TEXT", nullable: true)
+                    OrganizationId = table.Column<string>(type: "TEXT", nullable: false),
+                    Role = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrganizationRole", x => x.RoleId);
                     table.ForeignKey(
-                        name: "FK_OrganizationRole_Organizations_OrganizationIdentifier",
-                        column: x => x.OrganizationIdentifier,
+                        name: "FK_OrganizationRole_Organizations_OrganizationId",
+                        column: x => x.OrganizationId,
                         principalTable: "Organizations",
-                        principalColumn: "Identifier");
+                        principalColumn: "Identifier",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -83,35 +67,31 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                 columns: table => new
                 {
                     PropertyId = table.Column<string>(type: "TEXT", nullable: false),
+                    OrganizationId = table.Column<string>(type: "TEXT", nullable: false),
                     Key = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
-                    OrganizationIdentifier = table.Column<string>(type: "TEXT", nullable: true)
+                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Property", x => x.PropertyId);
                     table.ForeignKey(
-                        name: "FK_Property_Organizations_OrganizationIdentifier",
-                        column: x => x.OrganizationIdentifier,
+                        name: "FK_Property_Organizations_OrganizationId",
+                        column: x => x.OrganizationId,
                         principalTable: "Organizations",
-                        principalColumn: "Identifier");
+                        principalColumn: "Identifier",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganizationRole_OrganizationIdentifier",
+                name: "IX_OrganizationRole_OrganizationId",
                 table: "OrganizationRole",
-                column: "OrganizationIdentifier");
+                column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Organizations_AdherenceId",
-                table: "Organizations",
-                column: "AdherenceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Property_OrganizationIdentifier",
+                name: "IX_Property_OrganizationId",
                 table: "Property",
-                column: "OrganizationIdentifier");
+                column: "OrganizationId");
         }
 
         /// <inheritdoc />
@@ -128,9 +108,6 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
 
             migrationBuilder.DropTable(
                 name: "Organizations");
-
-            migrationBuilder.DropTable(
-                name: "Adherence");
         }
     }
 }

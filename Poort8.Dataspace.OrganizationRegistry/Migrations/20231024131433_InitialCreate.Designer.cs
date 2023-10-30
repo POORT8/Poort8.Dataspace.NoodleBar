@@ -11,7 +11,7 @@ using Poort8.Dataspace.OrganizationRegistry;
 namespace Poort8.Dataspace.OrganizationRegistry.Migrations
 {
     [DbContext(typeof(OrganizationContext))]
-    [Migration("20231011123301_InitialCreate")]
+    [Migration("20231024131433_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -19,26 +19,6 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
-
-            modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Adherence", b =>
-                {
-                    b.Property<string>("AdherenceId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateOnly>("ValidFrom")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateOnly>("ValidUntil")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("AdherenceId");
-
-                    b.ToTable("Adherence");
-                });
 
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.AuditRecord", b =>
                 {
@@ -78,16 +58,11 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                     b.Property<string>("Identifier")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("AdherenceId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Identifier");
-
-                    b.HasIndex("AdherenceId");
 
                     b.ToTable("Organizations");
                 });
@@ -97,7 +72,8 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("OrganizationIdentifier")
+                    b.Property<string>("OrganizationId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Role")
@@ -106,7 +82,7 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.HasIndex("OrganizationIdentifier");
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("OrganizationRole");
                 });
@@ -123,7 +99,8 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("OrganizationIdentifier")
+                    b.Property<string>("OrganizationId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
@@ -132,32 +109,60 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
 
                     b.HasKey("PropertyId");
 
-                    b.HasIndex("OrganizationIdentifier");
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Property");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Organization", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.OrganizationRegistry.Adherence", "Adherence")
-                        .WithMany()
-                        .HasForeignKey("AdherenceId");
+                    b.OwnsOne("Poort8.Dataspace.OrganizationRegistry.Adherence", "Adherence", b1 =>
+                        {
+                            b1.Property<string>("OrganizationIdentifier")
+                                .HasColumnType("TEXT");
 
-                    b.Navigation("Adherence");
+                            b1.Property<string>("Status")
+                                .IsRequired()
+                                .HasColumnType("TEXT");
+
+                            b1.Property<DateOnly>("ValidFrom")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<DateOnly>("ValidUntil")
+                                .HasColumnType("TEXT");
+
+                            b1.HasKey("OrganizationIdentifier");
+
+                            b1.ToTable("Organizations");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganizationIdentifier");
+                        });
+
+                    b.Navigation("Adherence")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.OrganizationRole", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.OrganizationRegistry.Organization", null)
+                    b.HasOne("Poort8.Dataspace.OrganizationRegistry.Organization", "Organization")
                         .WithMany("Roles")
-                        .HasForeignKey("OrganizationIdentifier");
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Property", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.OrganizationRegistry.Organization", null)
+                    b.HasOne("Poort8.Dataspace.OrganizationRegistry.Organization", "Organization")
                         .WithMany("Properties")
-                        .HasForeignKey("OrganizationIdentifier");
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Organization", b =>
