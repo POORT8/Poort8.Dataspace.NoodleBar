@@ -25,7 +25,9 @@ public interface IAuthorizationRegistry //TODO: Add authorizations for managing 
     Task<bool> DeleteProduct(string productId);
 
     //Feature
-    Task<Feature> AddFeature(string productId, Feature feature);
+    Task<Feature> CreateFeature(Feature feature);
+    Task<Feature> AddFeature(string productId, string featureId);
+    Task<bool> RemoveFeature(string productId, string featureId);
     Task<Feature?> ReadFeature(string featureId);
     Task<IReadOnlyList<Feature>> ReadFeatures(string? name = default, string? propertyKey = default, string? propertyValue = default);
     Task<Feature> UpdateFeature(Feature feature);

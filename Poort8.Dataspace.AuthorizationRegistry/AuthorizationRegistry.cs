@@ -37,6 +37,15 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         return productEntity.Entity;
     }
 
+    public async Task<Feature> CreateFeature(Feature feature)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var featureEntity = await context.Features.AddAsync(feature);
+        await context.SaveChangesAsync();
+        return featureEntity.Entity;
+    }
+
     public async Task<Policy> CreatePolicy(Policy policy)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
@@ -57,13 +66,20 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         return employee;
     }
 
-    public async Task<Feature> AddFeature(string productId, Feature feature)
+    public async Task<Feature> AddFeature(string productId, string featureId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var product = await context.Products
+            .Include(p => p.Features)
             .FirstAsync(p => p.ProductId == productId);
+
+        var feature = await context.Features
+            .Include(f => f.Products)
+            .FirstAsync(f => f.FeatureId == featureId);
+
         product.Features.Add(feature);
+        feature.Products.Add(product);
         await context.SaveChangesAsync();
         return feature;
     }
@@ -420,6 +436,24 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         RemoveProperties(context, productEntity.Properties);
         context.Remove(productEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> RemoveFeature(string productId, string featureId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var product = await context.Products
+            .Include(p => p.Features)
+            .FirstAsync(p => p.ProductId == productId);
+
+        var feature = await context.Features
+            .Include(f => f.Products)
+            .FirstAsync(f => f.FeatureId == featureId);
+
+        product.Features.Remove(feature);
+        feature.Products.Remove(product);
         await context.SaveChangesAsync();
         return true;
     }

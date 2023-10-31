@@ -242,3 +242,34 @@
 
     <br>
 }
+
+@if (_products?.Any() == true)
+{
+    <h1>Product features</h1>
+
+    <TableMolecule TItem=Feature Items=_features Context="feature" RowClick="((Feature f) => _ = f)">
+        <TableHeader>
+            <th></th>
+            @foreach (var product in _products)
+            {
+                <th>@product.Name</th>
+            }
+        </TableHeader>
+        <RowTemplate>
+            <td>@feature.Name</td>
+            @foreach (var product in _products)
+            {
+                <td>
+                    @if (product.Features.Any(f => f.FeatureId.Equals(feature.FeatureId, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        <input type="checkbox" id=@(product.ProductId + "_" + feature.FeatureId) name=@(product.ProductId + "_" + feature.FeatureId) onclick=@(() => RemoveFeatureFromProduct(feature.FeatureId, product.ProductId)) checked/>
+                    }
+                    else
+                    {
+                        <input type="checkbox" id=@(product.ProductId + "_" + feature.FeatureId) name=@(product.ProductId + "_" + feature.FeatureId) onclick=@(() => AddFeatureToProduct(feature.FeatureId, product.ProductId))/>
+                    }
+                </td>
+            }
+        </RowTemplate>
+    </TableMolecule>
+}
