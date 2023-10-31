@@ -50,21 +50,4 @@ public class Policy
         Action = action;
         Properties = properties;
     }
-
-    public Policy DeepCopy()
-    {
-        return new Policy(
-            UseCase,
-            IssuerId,
-            SubjectId,
-            ResourceId,
-            Action,
-            Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList())
-        {
-            PolicyId = PolicyId,
-            IssuedAt = IssuedAt,
-            NotBefore = NotBefore,
-            Expiration = Expiration
-        };
-    }
 }

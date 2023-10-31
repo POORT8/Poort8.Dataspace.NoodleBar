@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Poort8.Dataspace.AuthorizationRegistry;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
+using Poort8.Dataspace.CoreManager.Extensions;
 
 namespace Poort8.Dataspace.CoreManager.Pages;
 

@@ -30,29 +30,4 @@ public class Organization //https://schema.org/Organization
         InvoicingContact = invoicingContact;
         Properties = properties;
     }
-
-    public Organization DeepCopy()
-    {
-        var organization = new Organization(
-            Identifier,
-            Name,
-            Url,
-            Representative,
-            InvoicingContact,
-            Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList());
-
-        organization.Employees = Employees.Select(e => new Employee(
-            e.EmployeeId,
-            e.GivenName,
-            e.FamilyName,
-            e.Telephone,
-            e.Email,
-            e.Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList())
-            {
-                OrganizationId = organization.Identifier,
-                Organization = organization
-            }).ToList();
-
-        return organization;
-    }
 }

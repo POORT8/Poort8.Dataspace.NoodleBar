@@ -25,16 +25,6 @@ public class Organization //https://schema.org/Organization
         Roles = roles;
         Properties = properties;
     }
-
-    public Organization DeepCopy()
-    {
-        return new Organization(
-            Identifier,
-            Name,
-            new Adherence(Adherence.Status, Adherence.ValidFrom, Adherence.ValidUntil),
-            Roles.Select(r => new OrganizationRole(r.Role)).ToList(),
-            Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList());
-    }
 }
 
 [Owned]
