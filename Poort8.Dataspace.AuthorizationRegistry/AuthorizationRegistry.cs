@@ -446,10 +446,12 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var policyEntity = await context.Policies
+            .Include(p => p.Properties)
             .FirstOrDefaultAsync(p => p.PolicyId == policyId);
 
         if (policyEntity == null) return false;
 
+        RemoveProperties(context, policyEntity.Properties);
         context.Remove(policyEntity);
         await context.SaveChangesAsync();
         return true;
