@@ -3,18 +3,20 @@
 
 <PageTitle>Organization Registry</PageTitle>
 
-<TableMolecule TItem=Organization Items=_organizations Context="organization" RowClick="OnRowClick">
+<button type="button" @onclick=AddNewOrganization disabled=@(_newOrganization is not null)>Nieuw</button>
+
+<TableMolecule TItem=Organization Items=_organizations Context="organization" RowClick="OnOrganizationRowClick">
     <TableHeader>
         <th>Identifier</th>
         <th>Name</th>
+        <th></th>
     </TableHeader>
     <RowTemplate>
         <td>@organization.Identifier</td>
         <td>@organization.Name</td>
+        <td><button type="button" @onclick=@(() => DeleteOrganization(organization))>Verwijder</button></td>
     </RowTemplate>
 </TableMolecule>
-
-<button type="button" @onclick=AddNew disabled=@(_newOrganization is not null)>Voeg toe</button>
 
 <br>
 
@@ -73,15 +75,16 @@
         <TableMolecule TItem=OrganizationRole Items=EditedOrganization.Roles.ToList() Context="role">
             <TableHeader>
                 <th>Role</th>
+                <th></th>
             </TableHeader>
             <RowTemplate>
                 <td>@role.Role</td>
+                <td><button type="button" @onclick=@(() => EditedOrganization.Roles.Remove(role))>Verwijder</button></td>
             </RowTemplate>
         </TableMolecule>
 
         <CustomInputText id="role" class="form-control" placeholder="Role" @bind-Value=@_role.Role />
         <button type="button" @onclick=AddRole disabled=@(string.IsNullOrWhiteSpace(_role.Role) || EditedOrganization.Roles.Any(r => r.Role.Equals(_role.Role, StringComparison.OrdinalIgnoreCase)))>Voeg rol toe</button>
-        <button type="button" @onclick=DeleteRole disabled=@(!EditedOrganization.Roles.Any(r => r.Role.Equals(_role.Role, StringComparison.OrdinalIgnoreCase)))>Verwijder rol</button>
 
         <br>
         <h4>Properties</h4>
@@ -90,11 +93,13 @@
                 <th>Key</th>
                 <th>Value</th>
                 <th>Identifier</th>
+                <th></th>
             </TableHeader>
             <RowTemplate>
                 <td>@property.Key</td>
                 <td>@property.Value</td>
                 <td>@property.IsIdentifier</td>
+                <td><button type="button" @onclick=@(() => EditedOrganization.Properties.Remove(property))>Verwijder</button></td>
             </RowTemplate>
         </TableMolecule>
 
@@ -103,18 +108,16 @@
         <input type="checkbox" id="isIdentifier" name="isIdentifier" @bind=@_property.IsIdentifier />
         <label for="isIdentifier">Identifier</label><br>
         <button type="button" @onclick=AddProperty disabled=@(string.IsNullOrWhiteSpace(_property.Key) || string.IsNullOrWhiteSpace(_property.Value) || EditedOrganization.Properties.Any(p => p.Key.Equals(_property.Key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
-        <button type="button" @onclick=DeleteProperty disabled=@(!EditedOrganization.Properties.Any(p => p.Key.Equals(_property.Key, StringComparison.OrdinalIgnoreCase)))>Verwijder property</button>
     </EditForm>
 
     <br>
 
     if (EditedOrganization == _selectedOrganization)
     {
-        <button type="button" @onclick=Update disabled=@DisableUpdate(EditedOrganization)>Update organization</button>
-        <button type="button" @onclick=Delete>Verwijder organization</button>
+        <button type="button" @onclick=UpdateOrganization disabled=@DisableUpdate(EditedOrganization)>Update organization</button>
     }
     else
     {
-        <button type="button" @onclick=Create disabled=@DisableCreate(EditedOrganization)>Maak organization aan</button>
+        <button type="button" @onclick=CreateOrganization disabled=@DisableCreate(EditedOrganization)>Maak organization aan</button>
     }
 }

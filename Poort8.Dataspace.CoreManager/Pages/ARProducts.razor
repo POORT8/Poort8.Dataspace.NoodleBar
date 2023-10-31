@@ -5,6 +5,8 @@
 
 <h1>Producten</h1>
 
+<button type="button" @onclick=AddNewProduct disabled=@(_newProduct is not null)>Nieuw</button>
+
 <TableMolecule TItem=Product Items=_products Context="product" RowClick="OnProductRowClick">
     <TableHeader>
         <th>Product ID</th>
@@ -12,6 +14,7 @@
         <th>Description</th>
         <th>Provider</th>
         <th>URL</th>
+        <th></th>
     </TableHeader>
     <RowTemplate>
         <td>@product.ProductId</td>
@@ -19,10 +22,9 @@
         <td>@product.Description</td>
         <td>@product.Provider</td>
         <td>@product.Url</td>
+        <td><button type="button" @onclick=@(() => DeleteProduct(product))>Verwijder</button></td>
     </RowTemplate>
 </TableMolecule>
-
-<button type="button" @onclick=AddNewProduct disabled=@(_newProduct is not null)>Voeg toe</button>
 
 <br>
 
@@ -100,11 +102,13 @@
                 <th>Key</th>
                 <th>Value</th>
                 <th>Identifier</th>
+                <th></th>
             </TableHeader>
             <RowTemplate>
                 <td>@property.Key</td>
                 <td>@property.Value</td>
                 <td>@property.IsIdentifier</td>
+                <td><button type="button" @onclick=@(() => EditedProduct.Properties.Remove(property))>Verwijder</button></td>
             </RowTemplate>
         </TableMolecule>
 
@@ -113,7 +117,6 @@
         <input type="checkbox" id="isProductIdentifier" name="isProductIdentifier" @bind=@_productProperty.IsIdentifier />
         <label for="isProductIdentifier">Identifier</label><br>
         <button type="button" @onclick=AddProductProperty disabled=@(string.IsNullOrWhiteSpace(_productProperty.Key) || string.IsNullOrWhiteSpace(_productProperty.Value) || EditedProduct.Properties.Any(p => p.Key.Equals(_productProperty.Key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
-        <button type="button" @onclick=DeleteProductProperty disabled=@(!EditedProduct.Properties.Any(p => p.Key.Equals(_productProperty.Key, StringComparison.OrdinalIgnoreCase)))>Verwijder property</button>
     </EditForm>
 
     <br>
@@ -121,7 +124,6 @@
     if (EditedProduct == _selectedProduct)
     {
         <button type="button" @onclick=UpdateProduct disabled=@DisableUpdateProduct(EditedProduct)>Update product</button>
-        <button type="button" @onclick=DeleteProduct>Verwijder product</button>
     }
     else
     {
@@ -133,20 +135,22 @@
 
 <h1>Features</h1>
 
+<button type="button" @onclick=AddNewFeature disabled=@(_newFeature is not null)>Nieuw</button>
+
 <TableMolecule TItem=Feature Items=_features Context="feature" RowClick="OnFeatureRowClick">
     <TableHeader>
         <th>Feature ID</th>
         <th>Name</th>
         <th>Description</th>
+        <th></th>
     </TableHeader>
     <RowTemplate>
         <td>@feature.FeatureId</td>
         <td>@feature.Name</td>
         <td>@feature.Description</td>
+        <td><button type="button" @onclick=@(() => DeleteFeature(feature))>Verwijder</button></td>
     </RowTemplate>
 </TableMolecule>
-
-<button type="button" @onclick=AddNewFeature disabled=@(_newFeature is not null)>Voeg toe</button>
 
 <br>
 
@@ -208,11 +212,13 @@
                 <th>Key</th>
                 <th>Value</th>
                 <th>Identifier</th>
+                <th></th>
             </TableHeader>
             <RowTemplate>
                 <td>@property.Key</td>
                 <td>@property.Value</td>
                 <td>@property.IsIdentifier</td>
+                <td><button type="button" @onclick=@(() => EditedFeature.Properties.Remove(property))>Verwijder</button></td>
             </RowTemplate>
         </TableMolecule>
 
@@ -221,7 +227,6 @@
         <input type="checkbox" id="isFeatureIdentifier" name="isFeatureIdentifier" @bind=@_featureProperty.IsIdentifier />
         <label for="isFeatureIdentifier">Identifier</label><br>
         <button type="button" @onclick=AddFeatureProperty disabled=@(string.IsNullOrWhiteSpace(_featureProperty.Key) || string.IsNullOrWhiteSpace(_featureProperty.Value) || EditedFeature.Properties.Any(p => p.Key.Equals(_featureProperty.Key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
-        <button type="button" @onclick=DeleteFeatureProperty disabled=@(!EditedFeature.Properties.Any(p => p.Key.Equals(_featureProperty.Key, StringComparison.OrdinalIgnoreCase)))>Verwijder property</button>
     </EditForm>
 
     <br>
@@ -229,7 +234,6 @@
     if (EditedFeature == _selectedFeature)
     {
         <button type="button" @onclick=UpdateFeature disabled=@DisableUpdateFeature(EditedFeature)>Update feature</button>
-        <button type="button" @onclick=DeleteFeature>Verwijder feature</button>
     }
     else
     {

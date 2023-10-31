@@ -38,8 +38,8 @@ public partial class ARPolicies
 
     private void OnPolicyRowClick(Policy policy)
     {
-        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with policy {identifier} ({issuer}, {subject}, {resource}, {action})", policy!.PolicyId, policy.IssuerId, policy.SubjectId, policy.ResourceId, policy.Action);
-        _selectedPolicy = policy.DeepCopy();
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with policy {identifier} ({issuer}, {subject}, {resource}, {action})", policy.PolicyId, policy.IssuerId, policy.SubjectId, policy.ResourceId, policy.Action);
+        _selectedPolicy = _policies?.FirstOrDefault(p => p.PolicyId.Equals(policy.PolicyId, StringComparison.OrdinalIgnoreCase))?.DeepCopy();
         _newPolicy = null;
     }
 
@@ -61,12 +61,11 @@ public partial class ARPolicies
         StateHasChanged();
     }
 
-    private async Task DeletePolicy()
+    private async Task DeletePolicy(Policy policy)
     {
-        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Delete button clicked for policy {identifier} ({issuer}, {subject}, {resource}, {action})", _selectedPolicy!.PolicyId, _selectedPolicy.IssuerId, _selectedPolicy.SubjectId, _selectedPolicy.ResourceId, _selectedPolicy.Action);
-        await AuthorizationRegistryService!.DeletePolicy(_selectedPolicy!.PolicyId);
-        _policies?.RemoveAll(p => p.PolicyId.Equals(_selectedPolicy!.PolicyId, StringComparison.OrdinalIgnoreCase));
-        _selectedPolicy = null;
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Delete button clicked for policy {identifier} ({issuer}, {subject}, {resource}, {action})", policy.PolicyId, policy.IssuerId, policy.SubjectId, policy.ResourceId, policy.Action);
+        await AuthorizationRegistryService!.DeletePolicy(policy.PolicyId);
+        _policies?.Remove(policy);
         StateHasChanged();
     }
 
@@ -81,20 +80,9 @@ public partial class ARPolicies
         StateHasChanged();
     }
 
-    private void ResetPolicyProperty()
-    {
-        _policyProperty = new(string.Empty, string.Empty);
-    }
-
     private void AddPolicyProperty()
     {
         EditedPolicy!.Properties.Add(_policyProperty);
-        ResetPolicyProperty();
-    }
-
-    private void DeletePolicyProperty()
-    {
-        EditedPolicy!.Properties.Remove(EditedPolicy.Properties.First(p => p.Key.Equals(_policyProperty.Key, StringComparison.OrdinalIgnoreCase)));
-        ResetPolicyProperty();
+        _policyProperty = new(string.Empty, string.Empty);
     }
 }

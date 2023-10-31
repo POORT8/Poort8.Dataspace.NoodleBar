@@ -23,7 +23,7 @@ public partial class OrganizationRegistry
         _ = base.OnInitializedAsync();
     }
 
-    private async Task Create()
+    private async Task CreateOrganization()
     {
         Logger?.LogInformation("P8.inf - OrganizationRegistry - Create button clicked for organization {identifier} ({name})", _newOrganization!.Identifier, _newOrganization.Name);
         var organization = await OrganizationRegistryService!.CreateOrganization(_newOrganization!);
@@ -32,16 +32,15 @@ public partial class OrganizationRegistry
         StateHasChanged();
     }
 
-    private async Task Delete()
+    private async Task DeleteOrganization(Organization organization)
     {
-        Logger?.LogInformation("P8.inf - OrganizationRegistry - Delete button clicked for organization {identifier} ({name})", _selectedOrganization!.Identifier, _selectedOrganization.Name);
-        await OrganizationRegistryService!.DeleteOrganization(_selectedOrganization!.Identifier);
-        _organizations?.RemoveAll(p => p.Identifier.Equals(_selectedOrganization!.Identifier, StringComparison.OrdinalIgnoreCase));
-        _selectedOrganization = null;
+        Logger?.LogInformation("P8.inf - OrganizationRegistry - Delete button clicked for organization {identifier} ({name})", organization.Identifier, organization.Name);
+        await OrganizationRegistryService!.DeleteOrganization(organization.Identifier);
+        _organizations?.Remove(organization);
         StateHasChanged();
     }
 
-    private async Task Update()
+    private async Task UpdateOrganization()
     {
         Logger?.LogInformation("P8.inf - OrganizationRegistry - Update button clicked for organization {identifier} ({name})", _selectedOrganization!.Identifier, _selectedOrganization.Name);
         var party = await OrganizationRegistryService!.UpdateOrganization(_selectedOrganization!);
@@ -51,7 +50,7 @@ public partial class OrganizationRegistry
         StateHasChanged();
     }
 
-    private void AddNew()
+    private void AddNewOrganization()
     {
         Logger?.LogInformation("P8.inf - OrganizationRegistry - AddNew button clicked");
         _newOrganization = new Organization(string.Empty, string.Empty);
@@ -59,10 +58,10 @@ public partial class OrganizationRegistry
         StateHasChanged();
     }
 
-    private void OnRowClick(Organization organization)
+    private void OnOrganizationRowClick(Organization organization)
     {
-        Logger?.LogInformation("P8.inf - OrganizationRegistry - Clicked on row with organization {identifier} ({name})", organization!.Identifier, organization.Name);
-        _selectedOrganization = organization.DeepCopy();
+        Logger?.LogInformation("P8.inf - OrganizationRegistry - Clicked on row with organization {identifier} ({name})", organization.Identifier, organization.Name);
+        _selectedOrganization = _organizations?.FirstOrDefault(o => o.Identifier.Equals(organization.Identifier, StringComparison.OrdinalIgnoreCase))?.DeepCopy();
         _newOrganization = null;
     }
 
@@ -72,26 +71,9 @@ public partial class OrganizationRegistry
         _role = new(string.Empty);
     }
 
-    private void DeleteRole()
-    {
-        EditedOrganization!.Roles.Remove(EditedOrganization.Roles.First(r => r.Role.Equals(_role.Role, StringComparison.OrdinalIgnoreCase)));
-        _role = new(string.Empty);
-    }
-
-    private void ResetProperty()
-    {
-        _property = new(string.Empty, string.Empty);
-    }
-
     private void AddProperty()
     {
         EditedOrganization!.Properties.Add(_property);
-        ResetProperty();
-    }
-
-    private void DeleteProperty()
-    {
-        EditedOrganization!.Properties.Remove(EditedOrganization.Properties.First(p => p.Key.Equals(_property.Key, StringComparison.OrdinalIgnoreCase)));
-        ResetProperty();
+        _property = new(string.Empty, string.Empty);
     }
 }

@@ -33,15 +33,15 @@ public partial class ARProducts
 
     private void OnProductRowClick(Product product)
     {
-        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with product {identifier} ({name})", product!.ProductId, product.Name);
-        _selectedProduct = product.DeepCopy();
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with product {identifier} ({name})", product.ProductId, product.Name);
+        _selectedProduct = _products?.FirstOrDefault(p => p.ProductId.Equals(product.ProductId, StringComparison.OrdinalIgnoreCase))?.DeepCopy();
         _newProduct = null;
     }
 
     private void OnFeatureRowClick(Feature feature)
     {
-        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with feature {identifier} ({name})", feature!.FeatureId, feature.Name);
-        _selectedFeature = feature.DeepCopy();
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with feature {identifier} ({name})", feature.FeatureId, feature.Name);
+        _selectedFeature = _features?.FirstOrDefault(f => f.FeatureId.Equals(feature.FeatureId, StringComparison.OrdinalIgnoreCase))?.DeepCopy();
         _newFeature = null;
     }
 
@@ -70,12 +70,11 @@ public partial class ARProducts
         StateHasChanged();
     }
 
-    private async Task DeleteProduct()
+    private async Task DeleteProduct(Product product)
     {
-        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Delete button clicked for product {identifier} ({name})", _selectedProduct!.ProductId, _selectedProduct.Name);
-        await AuthorizationRegistryService!.DeleteProduct(_selectedProduct!.ProductId);
-        _products?.RemoveAll(p => p.ProductId.Equals(_selectedProduct!.ProductId, StringComparison.OrdinalIgnoreCase));
-        _selectedProduct = null;
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Delete button clicked for product {identifier} ({name})", product.ProductId, product.Name);
+        await AuthorizationRegistryService!.DeleteProduct(product.ProductId);
+        _products?.Remove(product);
         StateHasChanged();
     }
 
@@ -98,12 +97,11 @@ public partial class ARProducts
         StateHasChanged();
     }
 
-    private async Task DeleteFeature()
+    private async Task DeleteFeature(Feature feature)
     {
-        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Delete button clicked for feature {identifier} ({name})", _selectedFeature!.FeatureId, _selectedFeature.Name);
-        await AuthorizationRegistryService!.DeleteFeature(_selectedFeature!.FeatureId);
-        _features?.RemoveAll(f => f.FeatureId.Equals(_selectedFeature!.FeatureId, StringComparison.OrdinalIgnoreCase));
-        _selectedFeature = null;
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Delete button clicked for feature {identifier} ({name})", feature.FeatureId, feature.Name);
+        await AuthorizationRegistryService!.DeleteFeature(feature.FeatureId);
+        _features?.Remove(feature);
         StateHasChanged();
     }
 
@@ -117,37 +115,15 @@ public partial class ARProducts
         StateHasChanged();
     }
 
-    private void ResetProductProperty()
-    {
-        _productProperty = new(string.Empty, string.Empty);
-    }
-
     private void AddProductProperty()
     {
         EditedProduct!.Properties.Add(_productProperty);
-        ResetProductProperty();
-    }
-
-    private void DeleteProductProperty()
-    {
-        EditedProduct!.Properties.Remove(EditedProduct.Properties.First(p => p.Key.Equals(_productProperty.Key, StringComparison.OrdinalIgnoreCase)));
-        ResetProductProperty();
-    }
-
-    private void ResetFeatureProperty()
-    {
-        _featureProperty = new(string.Empty, string.Empty);
+        _productProperty = new(string.Empty, string.Empty);
     }
 
     private void AddFeatureProperty()
     {
         EditedFeature!.Properties.Add(_featureProperty);
-        ResetFeatureProperty();
-    }
-
-    private void DeleteFeatureProperty()
-    {
-        EditedFeature!.Properties.Remove(EditedFeature.Properties.First(p => p.Key.Equals(_featureProperty.Key, StringComparison.OrdinalIgnoreCase)));
-        ResetFeatureProperty();
+        _featureProperty = new(string.Empty, string.Empty);
     }
 }

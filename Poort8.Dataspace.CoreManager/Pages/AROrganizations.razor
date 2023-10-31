@@ -5,6 +5,8 @@
 
 <h1>Organisaties</h1>
 
+<button type="button" @onclick=AddNewOrganization disabled=@(_newOrganization is not null)>Nieuw</button>
+
 <TableMolecule TItem=Organization Items=_organizations Context="organization" RowClick="OnOrganizationRowClick">
     <TableHeader>
         <th>Identifier</th>
@@ -12,6 +14,7 @@
         <th>URL</th>
         <th>Representative</th>
         <th>Invoicing contact</th>
+        <th></th>
     </TableHeader>
     <RowTemplate>
         <td>@organization.Identifier</td>
@@ -19,10 +22,9 @@
         <td>@organization.Url</td>
         <td>@organization.Representative</td>
         <td>@organization.InvoicingContact</td>
+        <td><button type="button" @onclick=@(() => DeleteOrganization(organization))>Verwijder</button></td>
     </RowTemplate>
 </TableMolecule>
-
-<button type="button" @onclick=AddNewOrganization disabled=@(_newOrganization is not null)>Voeg toe</button>
 
 <br>
 
@@ -86,6 +88,7 @@
                 <th>Last name</th>
                 <th>Telephone</th>
                 <th>Email</th>
+                <th></th>
             </TableHeader>
             <RowTemplate>
                 <td>@employee.EmployeeId</td>
@@ -93,6 +96,7 @@
                 <td>@employee.FamilyName</td>
                 <td>@employee.Telephone</td>
                 <td>@employee.Email</td>
+                <td><button type="button" @onclick=@(() => EditedOrganization.Employees.Remove(employee))>Verwijder</button></td>
             </RowTemplate>
         </TableMolecule>
 
@@ -102,7 +106,6 @@
         <CustomInputText id="telephone" class="form-control" placeholder="Telephone" @bind-Value=@_employee.Telephone />
         <CustomInputText id="email" class="form-control" placeholder="Email" @bind-Value=@_employee.Email />
         <button type="button" @onclick=AddEmployee disabled=@(string.IsNullOrWhiteSpace(_employee.EmployeeId) || string.IsNullOrWhiteSpace(_employee.GivenName) || string.IsNullOrWhiteSpace(_employee.FamilyName) || EditedOrganization.Employees.Any(e => e.EmployeeId.Equals(_employee.EmployeeId, StringComparison.OrdinalIgnoreCase)))>Voeg employee toe</button>
-        <button type="button" @onclick=DeleteEmployee disabled=@(!EditedOrganization.Employees.Any(e => e.EmployeeId.Equals(_employee.EmployeeId, StringComparison.OrdinalIgnoreCase)))>Verwijder employee</button>
         <br>
         <h4>Properties</h4>
         <TableMolecule TItem=Property Items=EditedOrganization.Properties.ToList() Context="property">
@@ -110,11 +113,13 @@
                 <th>Key</th>
                 <th>Value</th>
                 <th>Identifier</th>
+                <th></th>
             </TableHeader>
             <RowTemplate>
                 <td>@property.Key</td>
                 <td>@property.Value</td>
                 <td>@property.IsIdentifier</td>
+                <td><button type="button" @onclick=@(() => EditedOrganization.Properties.Remove(property))>Verwijder</button></td>
             </RowTemplate>
         </TableMolecule>
 
@@ -123,7 +128,6 @@
         <input type="checkbox" id="isIdentifier" name="isIdentifier" @bind=@_organizationProperty.IsIdentifier />
         <label for="isIdentifier">Identifier</label><br>
         <button type="button" @onclick=AddOrganizationProperty disabled=@(string.IsNullOrWhiteSpace(_organizationProperty.Key) || string.IsNullOrWhiteSpace(_organizationProperty.Value) || EditedOrganization.Properties.Any(p => p.Key.Equals(_organizationProperty.Key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
-        <button type="button" @onclick=DeleteOrganizationProperty disabled=@(!EditedOrganization.Properties.Any(p => p.Key.Equals(_organizationProperty.Key, StringComparison.OrdinalIgnoreCase)))>Verwijder property</button>
     </EditForm>
 
     <br>
@@ -131,7 +135,6 @@
     if (EditedOrganization == _selectedOrganization)
     {
         <button type="button" @onclick=UpdateOrganization disabled=@DisableUpdateOrganization(EditedOrganization)>Update organization</button>
-        <button type="button" @onclick=DeleteOrganization>Verwijder organization</button>
     }
     else
     {

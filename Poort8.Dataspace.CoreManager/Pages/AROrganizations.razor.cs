@@ -26,10 +26,10 @@ public partial class AROrganizations
 
     private void OnOrganizationRowClick(Organization organization)
     {
-        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with organization {identifier} ({name})", organization!.Identifier, organization.Name);
-        _selectedOrganization = organization.DeepCopy();
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with organization {identifier} ({name})", organization.Identifier, organization.Name);
+        _selectedOrganization = _organizations?.FirstOrDefault(o => o.Identifier.Equals(organization.Identifier))?.DeepCopy();
         _newOrganization = null;
-        ResetEmployee();
+        if (_selectedOrganization is not null) ResetEmployee();
     }
 
     private void AddNewOrganization()
@@ -50,12 +50,11 @@ public partial class AROrganizations
         StateHasChanged();
     }
 
-    private async Task DeleteOrganization()
+    private async Task DeleteOrganization(Organization organization)
     {
-        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Delete button clicked for organization {identifier} ({name})", _selectedOrganization!.Identifier, _selectedOrganization.Name);
-        await AuthorizationRegistryService!.DeleteOrganization(_selectedOrganization!.Identifier);
-        _organizations?.RemoveAll(p => p.Identifier.Equals(_selectedOrganization!.Identifier, StringComparison.OrdinalIgnoreCase));
-        _selectedOrganization = null;
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Delete button clicked for organization {identifier} ({name})", organization.Identifier, organization.Name);
+        await AuthorizationRegistryService!.DeleteOrganization(organization.Identifier);
+        _organizations?.Remove(organization);
         StateHasChanged();
     }
 
@@ -84,26 +83,9 @@ public partial class AROrganizations
         ResetEmployee();
     }
 
-    private void DeleteEmployee()
-    {
-        EditedOrganization!.Employees.Remove(EditedOrganization.Employees.First(e => e.EmployeeId.Equals(_employee.EmployeeId, StringComparison.OrdinalIgnoreCase)));
-        ResetEmployee();
-    }
-
-    private void ResetOrganizationProperty()
-    {
-        _organizationProperty = new(string.Empty, string.Empty);
-    }
-
     private void AddOrganizationProperty()
     {
         EditedOrganization!.Properties.Add(_organizationProperty);
-        ResetOrganizationProperty();
-    }
-
-    private void DeleteOrganizationProperty()
-    {
-        EditedOrganization!.Properties.Remove(EditedOrganization.Properties.First(p => p.Key.Equals(_organizationProperty.Key, StringComparison.OrdinalIgnoreCase)));
-        ResetOrganizationProperty();
+        _organizationProperty = new(string.Empty, string.Empty);
     }
 }
