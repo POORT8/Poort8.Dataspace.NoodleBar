@@ -201,10 +201,6 @@
             </RowTemplate>
         </TableMolecule>
 
-        <CustomInputText id="featureProduct" class="form-control" placeholder="Product ID" @bind-Value=@_featureProductId />
-        <button type="button" @onclick=AddFeatureProduct disabled=@(_products?.Any(p => p.ProductId.Equals(_featureProductId, StringComparison.OrdinalIgnoreCase)) != true || EditedFeature.Products.Any(p => p.ProductId.Equals(_featureProductId, StringComparison.OrdinalIgnoreCase)))>Voeg product toe aan feature</button>
-        <button type="button" @onclick=DeleteFeatureProduct disabled=@(!EditedFeature.Products.Any(p => p.ProductId.Equals(_featureProductId, StringComparison.OrdinalIgnoreCase)))>Verwijder product van feature</button>
-
         <br>
         <h4>Properties</h4>
         <TableMolecule TItem=Property Items=EditedFeature.Properties.ToList() Context="property">

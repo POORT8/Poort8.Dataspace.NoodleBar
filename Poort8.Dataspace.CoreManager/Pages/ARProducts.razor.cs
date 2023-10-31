@@ -20,9 +20,8 @@ public partial class ARProducts
     private Feature? _newFeature;
     private Feature? EditedFeature => _selectedFeature ?? _newFeature;
     private Property _featureProperty = new(string.Empty, string.Empty);
-    private static bool DisableUpdateFeature(Feature feature) => string.IsNullOrWhiteSpace(feature.Name) || !feature.Products.Any();
-    private bool DisableCreateFeature(Feature feature) => DisableUpdateFeature(feature) || string.IsNullOrWhiteSpace(feature.FeatureId) || _features?.Any(f => feature.FeatureId.Equals(f.FeatureId, StringComparison.OrdinalIgnoreCase)) == true || feature.Products.Count != 1;
-    private string _featureProductId = string.Empty;
+    private static bool DisableUpdateFeature(Feature feature) => string.IsNullOrWhiteSpace(feature.Name);
+    private bool DisableCreateFeature(Feature feature) => DisableUpdateFeature(feature) || string.IsNullOrWhiteSpace(feature.FeatureId) || _features?.Any(f => feature.FeatureId.Equals(f.FeatureId, StringComparison.OrdinalIgnoreCase)) == true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -133,18 +132,6 @@ public partial class ARProducts
     {
         EditedProduct!.Properties.Remove(EditedProduct.Properties.First(p => p.Key.Equals(_productProperty.Key, StringComparison.OrdinalIgnoreCase)));
         ResetProductProperty();
-    }
-
-    private void AddFeatureProduct()
-    {
-        EditedFeature!.Products.Add(_products!.First(p => p.ProductId.Equals(_featureProductId, StringComparison.OrdinalIgnoreCase)));
-        _featureProductId = string.Empty;
-    }
-
-    private void DeleteFeatureProduct()
-    {
-        EditedFeature!.Products.Remove(EditedFeature.Products.First(p => p.ProductId.Equals(_featureProductId, StringComparison.OrdinalIgnoreCase)));
-        _featureProductId = string.Empty;
     }
 
     private void ResetFeatureProperty()
