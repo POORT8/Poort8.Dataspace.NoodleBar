@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Poort8.Dataspace.AuthorizationRegistry.Entities;
 public class Organization //https://schema.org/Organization
@@ -10,7 +11,7 @@ public class Organization //https://schema.org/Organization
     public string Representative { get; set; }
     public string InvoicingContact { get; set; }
     public ICollection<Employee> Employees { get; set; } = new List<Employee>();
-    public ICollection<Property> Properties { get; set; } = new List<Property>();
+    public ICollection<OrganizationProperty> Properties { get; set; } = new List<OrganizationProperty>();
 
     public Organization(string identifier, string name, string url, string representative, string invoicingContact)
     {
@@ -21,7 +22,7 @@ public class Organization //https://schema.org/Organization
         InvoicingContact = invoicingContact;
     }
 
-    public Organization(string identifier, string name, string url, string representative, string invoicingContact, ICollection<Property> properties)
+    public Organization(string identifier, string name, string url, string representative, string invoicingContact, ICollection<OrganizationProperty> properties)
     {
         Identifier = identifier;
         Name = name;
@@ -29,5 +30,27 @@ public class Organization //https://schema.org/Organization
         Representative = representative;
         InvoicingContact = invoicingContact;
         Properties = properties;
+    }
+
+    [Owned]
+    public class OrganizationProperty
+    {
+        [Key]
+        public string Key { get; set; }
+        public string Value { get; set; }
+        public bool IsIdentifier { get; set; } = false;
+
+        public OrganizationProperty(string key, string value)
+        {
+            Key = key;
+            Value = value;
+        }
+
+        public OrganizationProperty(string key, string value, bool isIdentifier)
+        {
+            Key = key;
+            Value = value;
+            IsIdentifier = isIdentifier;
+        }
     }
 }

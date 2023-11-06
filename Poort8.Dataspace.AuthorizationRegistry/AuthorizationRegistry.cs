@@ -46,7 +46,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         return policyEntity.Entity;
     }
 
-    public async Task<Employee> AddEmployee(string organizationId, Employee employee)
+    public async Task<Employee> AddEmployeeToOrganization(string organizationId, Employee employee)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
@@ -57,7 +57,16 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         return employee;
     }
 
-    public async Task<Feature> AddFeature(string productId, Feature feature)
+    public async Task<Feature> CreateFeature(Feature feature)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var featureEntity = await context.Features.AddAsync(feature);
+        await context.SaveChangesAsync();
+        return featureEntity.Entity;
+    }
+
+    public async Task<Feature> AddFeatureToProduct(string productId, Feature feature)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
@@ -262,10 +271,11 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Organization> UpdateOrganization(Organization organization)
     {
+        if (organization.Employees.Any()) throw new Exception("Employees may not be updated using UpdateOrganization.");
+
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var organizationEntity = await context.Organizations
-            .Include(o => o.Employees)
             .Include(o => o.Properties)
             .FirstAsync(o => o.Identifier == organization.Identifier);
 
@@ -274,8 +284,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         organizationEntity.Url = organization.Url;
         organizationEntity.Representative = organization.Representative;
         organizationEntity.InvoicingContact = organization.InvoicingContact;
-        organizationEntity.Employees = organization.Employees;
-        RemoveProperties(context, organizationEntity.Properties);
         organizationEntity.Properties = organization.Properties;
 
         await context.SaveChangesAsync();
@@ -290,11 +298,13 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             .Include(e => e.Properties)
             .FirstAsync(e => e.EmployeeId == employee.EmployeeId);
 
+        if (employee.OrganizationId is not null && employeeEntity.OrganizationId != employee.OrganizationId)
+            throw new Exception("Organization may not be updated using UpdateEmployee.");
+
         employeeEntity.GivenName = employee.GivenName;
         employeeEntity.FamilyName = employee.FamilyName;
         employeeEntity.Telephone = employee.Telephone;
         employeeEntity.Email = employee.Email;
-        RemoveProperties(context, employeeEntity.Properties);
         employeeEntity.Properties = employee.Properties;
 
         await context.SaveChangesAsync();
@@ -303,10 +313,11 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Product> UpdateProduct(Product product)
     {
+        if (product.Features.Any()) throw new Exception("Features may not be updated using UpdateProduct.");
+
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var productEntity = await context.Products
-            .Include(p => p.Features)
             .Include(p => p.Properties)
             .FirstAsync(p => p.ProductId == product.ProductId);
 
@@ -314,8 +325,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         productEntity.Description = product.Description;
         productEntity.Provider = product.Provider;
         productEntity.Url = product.Url;
-        productEntity.Features = product.Features;
-        RemoveProperties(context, productEntity.Properties);
         productEntity.Properties = product.Properties;
         
         await context.SaveChangesAsync();
@@ -324,6 +333,8 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Feature> UpdateFeature(Feature feature)
     {
+        if (feature.Products.Any()) throw new Exception("Products may not be updated using UpdateFeature.");
+
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var featureEntity = await context.Features
@@ -332,7 +343,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         featureEntity.Name = feature.Name;
         featureEntity.Description = feature.Description;
-        RemoveProperties(context, featureEntity.Properties);
         featureEntity.Properties = feature.Properties;
 
         await context.SaveChangesAsync();
@@ -355,7 +365,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         policyEntity.SubjectId = policy.SubjectId;
         policyEntity.ResourceId = policy.ResourceId;
         policyEntity.Action = policy.Action;
-        RemoveProperties(context, policyEntity.Properties);
         policyEntity.Properties = policy.Properties;
 
         await context.SaveChangesAsync();
@@ -364,14 +373,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     #endregion
     #region Delete
-
-    private static void RemoveProperties(AuthorizationContext context, ICollection<Property> properties)
-    {
-        foreach (var property in properties)
-        {
-            context.Remove(property);
-        }
-    }
 
     public async Task<bool> DeleteOrganization(string identifier)
     {
@@ -384,7 +385,12 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         if (organizationEntity == null) return false;
 
-        RemoveProperties(context, organizationEntity.Properties);
+        foreach (var employee in organizationEntity.Employees)
+        {
+            context.RemoveRange(employee.Properties);
+        }
+        context.RemoveRange(organizationEntity.Employees);
+        context.RemoveRange(organizationEntity.Properties);
         context.Remove(organizationEntity);
         await context.SaveChangesAsync();
         return true;
@@ -395,13 +401,11 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var employeeEntity = await context.Employees
-            .Include(e => e.Organization)
             .Include(e => e.Properties)
             .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
 
         if (employeeEntity == null) return false;
 
-        RemoveProperties(context, employeeEntity.Properties);
         context.Remove(employeeEntity);
         await context.SaveChangesAsync();
         return true;
@@ -418,7 +422,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         if (productEntity == null) return false;
 
-        RemoveProperties(context, productEntity.Properties);
         context.Remove(productEntity);
         await context.SaveChangesAsync();
         return true;
@@ -429,14 +432,28 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var featureEntity = await context.Features
-            .Include(f => f.Products)
             .Include(f => f.Properties)
             .FirstOrDefaultAsync(f => f.FeatureId == featureId);
 
         if (featureEntity == null) return false;
 
-        RemoveProperties(context, featureEntity.Properties);
         context.Remove(featureEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> RemoveFeatureFromProduct(string productId, string featureId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var product = await context.Products
+            .FirstAsync(p => p.ProductId == productId);
+        var features = product.Features as List<Feature>;
+        var feature = features!.FirstOrDefault(f => f.FeatureId == featureId);
+
+        if (feature == null) return false;
+
+        features!.Remove(feature);
         await context.SaveChangesAsync();
         return true;
     }

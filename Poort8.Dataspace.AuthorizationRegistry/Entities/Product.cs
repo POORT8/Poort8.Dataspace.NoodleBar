@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Poort8.Dataspace.AuthorizationRegistry.Entities;
 public class Product //https://schema.org/Product
@@ -10,7 +11,7 @@ public class Product //https://schema.org/Product
     public string? Provider { get; set; }
     public string? Url { get; set; }
     public ICollection<Feature> Features { get; set; } = new List<Feature>();
-    public ICollection<Property> Properties { get; set; } = new List<Property>();
+    public ICollection<ProductProperty> Properties { get; set; } = new List<ProductProperty>();
 
     public Product(string productId, string name, string description, string? provider, string? url)
     {
@@ -21,7 +22,7 @@ public class Product //https://schema.org/Product
         Url = url;
     }
 
-    public Product(string productId, string name, string description, string? provider, string? url, ICollection<Property> properties)
+    public Product(string productId, string name, string description, string? provider, string? url, ICollection<ProductProperty> properties)
     {
         ProductId = productId;
         Name = name;
@@ -29,5 +30,27 @@ public class Product //https://schema.org/Product
         Provider = provider;
         Url = url;
         Properties = properties;
+    }
+
+    [Owned]
+    public class ProductProperty
+    {
+        [Key]
+        public string Key { get; set; }
+        public string Value { get; set; }
+        public bool IsIdentifier { get; set; } = false;
+
+        public ProductProperty(string key, string value)
+        {
+            Key = key;
+            Value = value;
+        }
+
+        public ProductProperty(string key, string value, bool isIdentifier)
+        {
+            Key = key;
+            Value = value;
+            IsIdentifier = isIdentifier;
+        }
     }
 }
