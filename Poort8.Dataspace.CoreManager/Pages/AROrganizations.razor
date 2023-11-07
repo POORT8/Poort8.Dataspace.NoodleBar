@@ -106,7 +106,7 @@
         <CustomInputText id="telephone" class="form-control" placeholder="Telephone" @bind-Value=@_employee.Telephone />
         <CustomInputText id="email" class="form-control" placeholder="Email" @bind-Value=@_employee.Email />
 
-        <TableMolecule TItem=Property Items=_employee.Properties.ToList() Context="property">
+        <TableMolecule TItem=Employee.EmployeeProperty Items=_employee.Properties.ToList() Context="property">
             <TableHeader>
                 <th>Key</th>
                 <th>Value</th>
@@ -140,7 +140,7 @@
         }
         <br>
         <h4>Properties</h4>
-        <TableMolecule TItem=Property Items=EditedOrganization.Properties.ToList() Context="property">
+        <TableMolecule TItem=Organization.OrganizationProperty Items=EditedOrganization.Properties.ToList() Context="property">
             <TableHeader>
                 <th>Key</th>
                 <th>Value</th>

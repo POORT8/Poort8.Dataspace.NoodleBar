@@ -13,7 +13,7 @@ public partial class ARPolicies
     private Policy? _selectedPolicy;
     private Policy? _newPolicy;
     private Policy? EditedPolicy => _selectedPolicy ?? _newPolicy;
-    private Property _policyProperty = new(string.Empty, string.Empty);
+    private Policy.PolicyProperty _policyProperty = new(string.Empty, string.Empty);
     private static bool DisableUpdatePolicy(Policy policy) =>
         string.IsNullOrWhiteSpace(policy.UseCase) ||
         string.IsNullOrWhiteSpace(policy.IssuerId) ||

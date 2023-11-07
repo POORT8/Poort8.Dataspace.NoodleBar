@@ -12,7 +12,7 @@ public static class AuthorizationRegistryExtensions
             organization.Url,
             organization.Representative,
             organization.InvoicingContact,
-            organization.Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList());
+            organization.Properties.Select(p => new Organization.OrganizationProperty(p.Key, p.Value, p.IsIdentifier)).ToList());
 
         newOrganization.Employees = organization.Employees.Select(e => new Employee(
             e.EmployeeId,
@@ -20,7 +20,7 @@ public static class AuthorizationRegistryExtensions
             e.FamilyName,
             e.Telephone,
             e.Email,
-            e.Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList())
+            e.Properties.Select(p => new Employee.EmployeeProperty(p.Key, p.Value, p.IsIdentifier)).ToList())
         {
             OrganizationId = newOrganization.Identifier,
             Organization = newOrganization
@@ -37,7 +37,7 @@ public static class AuthorizationRegistryExtensions
             employee.FamilyName,
             employee.Telephone,
             employee.Email,
-            employee.Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList())
+            employee.Properties.Select(p => new Employee.EmployeeProperty(p.Key, p.Value, p.IsIdentifier)).ToList())
         {
             OrganizationId = employee.OrganizationId,
             Organization = employee.Organization
@@ -52,7 +52,7 @@ public static class AuthorizationRegistryExtensions
             policy.SubjectId,
             policy.ResourceId,
             policy.Action,
-            policy.Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList())
+            policy.Properties.Select(p => new Policy.PolicyProperty(p.Key, p.Value, p.IsIdentifier)).ToList())
         {
             PolicyId = policy.PolicyId,
             IssuedAt = policy.IssuedAt,
@@ -69,7 +69,7 @@ public static class AuthorizationRegistryExtensions
             product.Description,
             product.Provider,
             product.Url,
-            product.Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList())
+            product.Properties.Select(p => new Product.ProductProperty(p.Key, p.Value, p.IsIdentifier)).ToList())
         {
             Features = product.Features.Select(f => f).ToList()
         };
@@ -81,7 +81,7 @@ public static class AuthorizationRegistryExtensions
             feature.FeatureId,
             feature.Name,
             feature.Description,
-            feature.Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList())
+            feature.Properties.Select(p => new Feature.FeatureProperty(p.Key, p.Value, p.IsIdentifier)).ToList())
         {
             Products = feature.Products.Select(p => p).ToList()
         };

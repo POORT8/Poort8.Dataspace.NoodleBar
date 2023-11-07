@@ -13,9 +13,9 @@ public partial class AROrganizations
     private Organization? _selectedOrganization;
     private Organization? _newOrganization;
     private Organization? EditedOrganization => _selectedOrganization ?? _newOrganization;
-    private Employee _employee = new();
-    private Property _organizationProperty = new(string.Empty, string.Empty);
-    private Property _employeeProperty = new(string.Empty, string.Empty);
+    private Employee _employee = new(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+    private Organization.OrganizationProperty _organizationProperty = new(string.Empty, string.Empty);
+    private Employee.EmployeeProperty _employeeProperty = new(string.Empty, string.Empty);
     private static bool DisableUpdateOrganization(Organization organization) => string.IsNullOrWhiteSpace(organization.Name);
     private bool DisableCreateOrganization(Organization organization) => DisableUpdateOrganization(organization) || string.IsNullOrWhiteSpace(organization.Identifier) || _organizations?.Any(o => organization.Identifier.Equals(o.Identifier, StringComparison.OrdinalIgnoreCase)) == true;
 
