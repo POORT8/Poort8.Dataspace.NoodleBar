@@ -11,7 +11,7 @@ public interface IAuthorizationRegistry //TODO: Add authorizations for managing 
     Task<bool> DeleteOrganization(string identifier);
 
     //Employee
-    Task<Employee> AddEmployeeToOrganization(string organizationId, Employee employee);
+    Task<Employee> AddNewEmployeeToOrganization(string organizationId, Employee employee);
     Task<Employee?> ReadEmployee(string employeeId);
     Task<IReadOnlyList<Employee>> ReadEmployees(string? organizationId = default, string? familyName = default, string? email = default, string? propertyKey = default, string? propertyValue = default);
     Task<Employee> UpdateEmployee(Employee employee);
@@ -19,6 +19,7 @@ public interface IAuthorizationRegistry //TODO: Add authorizations for managing 
 
     //Product
     Task<Product> CreateProduct(Product product);
+    Task<Product> CreateProductWithExistingFeatures(Product product, ICollection<string> featureIds);
     Task<Product?> ReadProduct(string productId);
     Task<IReadOnlyList<Product>> ReadProducts(string? name = default, string? propertyKey = default, string? propertyValue = default);
     Task<Product> UpdateProduct(Product product);
@@ -26,7 +27,8 @@ public interface IAuthorizationRegistry //TODO: Add authorizations for managing 
 
     //Feature
     Task<Feature> CreateFeature(Feature feature);
-    Task<Feature> AddFeatureToProduct(string productId, Feature feature);
+    Task<Feature> AddExistingFeatureToProduct(string productId, string featureId);
+    Task<Feature> AddNewFeatureToProduct(string productId, Feature feature);
     Task<Feature?> ReadFeature(string featureId);
     Task<IReadOnlyList<Feature>> ReadFeatures(string? name = default, string? propertyKey = default, string? propertyValue = default);
     Task<Feature> UpdateFeature(Feature feature);

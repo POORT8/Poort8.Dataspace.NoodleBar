@@ -10,7 +10,7 @@ using Poort8.Dataspace.AuthorizationRegistry;
 namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
 {
     [DbContext(typeof(AuthorizationContext))]
-    [Migration("20231105125850_InitialCreate")]
+    [Migration("20231107134315_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
