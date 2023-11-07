@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using Poort8.Dataspace.AuthorizationRegistry.Extensions;
@@ -13,7 +14,7 @@ public class AuthorizationRegistryTests
     public AuthorizationRegistryTests()
     {
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddAuthorizationRegistrySqlite(options => { });
+        serviceCollection.AddAuthorizationRegistrySqlite(options => options.ConnectionString = $"Data Source={Guid.NewGuid()}.db");
         _serviceProvider = serviceCollection.BuildServiceProvider();
         _authorizationRegistry = _serviceProvider.GetRequiredService<IAuthorizationRegistry>();
 
@@ -26,274 +27,423 @@ public class AuthorizationRegistryTests
         await (Task)runMigrations.Invoke(_authorizationRegistry, null);
     }
 
+    private static Organization CreateNewOrganization(string id, int index)
+    {
+        var properties = new List<Organization.OrganizationProperty>() { new Organization.OrganizationProperty("key", "value"), new Organization.OrganizationProperty("otherIdentifier", $"{id}{index}-otherId", true) };
+        return new Organization($"{id}-id", $"{id}{index}-name", "url", "representative", "invoicingContact", properties);
+    }
+
+    private static Employee CreateNewEmployee(string id, int index)
+    {
+        var properties = new List<Employee.EmployeeProperty>() { new Employee.EmployeeProperty("key", "value"), new Employee.EmployeeProperty("otherIdentifier", $"{id}{index}-otherId", true) };
+        return new Employee($"{id}-id", $"{id}{index}-name", "familyName", "telephone", "email", properties);
+    }
+
+    private static Product CreateNewProduct(string id, int index)
+    {
+        var properties = new List<Product.ProductProperty>() { new Product.ProductProperty("key", "value"), new Product.ProductProperty("otherIdentifier", $"{id}{index}-otherId", true) };
+        return new Product($"{id}-id", $"{id}{index}-name", "description", "provider", "url", properties);
+    }
+
+    private static Feature CreateNewFeature(string id, int index)
+    {
+        var properties = new List<Feature.FeatureProperty>() { new Feature.FeatureProperty("key", "value"), new Feature.FeatureProperty("otherIdentifier", $"{id}{index}-otherId", true) };
+        return new Feature($"{id}-id", $"{id}{index}-name", "description", properties);
+    }
+
     [Fact]
     public async Task OrganizationCrud()
     {
-        var id = Guid.NewGuid().ToString();
-        var propId = Guid.NewGuid().ToString();
-        var name = Guid.NewGuid().ToString();
-        var properties = new List<Property>() { new Property("key", "value"), new Property("otherIdentifier", propId, true) };
-        var organization = new Organization(id, name, "url", "representative", "invoicingContact", properties);
-
-        var entity = await _authorizationRegistry.CreateOrganization(organization);
+        var organization = CreateNewOrganization(nameof(OrganizationCrud), 1);
+        var organizationEntity = await _authorizationRegistry.CreateOrganization(organization);
         
-        Assert.NotNull(entity);
-        Assert.Equal(id, entity.Identifier);
-        Assert.NotNull(entity.Properties);
-        Assert.Equal(organization.Properties.Count, entity.Properties.Count);
+        Assert.NotNull(organizationEntity);
+        Assert.Equal(organization.Identifier, organizationEntity.Identifier);
+        Assert.NotNull(organizationEntity.Properties);
+        Assert.Equal(organization.Properties.Count, organizationEntity.Properties.Count);
 
-        var readEntity = await _authorizationRegistry.ReadOrganization(id);
+        var readEntity = await _authorizationRegistry.ReadOrganization(organization.Identifier);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(id, readEntity.Identifier);
+        Assert.Equal(organization.Identifier, readEntity.Identifier);
 
-        var readByPropIdEntity = await _authorizationRegistry.ReadOrganization(propId);
+        var readByPropIdEntity = await _authorizationRegistry.ReadOrganization(organization.Properties.ToArray()[1].Value);
 
         Assert.NotNull(readByPropIdEntity);
-        Assert.Equal(id, readByPropIdEntity.Identifier);
+        Assert.Equal(organization.Identifier, readByPropIdEntity.Identifier);
 
         var readByPropEntity = await _authorizationRegistry.ReadOrganizations(propertyKey: "key", propertyValue: "value");
 
         Assert.NotNull(readByPropEntity);
         Assert.Single(readByPropEntity);
-        Assert.Equal(id, readByPropEntity[0].Identifier);
+        Assert.Equal(organization.Identifier, readByPropEntity[0].Identifier);
 
-        var readByNameEntity = await _authorizationRegistry.ReadOrganizations(name: name);
+        var readByNameEntity = await _authorizationRegistry.ReadOrganizations(name: organization.Name);
 
         Assert.NotNull(readByNameEntity);
         Assert.Single(readByNameEntity);
-        Assert.Equal(id, readByNameEntity[0].Identifier);
+        Assert.Equal(organization.Identifier, readByNameEntity[0].Identifier);
 
-        var newName = Guid.NewGuid().ToString();
-        var organizationUpdate = new Organization(id, newName, "url", "representative", "invoicingContact");
+        var organizationUpdate = CreateNewOrganization(nameof(OrganizationCrud), 2);
         var updateEntity = await _authorizationRegistry.UpdateOrganization(organizationUpdate);
 
         Assert.NotNull(updateEntity);
-        Assert.Equal(id, updateEntity.Identifier);
+        Assert.Equal(organization.Identifier, updateEntity.Identifier);
+        Assert.Equal(organizationUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(organization.Name, updateEntity.Name);
 
-        readEntity = await _authorizationRegistry.ReadOrganization(id);
+        readEntity = await _authorizationRegistry.ReadOrganization(organization.Identifier);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(id, readEntity.Identifier);
-        Assert.Equal(newName, readEntity.Name);
+        Assert.Equal(organization.Identifier, readEntity.Identifier);
+        Assert.Equal(organizationUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(organization.Name, updateEntity.Name);
 
-        var success = await _authorizationRegistry.DeleteOrganization(id);
+        var success = await _authorizationRegistry.DeleteOrganization(organization.Identifier);
         Assert.True(success);
     }
 
     [Fact]
     public async Task OrganizationUpdate()
     {
-        var id = Guid.NewGuid().ToString();
-        var propId = Guid.NewGuid().ToString();
-        var name = Guid.NewGuid().ToString();
-        var properties = new List<Property>() { new Property("key", "value"), new Property("otherIdentifier", propId, true) };
-        var employees = new List<Employee>() { new Employee("id1", "givenName", "familyName", "telephone", "email") };
-        var organization = new Organization(id, name, "url", "representative", "invoicingContact", properties);
-        organization.Employees = employees;
+        var organization = CreateNewOrganization(nameof(OrganizationUpdate), 1);
+        var organizationEntity = await _authorizationRegistry.CreateOrganization(organization);
 
-        var entity = await _authorizationRegistry.CreateOrganization(organization);
+        Assert.NotNull(organizationEntity);
+        Assert.Equal(organization.Identifier, organizationEntity.Identifier);
+        Assert.NotNull(organizationEntity.Properties);
+        Assert.Equal(organization.Properties.Count, organizationEntity.Properties.Count);
 
-        Assert.NotNull(entity);
-        Assert.Equal(id, entity.Identifier);
-        Assert.NotNull(entity.Properties);
-        Assert.Equal(organization.Properties.Count, entity.Properties.Count);
-        Assert.Equal(employees.Count, entity.Employees.Count);
-
-        var newName = Guid.NewGuid().ToString();
-        var organizationUpdate = new Organization(id, newName, "url", "representative", "invoicingContact", properties);
-        employees.Add(new Employee("id2", "givenName", "familyName", "telephone", "email"));
-        organizationUpdate.Employees = employees;
+        var organizationUpdate = CreateNewOrganization(nameof(OrganizationUpdate), 2);
+        organizationUpdate.Properties.Add(new Organization.OrganizationProperty("test", "test"));
         var updateEntity = await _authorizationRegistry.UpdateOrganization(organizationUpdate);
 
         Assert.NotNull(updateEntity);
-        Assert.Equal(id, updateEntity.Identifier);
+        Assert.Equal(organization.Identifier, updateEntity.Identifier);
+        Assert.Equal(organizationUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(organization.Name, updateEntity.Name);
 
-        var readEntity = await _authorizationRegistry.ReadOrganization(id);
-
-        Assert.NotNull(readEntity);
-        Assert.Equal(id, readEntity.Identifier);
-        Assert.Equal(newName, readEntity.Name);
-        Assert.Equal(employees.Count, entity.Employees.Count);
-
-        var success = await _authorizationRegistry.DeleteOrganization(id);
+        var success = await _authorizationRegistry.DeleteOrganization(organization.Identifier);
         Assert.True(success);
     }
 
     [Fact]
     public async Task EmployeeCrud()
     {
-        var organizationId = Guid.NewGuid().ToString();
-        var name = Guid.NewGuid().ToString();
-        var organization = new Organization(organizationId, name, "url", "representative", "invoicingContact");
-
+        var organization = CreateNewOrganization(nameof(EmployeeCrud), 1);
         var organizationEntity = await _authorizationRegistry.CreateOrganization(organization);
 
         Assert.NotNull(organizationEntity);
 
-        var employeeId = Guid.NewGuid().ToString();
-        var propId = Guid.NewGuid().ToString();
-        var properties = new List<Property>() { new Property("key", "value"), new Property("otherIdentifier", propId, true) };
-        var employee = new Employee(employeeId, "givenName", "familyName", "telephone", "email", properties);
+        var employee = CreateNewEmployee(nameof(EmployeeCrud), 1);
+        var employeeEntity = await _authorizationRegistry.AddNewEmployeeToOrganization(organization.Identifier, employee);
 
-        var entity = await _authorizationRegistry.AddEmployee(organizationId, employee);
+        Assert.NotNull(employeeEntity);
+        Assert.Equal(employee.EmployeeId, employeeEntity.EmployeeId);
+        Assert.NotNull(employeeEntity.Properties);
+        Assert.Equal(employee.Properties.Count, employeeEntity.Properties.Count);
 
-        Assert.NotNull(entity);
-        Assert.Equal(employeeId, entity.EmployeeId);
-        Assert.NotNull(entity.Properties);
-        Assert.Equal(employee.Properties.Count, entity.Properties.Count);
-
-        var readEntity = await _authorizationRegistry.ReadEmployee(employeeId);
+        var readEntity = await _authorizationRegistry.ReadEmployee(employee.EmployeeId);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(employeeId, readEntity.EmployeeId);
+        Assert.Equal(employee.EmployeeId, readEntity.EmployeeId);
         
-        var readByPropIdEntity = await _authorizationRegistry.ReadEmployee(propId);
+        var readByPropIdEntity = await _authorizationRegistry.ReadEmployee(employee.Properties.ToArray()[1].Value);
 
         Assert.NotNull(readByPropIdEntity);
-        Assert.Equal(employeeId, readByPropIdEntity.EmployeeId);
+        Assert.Equal(employee.EmployeeId, readByPropIdEntity.EmployeeId);
 
-        var readByOrganizationIdEntity = await _authorizationRegistry.ReadEmployees(organizationId: organizationId);
+        var readByOrganizationIdEntity = await _authorizationRegistry.ReadEmployees(organizationId: organization.Identifier);
 
         Assert.NotNull(readByOrganizationIdEntity);
         Assert.Single(readByOrganizationIdEntity);
-        Assert.Equal(employeeId, readByOrganizationIdEntity[0].EmployeeId);
+        Assert.Equal(employee.EmployeeId, readByOrganizationIdEntity[0].EmployeeId);
 
-        var newName = Guid.NewGuid().ToString();
-        var employeeUpdate = new Employee(employeeId, newName, "familyName", "telephone", "email");
+        var employeeUpdate = CreateNewEmployee(nameof(EmployeeCrud), 2);
+        employeeUpdate.OrganizationId = organization.Identifier;
+        employeeUpdate.Organization = organizationEntity;
         var updateEntity = await _authorizationRegistry.UpdateEmployee(employeeUpdate);
 
         Assert.NotNull(updateEntity);
-        Assert.Equal(employeeId, updateEntity.EmployeeId);
+        Assert.Equal(employee.EmployeeId, updateEntity.EmployeeId);
+        Assert.Equal(employeeUpdate.GivenName, updateEntity.GivenName);
+        Assert.NotEqual(employee.GivenName, updateEntity.GivenName);
 
-        readEntity = await _authorizationRegistry.ReadEmployee(employeeId);
+        readEntity = await _authorizationRegistry.ReadEmployee(employee.EmployeeId);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(employeeId, readEntity.EmployeeId);
-        Assert.Equal(newName, readEntity.GivenName);
+        Assert.Equal(employee.EmployeeId, readEntity.EmployeeId);
+        Assert.Equal(employeeUpdate.GivenName, updateEntity.GivenName);
+        Assert.NotEqual(employee.GivenName, updateEntity.GivenName);
 
-        var success = await _authorizationRegistry.DeleteEmployee(employeeId);
+        var success = await _authorizationRegistry.DeleteEmployee(employee.EmployeeId);
         Assert.True(success);
 
-        organizationEntity = await _authorizationRegistry.ReadOrganization(organizationId);
+        organizationEntity = await _authorizationRegistry.ReadOrganization(organization.Identifier);
 
         Assert.NotNull(organizationEntity);
         Assert.Empty(organizationEntity.Employees);
 
-        success = await _authorizationRegistry.DeleteOrganization(organizationId);
+        success = await _authorizationRegistry.DeleteOrganization(organization.Identifier);
+        Assert.True(success);
+    }
+
+    [Fact]
+    public async Task EmployeeUpdate()
+    {
+        var organization = CreateNewOrganization(nameof(EmployeeUpdate), 1);
+        var employee = CreateNewEmployee(nameof(EmployeeUpdate), 1);
+        organization.Employees.Add(employee);
+        var organizationEntity = await _authorizationRegistry.CreateOrganization(organization);
+
+        Assert.NotNull(organizationEntity);
+        Assert.Equal(organization.Identifier, organizationEntity.Identifier);
+        Assert.NotNull(organizationEntity.Properties);
+        Assert.Equal(organization.Properties.Count, organizationEntity.Properties.Count);
+        Assert.Equal(1, organizationEntity.Employees.Count);
+
+        employee.OrganizationId = "fail";
+        employee.Organization = CreateNewOrganization("fail", 2);
+        await Assert.ThrowsAsync<DbUpdateException>(async () => await _authorizationRegistry.UpdateEmployee(employee));
+
+        var success = await _authorizationRegistry.DeleteOrganization(organization.Identifier);
+        Assert.True(success);
+    }
+
+    [Fact]
+    public async Task EmployeeUpdateUsingCreate()
+    {
+        var organization = CreateNewOrganization(nameof(EmployeeUpdateUsingCreate), 1);
+        var organizationEntity = await _authorizationRegistry.CreateOrganization(organization);
+
+        Assert.NotNull(organizationEntity);
+        Assert.Equal(organization.Identifier, organizationEntity.Identifier);
+        Assert.NotNull(organizationEntity.Properties);
+        Assert.Equal(organization.Properties.Count, organizationEntity.Properties.Count);
+
+        var employee = CreateNewEmployee(nameof(EmployeeUpdateUsingCreate), 1);
+        await _authorizationRegistry.AddNewEmployeeToOrganization(organization.Identifier, employee);
+
+        var success = await _authorizationRegistry.DeleteOrganization(organization.Identifier);
         Assert.True(success);
     }
 
     [Fact]
     public async Task ProductCrud()
     {
-        var id = Guid.NewGuid().ToString();
-        var propId = Guid.NewGuid().ToString();
-        var name = Guid.NewGuid().ToString();
-        var properties = new List<Property>() { new Property("key", "value"), new Property("otherIdentifier", propId, true) };
-        var product = new Product(id, name, "description", "provider", "url", properties);
+        var product = CreateNewProduct(nameof(ProductCrud), 1);
+        var productEntity = await _authorizationRegistry.CreateProduct(product);
 
-        var entity = await _authorizationRegistry.CreateProduct(product);
+        Assert.NotNull(productEntity);
+        Assert.Equal(product.ProductId, productEntity.ProductId);
+        Assert.NotNull(productEntity.Properties);
+        Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
 
-        Assert.NotNull(entity);
-        Assert.Equal(id, entity.ProductId);
-        Assert.NotNull(entity.Properties);
-        Assert.Equal(product.Properties.Count, entity.Properties.Count);
-
-        var readEntity = await _authorizationRegistry.ReadProduct(id);
+        var readEntity = await _authorizationRegistry.ReadProduct(product.ProductId);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(id, readEntity.ProductId);
+        Assert.Equal(product.ProductId, readEntity.ProductId);
 
-        var readByPropIdEntity = await _authorizationRegistry.ReadProduct(propId);
+        var readByPropIdEntity = await _authorizationRegistry.ReadProduct(product.Properties.ToArray()[1].Value);
 
         Assert.NotNull(readByPropIdEntity);
-        Assert.Equal(id, readByPropIdEntity.ProductId);
+        Assert.Equal(product.ProductId, readByPropIdEntity.ProductId);
 
-        var readByNameEntity = await _authorizationRegistry.ReadProducts(name: name);
+        var readByNameEntity = await _authorizationRegistry.ReadProducts(name: product.Name);
 
         Assert.NotNull(readByNameEntity);
         Assert.Single(readByNameEntity);
-        Assert.Equal(id, readByNameEntity[0].ProductId);
+        Assert.Equal(product.ProductId, readByNameEntity[0].ProductId);
 
-        var newName = Guid.NewGuid().ToString();
-        var productUpdate = new Product(id, newName, "description", "provider", "url");
+        var productUpdate = CreateNewProduct(nameof(ProductCrud), 2);
         var updateEntity = await _authorizationRegistry.UpdateProduct(productUpdate);
 
         Assert.NotNull(updateEntity);
-        Assert.Equal(id, updateEntity.ProductId);
+        Assert.Equal(product.ProductId, updateEntity.ProductId);
+        Assert.Equal(productUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(product.Name, updateEntity.Name);
 
-        readEntity = await _authorizationRegistry.ReadProduct(id);
+        readEntity = await _authorizationRegistry.ReadProduct(product.ProductId);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(id, readEntity.ProductId);
-        Assert.Equal(newName, readEntity.Name);
+        Assert.Equal(product.ProductId, readEntity.ProductId);
+        Assert.Equal(productUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(product.Name, updateEntity.Name);
 
-        var success = await _authorizationRegistry.DeleteProduct(id);
+        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
+        Assert.True(success);
+    }
+
+    [Fact]
+    public async Task ProductUpdate()
+    {
+        var product = CreateNewProduct(nameof(ProductUpdate), 1);
+        var productEntity = await _authorizationRegistry.CreateProduct(product);
+
+        Assert.NotNull(productEntity);
+        Assert.Equal(product.ProductId, productEntity.ProductId);
+        Assert.NotNull(productEntity.Properties);
+        Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
+
+        var productUpdate = CreateNewProduct(nameof(ProductUpdate), 2);
+        var updateEntity = await _authorizationRegistry.UpdateProduct(productUpdate);
+
+        Assert.NotNull(updateEntity);
+        Assert.Equal(product.ProductId, updateEntity.ProductId);
+        Assert.Equal(productUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(product.Name, updateEntity.Name);
+
+        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
         Assert.True(success);
     }
 
     [Fact]
     public async Task FeatureCrud()
     {
-        var productId = Guid.NewGuid().ToString();
-        var name = Guid.NewGuid().ToString();
-        var product = new Product(productId, name, "description", "provider", "url");
+        var feature = CreateNewFeature(nameof(FeatureCrud), 1);
+        var featureEntity = await _authorizationRegistry.CreateFeature(feature);
 
-        var productEntity = await _authorizationRegistry.CreateProduct(product);
+        Assert.NotNull(featureEntity);
+        Assert.Equal(feature.FeatureId, featureEntity.FeatureId);
+        Assert.NotNull(featureEntity.Properties);
+        Assert.Equal(feature.Properties.Count, featureEntity.Properties.Count);
 
-        Assert.NotNull(productEntity);
-
-        var featureId = Guid.NewGuid().ToString();
-        var propId = Guid.NewGuid().ToString();
-        var properties = new List<Property>() { new Property("key", "value"), new Property("otherIdentifier", propId, true) };
-        var feature = new Feature(featureId, "name", "description", properties);
-
-        var entity = await _authorizationRegistry.AddFeature(productId, feature);
-
-        Assert.NotNull(entity);
-        Assert.Equal(featureId, entity.FeatureId);
-        Assert.NotNull(entity.Properties);
-        Assert.Equal(feature.Properties.Count, entity.Properties.Count);
-
-        var readEntity = await _authorizationRegistry.ReadFeature(featureId);
+        var readEntity = await _authorizationRegistry.ReadFeature(feature.FeatureId);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(featureId, readEntity.FeatureId);
+        Assert.Equal(feature.FeatureId, readEntity.FeatureId);
 
-        var readByPropIdEntity = await _authorizationRegistry.ReadFeature(propId);
+        var readByPropIdEntity = await _authorizationRegistry.ReadFeature(feature.Properties.ToArray()[1].Value);
 
         Assert.NotNull(readByPropIdEntity);
-        Assert.Equal(featureId, readByPropIdEntity.FeatureId);
+        Assert.Equal(feature.FeatureId, readByPropIdEntity.FeatureId);
 
-        var readByNameEntity = await _authorizationRegistry.ReadFeatures(name: "name");
+        var readByNameEntity = await _authorizationRegistry.ReadFeatures(name: feature.Name);
 
         Assert.NotNull(readByNameEntity);
         Assert.Single(readByNameEntity);
-        Assert.Equal(featureId, readByNameEntity[0].FeatureId);
+        Assert.Equal(feature.FeatureId, readByNameEntity[0].FeatureId);
 
-        var newName = Guid.NewGuid().ToString();
-        var featureUpdate = new Feature(featureId, newName, "description");
+        var featureUpdate = CreateNewFeature(nameof(FeatureCrud), 2);
         var updateEntity = await _authorizationRegistry.UpdateFeature(featureUpdate);
 
         Assert.NotNull(updateEntity);
-        Assert.Equal(featureId, updateEntity.FeatureId);
+        Assert.Equal(feature.FeatureId, updateEntity.FeatureId);
+        Assert.Equal(featureUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(feature.Name, updateEntity.Name);
 
-        readEntity = await _authorizationRegistry.ReadFeature(featureId);
+        readEntity = await _authorizationRegistry.ReadFeature(feature.FeatureId);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(featureId, readEntity.FeatureId);
-        Assert.Equal(newName, readEntity.Name);
+        Assert.Equal(feature.FeatureId, readEntity.FeatureId);
+        Assert.Equal(featureUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(feature.Name, updateEntity.Name);
 
-        var success = await _authorizationRegistry.DeleteFeature(featureId);
+        var success = await _authorizationRegistry.DeleteFeature(feature.FeatureId);
         Assert.True(success);
+    }
 
-        productEntity = await _authorizationRegistry.ReadProduct(productId);
+    [Fact]
+    public async Task FeatureUpdate()
+    {
+        var product = CreateNewProduct(nameof(FeatureUpdate), 1);
+        var feature = CreateNewFeature(nameof(FeatureUpdate), 1);
+        product.Features.Add(feature);
+        var productEntity = await _authorizationRegistry.CreateProduct(product);
 
         Assert.NotNull(productEntity);
-        Assert.Empty(productEntity.Features);
+        Assert.Equal(product.ProductId, productEntity.ProductId);
+        Assert.NotNull(productEntity.Properties);
+        Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
+        Assert.Equal(1, productEntity.Features.Count);
 
-        success = await _authorizationRegistry.DeleteProduct(productId);
+        feature.FeatureId = "fail";
+        await Assert.ThrowsAsync<DbUpdateException>(async () => await _authorizationRegistry.UpdateFeature(feature));
+
+        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
+        Assert.True(success);
+    }
+
+    [Fact]
+    public async Task AddNewFeatureToProduct()
+    {
+        var product = CreateNewProduct(nameof(AddNewFeatureToProduct), 1);
+        var productEntity = await _authorizationRegistry.CreateProduct(product);
+
+        Assert.NotNull(productEntity);
+        Assert.Equal(product.ProductId, productEntity.ProductId);
+        Assert.NotNull(productEntity.Properties);
+        Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
+
+        var feature = CreateNewFeature(nameof(AddNewFeatureToProduct), 1);
+        await _authorizationRegistry.AddNewFeatureToProduct(product.ProductId, feature);
+
+        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
+        Assert.True(success);
+    }
+
+    [Fact]
+    public async Task AddExistingFeatureToProduct()
+    {
+        var product = CreateNewProduct(nameof(AddExistingFeatureToProduct), 1);
+        var productEntity = await _authorizationRegistry.CreateProduct(product);
+
+        Assert.NotNull(productEntity);
+        Assert.Equal(product.ProductId, productEntity.ProductId);
+        Assert.NotNull(productEntity.Properties);
+        Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
+
+        var feature = CreateNewFeature(nameof(AddExistingFeatureToProduct), 1);
+        var featureEntity = await _authorizationRegistry.CreateFeature(feature);
+        await _authorizationRegistry.AddExistingFeatureToProduct(product.ProductId, featureEntity.FeatureId);
+
+        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
+        Assert.True(success);
+    }
+
+    [Fact]
+    public async Task RemoveFeatureFromProduct()
+    {
+        var product = CreateNewProduct(nameof(RemoveFeatureFromProduct), 1);
+        var productEntity = await _authorizationRegistry.CreateProduct(product);
+
+        Assert.NotNull(productEntity);
+        Assert.Equal(product.ProductId, productEntity.ProductId);
+        Assert.NotNull(productEntity.Properties);
+        Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
+
+        var feature = CreateNewFeature(nameof(RemoveFeatureFromProduct), 1);
+        await _authorizationRegistry.AddNewFeatureToProduct(product.ProductId, feature);
+
+        productEntity = await _authorizationRegistry.ReadProduct(product.ProductId);
+        Assert.Equal(1, productEntity!.Features.Count);
+
+        await _authorizationRegistry.RemoveFeatureFromProduct(product.ProductId, feature.FeatureId);
+
+        productEntity = await _authorizationRegistry.ReadProduct(product.ProductId);
+        Assert.Equal(0, productEntity!.Features.Count);
+
+        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
+        Assert.True(success);
+    }
+
+    [Fact]
+    public async Task CreateProductWithExistingFeatures()
+    {
+        var feature1 = CreateNewFeature(nameof(CreateProductWithExistingFeatures), 1);
+        var featureEntity1 = await _authorizationRegistry.CreateFeature(feature1);
+        var feature2 = CreateNewFeature(nameof(CreateProductWithExistingFeatures) + "2", 2);
+        feature2.Properties.Clear();
+        var featureEntity2 = await _authorizationRegistry.CreateFeature(feature2);
+
+        var product = CreateNewProduct(nameof(CreateProductWithExistingFeatures), 1);
+        var productEntity = await _authorizationRegistry.CreateProductWithExistingFeatures(product, new List<string>() { featureEntity1.FeatureId, featureEntity2.FeatureId });
+
+        Assert.NotNull(productEntity);
+        Assert.Equal(product.ProductId, productEntity.ProductId);
+        Assert.Equal(2, productEntity.Features.Count);
+
+        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
         Assert.True(success);
     }
 }

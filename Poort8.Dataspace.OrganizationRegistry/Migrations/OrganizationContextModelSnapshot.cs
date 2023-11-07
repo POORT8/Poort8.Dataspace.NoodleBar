@@ -84,33 +84,6 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                     b.ToTable("OrganizationRole");
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Property", b =>
-                {
-                    b.Property<string>("PropertyId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsIdentifier")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OrganizationId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("PropertyId");
-
-                    b.HasIndex("OrganizationId");
-
-                    b.ToTable("Property");
-                });
-
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Organization", b =>
                 {
                     b.OwnsOne("Poort8.Dataspace.OrganizationRegistry.Adherence", "Adherence", b1 =>
@@ -136,8 +109,36 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                                 .HasForeignKey("OrganizationIdentifier");
                         });
 
+                    b.OwnsMany("Poort8.Dataspace.OrganizationRegistry.Property", "Properties", b1 =>
+                        {
+                            b1.Property<string>("Key")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<bool>("IsIdentifier")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<string>("OrganizationIdentifier")
+                                .IsRequired()
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("TEXT");
+
+                            b1.HasKey("Key");
+
+                            b1.HasIndex("OrganizationIdentifier");
+
+                            b1.ToTable("Property");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganizationIdentifier");
+                        });
+
                     b.Navigation("Adherence")
                         .IsRequired();
+
+                    b.Navigation("Properties");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.OrganizationRole", b =>
@@ -151,21 +152,8 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                     b.Navigation("Organization");
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Property", b =>
-                {
-                    b.HasOne("Poort8.Dataspace.OrganizationRegistry.Organization", "Organization")
-                        .WithMany("Properties")
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Organization");
-                });
-
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Organization", b =>
                 {
-                    b.Navigation("Properties");
-
                     b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
