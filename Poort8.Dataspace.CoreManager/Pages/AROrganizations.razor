@@ -81,7 +81,7 @@
         </div>
         <br>
         <h4>Employees</h4>
-        <TableMolecule TItem=Employee Items=EditedOrganization.Employees.ToList() Context="employee">
+        <TableMolecule TItem=Employee Items=EditedOrganization.Employees.ToList() Context="employee" RowClick="OnEmployeeRowClick">
             <TableHeader>
                 <th>Employee ID</th>
                 <th>First name</th>
@@ -127,7 +127,17 @@
         <label for="isEmployeeIdentifier">Identifier</label><br>
         <button type="button" @onclick=AddEmployeeProperty disabled=@(string.IsNullOrWhiteSpace(_employeeProperty.Key) || string.IsNullOrWhiteSpace(_employeeProperty.Value) || _employee.Properties.Any(p => p.Key.Equals(_employeeProperty.Key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
 
-        <button type="button" @onclick=AddEmployee disabled=@(string.IsNullOrWhiteSpace(_employee.EmployeeId) || string.IsNullOrWhiteSpace(_employee.GivenName) || string.IsNullOrWhiteSpace(_employee.FamilyName) || EditedOrganization.Employees.Any(e => e.EmployeeId.Equals(_employee.EmployeeId, StringComparison.OrdinalIgnoreCase)))>Voeg employee toe</button>
+        <br>
+        <br>
+
+        @if (EditedOrganization.Employees.Any(e => e.EmployeeId.Equals(_employee.EmployeeId, StringComparison.OrdinalIgnoreCase)))
+        {
+            <button type="button" @onclick=UpdateEmployee disabled=@(string.IsNullOrWhiteSpace(_employee.GivenName) || string.IsNullOrWhiteSpace(_employee.FamilyName))>Update employee</button>
+        }
+        else
+        {
+            <button type="button" @onclick=AddEmployee disabled=@(string.IsNullOrWhiteSpace(_employee.EmployeeId) || string.IsNullOrWhiteSpace(_employee.GivenName) || string.IsNullOrWhiteSpace(_employee.FamilyName))>Voeg employee toe</button>
+        }
         <br>
         <h4>Properties</h4>
         <TableMolecule TItem=Property Items=EditedOrganization.Properties.ToList() Context="property">

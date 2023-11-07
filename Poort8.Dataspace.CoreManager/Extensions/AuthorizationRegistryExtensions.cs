@@ -29,6 +29,21 @@ public static class AuthorizationRegistryExtensions
         return newOrganization;
     }
 
+    public static Employee DeepCopy(this Employee employee)
+    {
+        return new Employee(
+            employee.EmployeeId,
+            employee.GivenName,
+            employee.FamilyName,
+            employee.Telephone,
+            employee.Email,
+            employee.Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList())
+        {
+            OrganizationId = employee.OrganizationId,
+            Organization = employee.Organization
+        };
+    }
+
     public static Policy DeepCopy(this Policy policy)
     {
         return new Policy(

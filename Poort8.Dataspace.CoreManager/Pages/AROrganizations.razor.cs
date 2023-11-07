@@ -34,6 +34,21 @@ public partial class AROrganizations
         if (_selectedOrganization is not null) ResetEmployee();
     }
 
+    private void OnEmployeeRowClick(Employee employee)
+    {
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with employee {identifier} ({name})", employee.EmployeeId, employee.GivenName + " " + employee.FamilyName);
+        var existingEmployee = EditedOrganization!.Employees.FirstOrDefault(e => e.EmployeeId.Equals(employee.EmployeeId))?.DeepCopy();
+        if (existingEmployee is not null)
+        {
+            _employee = existingEmployee;
+            _employeeProperty = new(string.Empty, string.Empty);
+        }
+        else
+        {
+            ResetEmployee();
+        }
+    }
+
     private void AddNewOrganization()
     {
         Logger?.LogInformation("P8.inf - AuthorizationRegistry - AddNewOrganization button clicked");
@@ -84,6 +99,12 @@ public partial class AROrganizations
     {
         EditedOrganization!.Employees.Add(_employee);
         ResetEmployee();
+    }
+
+    private void UpdateEmployee()
+    {
+        EditedOrganization!.Employees.Remove(EditedOrganization.Employees.First(e => e.EmployeeId.Equals(_employee.EmployeeId, StringComparison.OrdinalIgnoreCase)));
+        AddEmployee();
     }
 
     private void AddOrganizationProperty()
