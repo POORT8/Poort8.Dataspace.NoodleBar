@@ -105,6 +105,28 @@
         <CustomInputText id="lastName" class="form-control" placeholder="Last name" @bind-Value=@_employee.FamilyName />
         <CustomInputText id="telephone" class="form-control" placeholder="Telephone" @bind-Value=@_employee.Telephone />
         <CustomInputText id="email" class="form-control" placeholder="Email" @bind-Value=@_employee.Email />
+
+        <TableMolecule TItem=Property Items=_employee.Properties.ToList() Context="property">
+            <TableHeader>
+                <th>Key</th>
+                <th>Value</th>
+                <th>Identifier</th>
+                <th></th>
+            </TableHeader>
+            <RowTemplate>
+                <td>@property.Key</td>
+                <td>@property.Value</td>
+                <td>@property.IsIdentifier</td>
+                <td><button type="button" @onclick=@(() => _employee.Properties.Remove(property))>Verwijder</button></td>
+            </RowTemplate>
+        </TableMolecule>
+
+        <CustomInputText id="employeeKey" class="form-control" placeholder="Key" @bind-Value=@_employeeProperty.Key />
+        <CustomInputText id="employeevalue" class="form-control" placeholder="Value" @bind-Value=@_employeeProperty.Value />
+        <input type="checkbox" id="isEmployeeIdentifier" name="isEmployeeIdentifier" @bind=@_employeeProperty.IsIdentifier />
+        <label for="isEmployeeIdentifier">Identifier</label><br>
+        <button type="button" @onclick=AddEmployeeProperty disabled=@(string.IsNullOrWhiteSpace(_employeeProperty.Key) || string.IsNullOrWhiteSpace(_employeeProperty.Value) || _employee.Properties.Any(p => p.Key.Equals(_employeeProperty.Key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
+
         <button type="button" @onclick=AddEmployee disabled=@(string.IsNullOrWhiteSpace(_employee.EmployeeId) || string.IsNullOrWhiteSpace(_employee.GivenName) || string.IsNullOrWhiteSpace(_employee.FamilyName) || EditedOrganization.Employees.Any(e => e.EmployeeId.Equals(_employee.EmployeeId, StringComparison.OrdinalIgnoreCase)))>Voeg employee toe</button>
         <br>
         <h4>Properties</h4>
