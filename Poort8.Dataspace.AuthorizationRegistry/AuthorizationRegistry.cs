@@ -391,24 +391,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         return true;
     }
 
-    public async Task<bool> RemoveFeature(string productId, string featureId)
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-
-        var product = await context.Products
-            .Include(p => p.Features)
-            .FirstAsync(p => p.ProductId == productId);
-
-        var feature = await context.Features
-            .Include(f => f.Products)
-            .FirstAsync(f => f.FeatureId == featureId);
-
-        product.Features.Remove(feature);
-        feature.Products.Remove(product);
-        await context.SaveChangesAsync();
-        return true;
-    }
-
     public async Task<bool> DeleteFeature(string featureId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
@@ -445,12 +427,10 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var policyEntity = await context.Policies
-            .Include(p => p.Properties)
             .FirstOrDefaultAsync(p => p.PolicyId == policyId);
 
         if (policyEntity == null) return false;
 
-        RemoveProperties(context, policyEntity.Properties);
         context.Remove(policyEntity);
         await context.SaveChangesAsync();
         return true;
