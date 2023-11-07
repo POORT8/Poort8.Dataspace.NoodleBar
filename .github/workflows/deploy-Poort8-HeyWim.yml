@@ -1,0 +1,45 @@
+name: Deploy Poort8-Dataspace-CoreManager
+  
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-prod:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+    
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+          
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id:  ${{ secrets. }}
+          allow-no-subscriptions: true
+          
+      - name: Publish
+        run: dotnet publish .\Poort8.Dataspace.CoreManager\Poort8.Dataspace.CoreManager.csproj -c Release -o publish/app
+      
+      - name: Deploy production bicep
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets. }}
+          resourceGroupName: Poort8-Dataspace-CoreManager
+          template: ./Poort8.Dataspace.CoreManager/deploy/main.bicep
+          parameters: 'environment=prod'
+          
+      - name: Deploy app to production
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: Poort8-Dataspace-CoreManager
+          package: publish/app
