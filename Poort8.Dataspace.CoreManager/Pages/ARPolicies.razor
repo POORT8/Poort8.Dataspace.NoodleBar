@@ -1,0 +1,127 @@
+﻿@page "/arpolicies"
+@using Poort8.Dataspace.AuthorizationRegistry.Entities;
+
+<PageTitle>Authorization Registry: Policies</PageTitle>
+
+<h1>Policies</h1>
+
+<button type="button" @onclick=AddNewPolicy disabled=@(_newPolicy is not null)>Nieuw</button>
+
+<TableMolecule TItem=Policy Items=_policies Context="policy" RowClick="OnPolicyRowClick">
+    <TableHeader>
+        <th>Policy ID</th>
+        <th>Use case</th>
+        <th>Issuer</th>
+        <th>Subject</th>
+        <th>Resource</th>
+        <th>Action</th>
+        <th>Issued at</th>
+        <th>Not before</th>
+        <th>Expiration</th>
+        <th></th>
+    </TableHeader>
+    <RowTemplate>
+        <td>@policy.PolicyId</td>
+        <td>@policy.UseCase</td>
+        <td>@policy.IssuerId</td>
+        <td>@policy.SubjectId</td>
+        <td>@policy.ResourceId</td>
+        <td>@policy.Action</td>
+        <td>@(DateTimeOffset.FromUnixTimeSeconds(policy.IssuedAt).ToLocalTime().ToString("G"))</td>
+        <td>@(DateTimeOffset.FromUnixTimeSeconds(policy.NotBefore).ToLocalTime().ToString("G"))</td>
+        <td>@(DateTimeOffset.FromUnixTimeSeconds(policy.Expiration).ToLocalTime().ToString("G"))</td>
+        <td><button type="button" @onclick=@(() => DeletePolicy(policy))>Verwijder</button></td>
+    </RowTemplate>
+</TableMolecule>
+
+<br>
+
+@if (EditedPolicy is not null)
+{
+    <EditForm Model="@EditedPolicy">
+        <h3>Policy</h3>
+        <div class="form-group row">
+            <label for="policyUseCase" class="col-sm-2 col-form-label">
+                Use case
+            </label>
+            <div class="col-sm-10">
+                <CustomInputText id="policyUseCase" class="form-control" placeholder="Use case" @bind-Value="EditedPolicy.UseCase" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="policyIssuer" class="col-sm-2 col-form-label">
+                Issuer
+            </label>
+            <div class="col-sm-10">
+                <CustomInputText id="policyIssuer" class="form-control" placeholder="Issuer" @bind-Value="EditedPolicy.IssuerId" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="policySubject" class="col-sm-2 col-form-label">
+                Subject
+            </label>
+            <div class="col-sm-10">
+                <CustomInputText id="policySubject" class="form-control" placeholder="Subject" @bind-Value="EditedPolicy.SubjectId" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="policyResource" class="col-sm-2 col-form-label">
+                Resource
+            </label>
+            <div class="col-sm-10">
+                <CustomInputText id="policyResource" class="form-control" placeholder="Resource" @bind-Value="EditedPolicy.ResourceId" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="policyAction" class="col-sm-2 col-form-label">
+                Action
+            </label>
+            <div class="col-sm-10">
+                <CustomInputText id="policyAction" class="form-control" placeholder="Action" @bind-Value="EditedPolicy.Action" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="notBefore">Not before:</label>
+            <input type="datetime-local" id="notBefore" name="notBefore" @bind-value=@policyNotBefore />
+        </div>
+        <div class="form-group row">
+            <label for="expiration">Expiration:</label>
+            <input type="datetime-local" id="expiration" name="expiration" @bind-value=@policyExpiration />
+        </div>
+        <br>
+        <h4>Properties</h4>
+        <TableMolecule TItem=Policy.PolicyProperty Items=EditedPolicy.Properties.ToList() Context="property">
+            <TableHeader>
+                <th>Key</th>
+                <th>Value</th>
+                <th>Identifier</th>
+                <th></th>
+            </TableHeader>
+            <RowTemplate>
+                <td>@property.Key</td>
+                <td>@property.Value</td>
+                <td>@property.IsIdentifier</td>
+                <td><button type="button" @onclick=@(() => EditedPolicy.Properties.Remove(property))>Verwijder</button></td>
+            </RowTemplate>
+        </TableMolecule>
+
+        <CustomInputText id="policyKey" class="form-control" placeholder="Key" @bind-Value=@_policyProperty.Key />
+        <CustomInputText id="policyValue" class="form-control" placeholder="Value" @bind-Value=@_policyProperty.Value />
+        <input type="checkbox" id="isPolicyIdentifier" name="isPolicyIdentifier" @bind=@_policyProperty.IsIdentifier />
+        <label for="isPolicyIdentifier">Identifier</label><br>
+        <button type="button" @onclick=AddPolicyProperty disabled=@(string.IsNullOrWhiteSpace(_policyProperty.Key) || string.IsNullOrWhiteSpace(_policyProperty.Value) || EditedPolicy.Properties.Any(p => p.Key.Equals(_policyProperty.Key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
+    </EditForm>
+
+    <br>
+
+    if (EditedPolicy == _selectedPolicy)
+    {
+        <button type="button" @onclick=UpdatePolicy disabled=@DisableUpdatePolicy(EditedPolicy)>Update policy</button>
+    }
+    else
+    {
+        <button type="button" @onclick=CreatePolicy disabled=@DisableCreatePolicy(EditedPolicy)>Maak policy aan</button>
+    }
+    
+    <br>
+}

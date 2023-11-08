@@ -1,0 +1,177 @@
+﻿@page "/arorganizations"
+@using Poort8.Dataspace.AuthorizationRegistry.Entities;
+
+<PageTitle>Authorization Registry: Organizations</PageTitle>
+
+<h1>Organisaties</h1>
+
+<button type="button" @onclick=AddNewOrganization disabled=@(_newOrganization is not null)>Nieuw</button>
+
+<TableMolecule TItem=Organization Items=_organizations Context="organization" RowClick="OnOrganizationRowClick">
+    <TableHeader>
+        <th>Identifier</th>
+        <th>Name</th>
+        <th>URL</th>
+        <th>Representative</th>
+        <th>Invoicing contact</th>
+        <th></th>
+    </TableHeader>
+    <RowTemplate>
+        <td>@organization.Identifier</td>
+        <td>@organization.Name</td>
+        <td>@organization.Url</td>
+        <td>@organization.Representative</td>
+        <td>@organization.InvoicingContact</td>
+        <td><button type="button" @onclick=@(() => DeleteOrganization(organization))>Verwijder</button></td>
+    </RowTemplate>
+</TableMolecule>
+
+<br>
+
+@if (EditedOrganization is not null)
+{
+    <EditForm Model="@EditedOrganization">
+        <h3>Organization</h3>
+        <div class="form-group row">
+            <label for="identifier" class="col-sm-2 col-form-label">
+                Identifier
+            </label>
+            <div class="col-sm-10">
+                @if (EditedOrganization == _selectedOrganization)
+                {
+                    <CustomInputText id="identifier" class="form-control" placeholder="Identifier" disabled @bind-Value=@EditedOrganization.Identifier />
+                }
+                else
+                {
+                    <CustomInputText id="identifier" class="form-control" placeholder="Identifier" @bind-Value=@EditedOrganization.Identifier />
+                }
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="name" class="col-sm-2 col-form-label">
+                Name
+            </label>
+            <div class="col-sm-10">
+                <CustomInputText id="name" class="form-control" placeholder="Name" @bind-Value="EditedOrganization.Name" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="url" class="col-sm-2 col-form-label">
+                URL
+            </label>
+            <div class="col-sm-10">
+                <CustomInputText id="url" class="form-control" placeholder="URL" @bind-Value="EditedOrganization.Url" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="representative" class="col-sm-2 col-form-label">
+                Representative
+            </label>
+            <div class="col-sm-10">
+                <CustomInputText id="representative" class="form-control" placeholder="Representative" @bind-Value="EditedOrganization.Representative" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="invoicingContact" class="col-sm-2 col-form-label">
+                Invoicing contact
+            </label>
+            <div class="col-sm-10">
+                <CustomInputText id="invoicingContact" class="form-control" placeholder="Invoicing contact" @bind-Value="EditedOrganization.InvoicingContact" />
+            </div>
+        </div>
+        <br>
+        <h4>Employees</h4>
+        <TableMolecule TItem=Employee Items=EditedOrganization.Employees.ToList() Context="employee" RowClick="OnEmployeeRowClick">
+            <TableHeader>
+                <th>Employee ID</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Telephone</th>
+                <th>Email</th>
+                <th></th>
+            </TableHeader>
+            <RowTemplate>
+                <td>@employee.EmployeeId</td>
+                <td>@employee.GivenName</td>
+                <td>@employee.FamilyName</td>
+                <td>@employee.Telephone</td>
+                <td>@employee.Email</td>
+                <td><button type="button" @onclick=@(() => EditedOrganization.Employees.Remove(employee))>Verwijder</button></td>
+            </RowTemplate>
+        </TableMolecule>
+
+        <CustomInputText id="employeeId" class="form-control" placeholder="Employee ID" @bind-Value=@_employee.EmployeeId />
+        <CustomInputText id="firstName" class="form-control" placeholder="First name" @bind-Value=@_employee.GivenName />
+        <CustomInputText id="lastName" class="form-control" placeholder="Last name" @bind-Value=@_employee.FamilyName />
+        <CustomInputText id="telephone" class="form-control" placeholder="Telephone" @bind-Value=@_employee.Telephone />
+        <CustomInputText id="email" class="form-control" placeholder="Email" @bind-Value=@_employee.Email />
+
+        <TableMolecule TItem=Employee.EmployeeProperty Items=_employee.Properties.ToList() Context="property">
+            <TableHeader>
+                <th>Key</th>
+                <th>Value</th>
+                <th>Identifier</th>
+                <th></th>
+            </TableHeader>
+            <RowTemplate>
+                <td>@property.Key</td>
+                <td>@property.Value</td>
+                <td>@property.IsIdentifier</td>
+                <td><button type="button" @onclick=@(() => _employee.Properties.Remove(property))>Verwijder</button></td>
+            </RowTemplate>
+        </TableMolecule>
+
+        <CustomInputText id="employeeKey" class="form-control" placeholder="Key" @bind-Value=@_employeeProperty.Key />
+        <CustomInputText id="employeevalue" class="form-control" placeholder="Value" @bind-Value=@_employeeProperty.Value />
+        <input type="checkbox" id="isEmployeeIdentifier" name="isEmployeeIdentifier" @bind=@_employeeProperty.IsIdentifier />
+        <label for="isEmployeeIdentifier">Identifier</label><br>
+        <button type="button" @onclick=AddEmployeeProperty disabled=@(string.IsNullOrWhiteSpace(_employeeProperty.Key) || string.IsNullOrWhiteSpace(_employeeProperty.Value) || _employee.Properties.Any(p => p.Key.Equals(_employeeProperty.Key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
+
+        <br>
+        <br>
+
+        @if (EditedOrganization.Employees.Any(e => e.EmployeeId.Equals(_employee.EmployeeId, StringComparison.OrdinalIgnoreCase)))
+        {
+            <button type="button" @onclick=UpdateEmployee disabled=@(string.IsNullOrWhiteSpace(_employee.GivenName) || string.IsNullOrWhiteSpace(_employee.FamilyName))>Update employee</button>
+        }
+        else
+        {
+            <button type="button" @onclick=AddEmployee disabled=@(string.IsNullOrWhiteSpace(_employee.EmployeeId) || string.IsNullOrWhiteSpace(_employee.GivenName) || string.IsNullOrWhiteSpace(_employee.FamilyName))>Voeg employee toe</button>
+        }
+        <br>
+        <h4>Properties</h4>
+        <TableMolecule TItem=Organization.OrganizationProperty Items=EditedOrganization.Properties.ToList() Context="property">
+            <TableHeader>
+                <th>Key</th>
+                <th>Value</th>
+                <th>Identifier</th>
+                <th></th>
+            </TableHeader>
+            <RowTemplate>
+                <td>@property.Key</td>
+                <td>@property.Value</td>
+                <td>@property.IsIdentifier</td>
+                <td><button type="button" @onclick=@(() => EditedOrganization.Properties.Remove(property))>Verwijder</button></td>
+            </RowTemplate>
+        </TableMolecule>
+
+        <CustomInputText id="key" class="form-control" placeholder="Key" @bind-Value=@_organizationProperty.Key />
+        <CustomInputText id="value" class="form-control" placeholder="Value" @bind-Value=@_organizationProperty.Value />
+        <input type="checkbox" id="isIdentifier" name="isIdentifier" @bind=@_organizationProperty.IsIdentifier />
+        <label for="isIdentifier">Identifier</label><br>
+        <button type="button" @onclick=AddOrganizationProperty disabled=@(string.IsNullOrWhiteSpace(_organizationProperty.Key) || string.IsNullOrWhiteSpace(_organizationProperty.Value) || EditedOrganization.Properties.Any(p => p.Key.Equals(_organizationProperty.Key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
+    </EditForm>
+
+    <br>
+
+    if (EditedOrganization == _selectedOrganization)
+    {
+        <button type="button" @onclick=UpdateOrganization disabled=@DisableUpdateOrganization(EditedOrganization)>Update organization</button>
+    }
+    else
+    {
+        <button type="button" @onclick=CreateOrganization disabled=@DisableCreateOrganization(EditedOrganization)>Maak organization aan</button>
+    }
+
+    <br>
+}
