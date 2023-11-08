@@ -32,7 +32,7 @@ public partial class ARPolicies
 
     protected override async Task OnInitializedAsync()
     {
-        _policies = (await AuthorizationRegistryService!.ReadPolicies()).ToList(); 
+        _policies = (await AuthorizationRegistryService!.ReadPolicies()).ToList();
 
         _ = base.OnInitializedAsync();
     }
