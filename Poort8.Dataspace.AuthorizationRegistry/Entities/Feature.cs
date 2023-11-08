@@ -29,8 +29,8 @@ public class Feature //https://schema.org/Service
     {
         [Key]
         public string Key { get; set; }
-        public string FeatureId { get; set; }
-        public Feature Feature { get; set; }
+        public string FeatureId { get; set; } = default!;
+        public Feature Feature { get; set; } = default!;
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;
 

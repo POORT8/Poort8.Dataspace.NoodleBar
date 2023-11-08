@@ -35,8 +35,8 @@ public class Product //https://schema.org/Product
     {
         [Key]
         public string Key { get; set; }
-        public string ProductId { get; set; }
-        public Product Product { get; set; }
+        public string ProductId { get; set; } = default!;
+        public Product Product { get; set; } = default!;
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;
 

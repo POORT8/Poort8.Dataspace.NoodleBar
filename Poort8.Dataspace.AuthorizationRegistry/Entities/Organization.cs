@@ -35,8 +35,8 @@ public class Organization //https://schema.org/Organization
     {
         [Key]
         public string Key { get; set; }
-        public string OrganizationId { get; set; }
-        public Organization Organization { get; set; }
+        public string OrganizationId { get; set; } = default!;
+        public Organization Organization { get; set; } = default!;
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;
 
