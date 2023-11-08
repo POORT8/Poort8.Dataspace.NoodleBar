@@ -23,7 +23,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var organizationEntity = await context.Organizations.AddAsync(organization);
+        var organizationEntity = await context.AddAsync(organization);
         await context.SaveChangesAsync();
         return organizationEntity.Entity;
     }
@@ -32,38 +32,79 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var productEntity = await context.Products.AddAsync(product);
+        var productEntity = await context.AddAsync(product);
         await context.SaveChangesAsync();
         return productEntity.Entity;
+    }
+
+    public async Task<Product> CreateProductWithExistingFeatures(Product product, ICollection<string> featureIds)
+    {
+        var productEntity = await CreateProduct(product);
+
+        foreach (var featureId in featureIds)
+        {
+            await AddExistingFeatureToProduct(productEntity.ProductId, featureId);
+        }
+
+        productEntity = await ReadProduct(productEntity.ProductId);
+        return productEntity!;
     }
 
     public async Task<Policy> CreatePolicy(Policy policy)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var policyEntity = await context.Policies.AddAsync(policy);
+        var policyEntity = await context.AddAsync(policy);
         await context.SaveChangesAsync();
         return policyEntity.Entity;
     }
 
-    public async Task<Employee> AddEmployee(string organizationId, Employee employee)
+    public async Task<Employee> AddNewEmployeeToOrganization(string organizationId, Employee employee)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var organization = await context.Organizations
+        var organizationEntity = await context.Organizations
             .FirstAsync(o => o.Identifier == organizationId);
-        organization.Employees.Add(employee);
+        organizationEntity.Employees.Add(employee);
+
+        context.Update(organizationEntity);
         await context.SaveChangesAsync();
         return employee;
     }
 
-    public async Task<Feature> AddFeature(string productId, Feature feature)
+    public async Task<Feature> CreateFeature(Feature feature)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var product = await context.Products
+        var featureEntity = await context.AddAsync(feature);
+        await context.SaveChangesAsync();
+        return featureEntity.Entity;
+    }
+
+    public async Task<Feature> AddExistingFeatureToProduct(string productId, string featureId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var productEntity = await context.Products
             .FirstAsync(p => p.ProductId == productId);
-        product.Features.Add(feature);
+        var featureEntity = await context.Features
+            .FirstAsync(f => f.FeatureId == featureId);
+        productEntity.Features.Add(featureEntity);
+
+        context.Update(productEntity);
+        await context.SaveChangesAsync();
+        return featureEntity;
+    }
+
+    public async Task<Feature> AddNewFeatureToProduct(string productId, Feature feature)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var productEntity = await context.Products
+            .FirstAsync(p => p.ProductId == productId);
+        productEntity.Features.Add(feature);
+
+        context.Update(productEntity);
         await context.SaveChangesAsync();
         return feature;
     }
@@ -264,127 +305,59 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var organizationEntity = await context.Organizations
-            .Include(o => o.Employees)
-            .Include(o => o.Properties)
-            .FirstAsync(o => o.Identifier == organization.Identifier);
-
-        //TODO: Use reflection?
-        organizationEntity.Name = organization.Name;
-        organizationEntity.Url = organization.Url;
-        organizationEntity.Representative = organization.Representative;
-        organizationEntity.InvoicingContact = organization.InvoicingContact;
-        organizationEntity.Employees = organization.Employees;
-        RemoveProperties(context, organizationEntity.Properties);
-        organizationEntity.Properties = organization.Properties;
-
+        var organizationEntity = context.Update(organization);
         await context.SaveChangesAsync();
-        return organizationEntity;
+        return organizationEntity.Entity;
     }
 
     public async Task<Employee> UpdateEmployee(Employee employee)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var employeeEntity = await context.Employees
-            .Include(e => e.Properties)
-            .FirstAsync(e => e.EmployeeId == employee.EmployeeId);
-
-        employeeEntity.GivenName = employee.GivenName;
-        employeeEntity.FamilyName = employee.FamilyName;
-        employeeEntity.Telephone = employee.Telephone;
-        employeeEntity.Email = employee.Email;
-        RemoveProperties(context, employeeEntity.Properties);
-        employeeEntity.Properties = employee.Properties;
-
+        var employeeEntity = context.Update(employee);
         await context.SaveChangesAsync();
-        return employeeEntity;
+        return employeeEntity.Entity;
     }
 
     public async Task<Product> UpdateProduct(Product product)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var productEntity = await context.Products
-            .Include(p => p.Features)
-            .Include(p => p.Properties)
-            .FirstAsync(p => p.ProductId == product.ProductId);
-
-        productEntity.Name = product.Name;
-        productEntity.Description = product.Description;
-        productEntity.Provider = product.Provider;
-        productEntity.Url = product.Url;
-        productEntity.Features = product.Features;
-        RemoveProperties(context, productEntity.Properties);
-        productEntity.Properties = product.Properties;
-        
+        var productEntity = context.Update(product);
         await context.SaveChangesAsync();
-        return productEntity;
+        return productEntity.Entity;
     }
 
     public async Task<Feature> UpdateFeature(Feature feature)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var featureEntity = await context.Features
-            .Include(f => f.Properties)
-            .FirstAsync(f => f.FeatureId == feature.FeatureId);
-
-        featureEntity.Name = feature.Name;
-        featureEntity.Description = feature.Description;
-        RemoveProperties(context, featureEntity.Properties);
-        featureEntity.Properties = feature.Properties;
-
+        var featureEntity = context.Update(feature);
         await context.SaveChangesAsync();
-        return featureEntity;
+        return featureEntity.Entity;
     }
 
     public async Task<Policy> UpdatePolicy(Policy policy)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var policyEntity = await context.Policies
-            .Include(p => p.Properties)
-            .FirstAsync(p => p.PolicyId == policy.PolicyId);
-
-        policyEntity.UseCase = policy.UseCase;
-        policyEntity.IssuedAt = policy.IssuedAt;
-        policyEntity.NotBefore = policy.NotBefore;
-        policyEntity.Expiration = policy.Expiration;
-        policyEntity.IssuerId = policy.IssuerId;
-        policyEntity.SubjectId = policy.SubjectId;
-        policyEntity.ResourceId = policy.ResourceId;
-        policyEntity.Action = policy.Action;
-        RemoveProperties(context, policyEntity.Properties);
-        policyEntity.Properties = policy.Properties;
-
+        var policyEntity = context.Update(policy);
         await context.SaveChangesAsync();
-        return policyEntity;
+        return policyEntity.Entity;
     }
 
     #endregion
     #region Delete
-
-    private static void RemoveProperties(AuthorizationContext context, ICollection<Property> properties)
-    {
-        foreach (var property in properties)
-        {
-            context.Remove(property);
-        }
-    }
 
     public async Task<bool> DeleteOrganization(string identifier)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var organizationEntity = await context.Organizations
-            .Include(o => o.Employees)
-            .Include(o => o.Properties)
             .FirstOrDefaultAsync(o => o.Identifier == identifier);
 
         if (organizationEntity == null) return false;
 
-        RemoveProperties(context, organizationEntity.Properties);
         context.Remove(organizationEntity);
         await context.SaveChangesAsync();
         return true;
@@ -395,13 +368,10 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var employeeEntity = await context.Employees
-            .Include(e => e.Organization)
-            .Include(e => e.Properties)
             .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
 
         if (employeeEntity == null) return false;
 
-        RemoveProperties(context, employeeEntity.Properties);
         context.Remove(employeeEntity);
         await context.SaveChangesAsync();
         return true;
@@ -412,13 +382,10 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var productEntity = await context.Products
-            .Include(p => p.Features)
-            .Include(p => p.Properties)
             .FirstOrDefaultAsync(p => p.ProductId == productId);
 
         if (productEntity == null) return false;
 
-        RemoveProperties(context, productEntity.Properties);
         context.Remove(productEntity);
         await context.SaveChangesAsync();
         return true;
@@ -429,14 +396,28 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var featureEntity = await context.Features
-            .Include(f => f.Products)
-            .Include(f => f.Properties)
             .FirstOrDefaultAsync(f => f.FeatureId == featureId);
 
         if (featureEntity == null) return false;
 
-        RemoveProperties(context, featureEntity.Properties);
         context.Remove(featureEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> RemoveFeatureFromProduct(string productId, string featureId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var product = await context.Products
+            .Include(p => p.Features)
+            .FirstAsync(p => p.ProductId == productId);
+        var features = product.Features as List<Feature>;
+        var feature = features!.FirstOrDefault(f => f.FeatureId == featureId);
+
+        if (feature == null) return false;
+
+        features!.Remove(feature);
         await context.SaveChangesAsync();
         return true;
     }

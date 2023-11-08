@@ -71,20 +71,9 @@ public class OrganizationRegistry : IOrganizationRegistry
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var organizationEntity = await context.Organizations
-            .Include(o => o.Adherence)
-            .Include(o => o.Roles)
-            .Include(o => o.Properties)
-            .FirstAsync(o => o.Identifier == organization.Identifier);
-
-        organizationEntity.Name = organization.Name;
-
-        organizationEntity.Adherence = organization.Adherence;
-        organizationEntity.Roles = organization.Roles;
-        organizationEntity.Properties = organization.Properties;
-
+        var organizationEntity = context.Update(organization);
         await context.SaveChangesAsync();
-        return organizationEntity;
+        return organizationEntity.Entity;
     }
 
     public async Task<bool> DeleteOrganization(string identifier)
@@ -92,12 +81,9 @@ public class OrganizationRegistry : IOrganizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var organizationEntity = await context.Organizations
-            .Include(o => o.Adherence)
-            .Include(o => o.Roles)
-            .Include(o => o.Properties)
             .FirstOrDefaultAsync(o => o.Identifier == identifier);
 
-        if (identifier == null)  return false;
+        if (organizationEntity == null) return false;
 
         context.Remove(organizationEntity);
         await context.SaveChangesAsync();
