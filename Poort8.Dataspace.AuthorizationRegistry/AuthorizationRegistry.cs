@@ -503,7 +503,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         context.Remove(organizationEntity);
         await context.SaveChangesAsync();
         return true;
-    }  
+    }
 
     public async Task<bool> DeleteEmployee(string employeeId)
     {

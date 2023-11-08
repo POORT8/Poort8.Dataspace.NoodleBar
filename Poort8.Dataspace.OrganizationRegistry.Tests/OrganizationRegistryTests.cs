@@ -46,7 +46,7 @@ public class OrganizationRegistryTests
         var success = await _organizationRegistry.DeleteOrganization(organizationEntity.Identifier);
         Assert.True(success);
     }
-    
+
     [Fact]
     public async Task CreateAndReadOrganization()
     {

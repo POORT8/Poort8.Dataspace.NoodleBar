@@ -46,8 +46,8 @@ public class OrganizationRole
 {
     [Key]
     public string RoleId { get; set; } = Guid.NewGuid().ToString();
-    public string OrganizationId { get; set; }
-    public Organization Organization { get; set; }
+    public string OrganizationId { get; set; } = default!;
+    public Organization Organization { get; set; } = default!;
     public string Role { get; set; }
 
     public OrganizationRole(string role)
@@ -60,8 +60,8 @@ public class Property
 {
     [Key]
     public string Key { get; set; }
-    public string OrganizationId { get; set; }
-    public Organization Organization { get; set; }
+    public string OrganizationId { get; set; } = default!;
+    public Organization Organization { get; set; } = default!;
     public string Value { get; set; }
     public bool IsIdentifier { get; set; } = false;
 

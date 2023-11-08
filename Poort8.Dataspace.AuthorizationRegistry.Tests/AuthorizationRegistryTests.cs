@@ -56,7 +56,7 @@ public class AuthorizationRegistryTests
     {
         var organization = CreateNewOrganization(nameof(OrganizationCrud), 1);
         var organizationEntity = await _authorizationRegistry.CreateOrganization(organization);
-        
+
         Assert.NotNull(organizationEntity);
         Assert.Equal(organization.Identifier, organizationEntity.Identifier);
         Assert.NotNull(organizationEntity.Properties);
@@ -147,7 +147,7 @@ public class AuthorizationRegistryTests
 
         Assert.NotNull(readEntity);
         Assert.Equal(employee.EmployeeId, readEntity.EmployeeId);
-        
+
         var readByPropIdEntity = await _authorizationRegistry.ReadEmployee(employee.Properties.ToArray()[1].Value);
 
         Assert.NotNull(readByPropIdEntity);
