@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Poort8.Dataspace.AuthorizationRegistry.Entities;
 public class Employee //https://schema.org/Person
@@ -34,11 +33,12 @@ public class Employee //https://schema.org/Person
         Properties = properties;
     }
 
-    [Owned]
     public class EmployeeProperty
     {
         [Key]
         public string Key { get; set; }
+        public string EmployeeId { get; set; }
+        public Employee Employee { get; set; }
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;
 

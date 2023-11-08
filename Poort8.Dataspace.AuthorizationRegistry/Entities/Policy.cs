@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Poort8.Dataspace.AuthorizationRegistry.Entities;
 public class Policy
@@ -52,11 +51,12 @@ public class Policy
         Properties = properties;
     }
 
-    [Owned]
     public class PolicyProperty
     {
         [Key]
         public string Key { get; set; }
+        public string PolicyId { get; set; }
+        public Policy Policy { get; set; }
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;
 

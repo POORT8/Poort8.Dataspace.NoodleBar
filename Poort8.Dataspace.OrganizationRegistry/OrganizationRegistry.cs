@@ -71,9 +71,46 @@ public class OrganizationRegistry : IOrganizationRegistry
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var organizationEntity = context.Update(organization);
+        var organizationEntity = await context.Organizations
+            .Include(o => o.Roles)
+            .Include(o => o.Properties)
+            .SingleAsync(o => o.Identifier == organization.Identifier);
+
+        context.Entry(organizationEntity).CurrentValues.SetValues(organization);
+        context.Entry(organizationEntity.Adherence!).CurrentValues.SetValues(organization.Adherence);
+
+        foreach (var role in organization.Roles)
+        {
+            var roleEntity = organizationEntity.Roles
+                .FirstOrDefault(r => r.RoleId == role.RoleId);
+
+            if (roleEntity == null)
+            {
+                organizationEntity.Roles.Add(role);
+            }
+            else
+            {
+                context.Entry(roleEntity).CurrentValues.SetValues(role);
+            }
+        }
+
+        foreach (var property in organization.Properties)
+        {
+            var propertyEntity = organizationEntity.Properties
+                .FirstOrDefault(p => p.Key == property.Key);
+
+            if (propertyEntity == null)
+            {
+                organizationEntity.Properties.Add(property);
+            }
+            else
+            {
+                context.Entry(propertyEntity).CurrentValues.SetValues(property);
+            }
+        }
+
         await context.SaveChangesAsync();
-        return organizationEntity.Entity;
+        return organizationEntity;
     }
 
     public async Task<bool> DeleteOrganization(string identifier)

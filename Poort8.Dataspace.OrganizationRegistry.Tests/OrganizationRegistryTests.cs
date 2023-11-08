@@ -25,93 +25,101 @@ public class OrganizationRegistryTests
         await (Task)runMigrations.Invoke(_organizationRegistry, null);
     }
 
+    private static Organization CreateNewOrganization(string id, int index)
+    {
+        var adherence = new Adherence("active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now.AddYears(1)));
+        var roles = new List<OrganizationRole>() { new OrganizationRole("role") };
+        var properties = new List<Property>() { new Property("key", "value"), new Property("otherIdentifier", $"{id}{index}-otherId", true) };
+        return new Organization($"{id}-id", $"{id}{index}-name", adherence, roles, properties);
+    }
+
+    [Fact]
+    public async Task CreateOrganization()
+    {
+        var organization = CreateNewOrganization(nameof(CreateOrganization), 1);
+        var organizationEntity = await _organizationRegistry.CreateOrganization(organization);
+        Assert.NotNull(organizationEntity);
+
+        var readEntity = await _organizationRegistry.ReadOrganization(organizationEntity.Identifier);
+        Assert.NotNull(readEntity);
+
+        var success = await _organizationRegistry.DeleteOrganization(organizationEntity.Identifier);
+        Assert.True(success);
+    }
+    
     [Fact]
     public async Task CreateAndReadOrganization()
     {
-        var id = Guid.NewGuid().ToString();
-        var propId = Guid.NewGuid().ToString();
-        var name = Guid.NewGuid().ToString();
-        var adherence = new Adherence("active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now));
-        var roles = new List<OrganizationRole>() { new OrganizationRole("role") };
-        var properties = new List<Property>() { new Property("key", "value"), new Property("otherIdentifier", propId, true) };
-        var organization = new Organization(id, name, adherence, roles, properties);
+        var organization = CreateNewOrganization(nameof(CreateOrganization), 1);
+        var organizationEntity = await _organizationRegistry.CreateOrganization(organization);
 
-        var entity = await _organizationRegistry.CreateOrganization(organization);
+        Assert.NotNull(organizationEntity);
+        Assert.Equal(organization.Identifier, organizationEntity.Identifier);
+        Assert.NotNull(organizationEntity.Properties);
+        Assert.Equal(organization.Properties.Count, organizationEntity.Properties.Count);
 
-        Assert.NotNull(entity);
-        Assert.Equal(id, entity.Identifier);
-        Assert.NotNull(entity.Properties);
-        Assert.Equal(organization.Properties.Count, entity.Properties.Count);
-
-        var readEntity = await _organizationRegistry.ReadOrganization(id);
+        var readEntity = await _organizationRegistry.ReadOrganization(organization.Identifier);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(id, readEntity.Identifier);
+        Assert.Equal(organization.Identifier, readEntity.Identifier);
 
-        var readByPropIdEntity = await _organizationRegistry.ReadOrganization(propId);
+        var readByPropIdEntity = await _organizationRegistry.ReadOrganization(organization.Properties.ToArray()[1].Value);
 
         Assert.NotNull(readByPropIdEntity);
-        Assert.Equal(id, readByPropIdEntity.Identifier);
+        Assert.Equal(organization.Identifier, readByPropIdEntity.Identifier);
 
         var readByPropEntity = await _organizationRegistry.ReadOrganizations(propertyKey: "key", propertyValue: "value");
 
         Assert.NotNull(readByPropEntity);
         Assert.Single(readByPropEntity);
-        Assert.Equal(id, readByPropEntity[0].Identifier);
+        Assert.Equal(organization.Identifier, readByPropEntity[0].Identifier);
 
-        var readByNameEntity = await _organizationRegistry.ReadOrganizations(name: name);
+        var readByNameEntity = await _organizationRegistry.ReadOrganizations(name: organization.Name);
 
         Assert.NotNull(readByNameEntity);
         Assert.Single(readByNameEntity);
-        Assert.Equal(id, readByNameEntity[0].Identifier);
+        Assert.Equal(organization.Identifier, readByNameEntity[0].Identifier);
 
         var newName = Guid.NewGuid().ToString();
-        var organizationUpdate = new Organization(id, newName);
+        var organizationUpdate = new Organization(organization.Identifier, newName);
         var updateEntity = await _organizationRegistry.UpdateOrganization(organizationUpdate);
 
         Assert.NotNull(updateEntity);
-        Assert.Equal(id, updateEntity.Identifier);
+        Assert.Equal(organization.Identifier, updateEntity.Identifier);
 
-        readEntity = await _organizationRegistry.ReadOrganization(id);
+        readEntity = await _organizationRegistry.ReadOrganization(organization.Identifier);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(id, readEntity.Identifier);
+        Assert.Equal(organization.Identifier, readEntity.Identifier);
         Assert.Equal(newName, readEntity.Name);
 
-        var success = await _organizationRegistry.DeleteOrganization(id);
+        var success = await _organizationRegistry.DeleteOrganization(organization.Identifier);
         Assert.True(success);
     }
 
     [Fact]
     public async Task CreateAndUpdateOrganization()
     {
-        var id = Guid.NewGuid().ToString();
-        var propId = Guid.NewGuid().ToString();
-        var name = Guid.NewGuid().ToString();
-        var adherence = new Adherence("active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now));
-        var roles = new List<OrganizationRole>() { new OrganizationRole("role") };
-        var properties = new List<Property>() { new Property("key", "value"), new Property("otherIdentifier", propId, true) };
-        var organization = new Organization(id, name, adherence, roles, properties);
+        var organization = CreateNewOrganization(nameof(CreateOrganization), 1);
+        var organizationEntity = await _organizationRegistry.CreateOrganization(organization);
 
-        var entity = await _organizationRegistry.CreateOrganization(organization);
+        Assert.NotNull(organizationEntity);
+        Assert.Equal(organization.Identifier, organizationEntity.Identifier);
+        Assert.NotNull(organizationEntity.Properties);
+        Assert.Equal(organization.Properties.Count, organizationEntity.Properties.Count);
 
-        Assert.NotNull(entity);
-        Assert.Equal(id, entity.Identifier);
-        Assert.NotNull(entity.Properties);
-        Assert.Equal(organization.Properties.Count, entity.Properties.Count);
-
-        entity.Adherence.Status = "inactive";
-        //entity.Roles.Add(new OrganizationRole("otherRole"));
-        entity.Properties.Add(new Property("otherKey", "otherValue"));
-        var updateEntity = await _organizationRegistry.UpdateOrganization(entity);
+        organization.Adherence.Status = "inactive";
+        organization.Roles.Add(new OrganizationRole("otherRole"));
+        organization.Properties.Add(new Property("otherKey", "otherValue"));
+        var updateEntity = await _organizationRegistry.UpdateOrganization(organization);
 
         Assert.NotNull(updateEntity);
-        Assert.Equal(id, updateEntity.Identifier);
+        Assert.Equal(organization.Identifier, updateEntity.Identifier);
         Assert.Equal("inactive", updateEntity.Adherence.Status);
-        //Assert.Equal(2, updateEntity.Roles.Count);
+        Assert.Equal(2, updateEntity.Roles.Count);
         Assert.Equal(3, updateEntity.Properties.Count);
 
-        var success = await _organizationRegistry.DeleteOrganization(id);
+        var success = await _organizationRegistry.DeleteOrganization(organization.Identifier);
         Assert.True(success);
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Poort8.Dataspace.AuthorizationRegistry.Entities;
 public class Feature //https://schema.org/Service
@@ -26,11 +25,12 @@ public class Feature //https://schema.org/Service
         Properties = properties;
     }
 
-    [Owned]
     public class FeatureProperty
     {
         [Key]
         public string Key { get; set; }
+        public string FeatureId { get; set; }
+        public Feature Feature { get; set; }
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;
 

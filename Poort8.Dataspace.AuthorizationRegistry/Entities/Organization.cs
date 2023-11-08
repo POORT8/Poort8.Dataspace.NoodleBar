@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Poort8.Dataspace.AuthorizationRegistry.Entities;
 public class Organization //https://schema.org/Organization
@@ -32,11 +31,12 @@ public class Organization //https://schema.org/Organization
         Properties = properties;
     }
 
-    [Owned]
     public class OrganizationProperty
     {
         [Key]
         public string Key { get; set; }
+        public string OrganizationId { get; set; }
+        public Organization Organization { get; set; }
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;
 

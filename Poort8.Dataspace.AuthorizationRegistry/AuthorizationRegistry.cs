@@ -118,6 +118,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         var organization = await context.Organizations
             .Include(o => o.Employees)
+            .ThenInclude(e => e.Properties)
             .Include(o => o.Properties)
             .FirstOrDefaultAsync(o => o.Identifier == identifier);
 
@@ -126,6 +127,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         return await context.Organizations
             .Include(o => o.Employees)
+            .ThenInclude(e => e.Properties)
             .Include(o => o.Properties)
             .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == identifier));
     }
@@ -144,6 +146,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             .Where(o => name == default || name == o.Name)
             .Where(o => propertyKey == default || o.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
             .Include(o => o.Employees)
+            .ThenInclude(e => e.Properties)
             .Include(o => o.Properties)
             .ToListAsync();
     }
@@ -154,6 +157,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         var employee = await context.Employees
             .Include(e => e.Organization)
+            .ThenInclude(e => e.Properties)
             .Include(e => e.Properties)
             .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
 
@@ -162,6 +166,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         return await context.Employees
             .Include(e => e.Organization)
+            .ThenInclude(e => e.Properties)
             .Include(e => e.Properties)
             .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == employeeId));
     }
@@ -201,6 +206,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         var product = await context.Products
             .Include(p => p.Features)
+            .ThenInclude(f => f.Properties)
             .Include(p => p.Properties)
             .FirstOrDefaultAsync(p => p.ProductId == productId);
 
@@ -209,6 +215,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         return await context.Products
             .Include(p => p.Features)
+            .ThenInclude(f => f.Properties)
             .Include(p => p.Properties)
             .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == productId));
     }
@@ -271,6 +278,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     {
         using var context = await _contextFactory.CreateDbContextAsync();
         return await context.Policies
+            .Include(p => p.Properties)
             .FirstOrDefaultAsync(p => p.PolicyId == policyId);
     }
 
@@ -305,45 +313,179 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var organizationEntity = context.Update(organization);
+        var organizationEntity = await context.Organizations
+            .Include(o => o.Employees)
+            .ThenInclude(e => e.Properties)
+            .Include(o => o.Properties)
+            .SingleAsync(o => o.Identifier == organization.Identifier);
+
+        context.Entry(organizationEntity).CurrentValues.SetValues(organization);
+
+        foreach (var employee in organization.Employees)
+        {
+            var employeeEntity = organizationEntity.Employees
+                .FirstOrDefault(e => e.EmployeeId == employee.EmployeeId);
+
+            if (employeeEntity == null)
+            {
+                organizationEntity.Employees.Add(employee);
+            }
+            else
+            {
+                context.Entry(employeeEntity).CurrentValues.SetValues(employee);
+            }
+        }
+
+        foreach (var property in organization.Properties)
+        {
+            var propertyEntity = organizationEntity.Properties
+                .FirstOrDefault(p => p.Key == property.Key);
+
+            if (propertyEntity == null)
+            {
+                organizationEntity.Properties.Add(property);
+            }
+            else
+            {
+                context.Entry(propertyEntity).CurrentValues.SetValues(property);
+            }
+        }
+
         await context.SaveChangesAsync();
-        return organizationEntity.Entity;
+        return organizationEntity;
     }
 
     public async Task<Employee> UpdateEmployee(Employee employee)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var employeeEntity = context.Update(employee);
+        var employeeEntity = await context.Employees
+            .Include(e => e.Properties)
+            .SingleAsync(e => e.EmployeeId == employee.EmployeeId);
+
+        context.Entry(employeeEntity).CurrentValues.SetValues(employee);
+
+        foreach (var property in employee.Properties)
+        {
+            var propertyEntity = employeeEntity.Properties
+                .FirstOrDefault(p => p.Key == property.Key);
+
+            if (propertyEntity == null)
+            {
+                employeeEntity.Properties.Add(property);
+            }
+            else
+            {
+                context.Entry(propertyEntity).CurrentValues.SetValues(property);
+            }
+        }
+
         await context.SaveChangesAsync();
-        return employeeEntity.Entity;
+        return employeeEntity;
     }
 
     public async Task<Product> UpdateProduct(Product product)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var productEntity = context.Update(product);
+        var productEntity = await context.Products
+            .Include(p => p.Features)
+            .ThenInclude(f => f.Properties)
+            .Include(p => p.Properties)
+            .SingleAsync(p => p.ProductId == product.ProductId);
+
+        context.Entry(productEntity).CurrentValues.SetValues(product);
+
+        foreach (var feature in product.Features)
+        {
+            var featureEntity = productEntity.Features
+                .FirstOrDefault(f => f.FeatureId == feature.FeatureId);
+
+            if (featureEntity == null)
+            {
+                productEntity.Features.Add(feature);
+            }
+            else
+            {
+                context.Entry(featureEntity).CurrentValues.SetValues(feature);
+            }
+        }
+
+        foreach (var property in product.Properties)
+        {
+            var propertyEntity = productEntity.Properties
+                .FirstOrDefault(p => p.Key == property.Key);
+
+            if (propertyEntity == null)
+            {
+                productEntity.Properties.Add(property);
+            }
+            else
+            {
+                context.Entry(propertyEntity).CurrentValues.SetValues(property);
+            }
+        }
+
         await context.SaveChangesAsync();
-        return productEntity.Entity;
+        return productEntity;
     }
 
     public async Task<Feature> UpdateFeature(Feature feature)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var featureEntity = context.Update(feature);
+        var featureEntity = await context.Features
+            .Include(f => f.Properties)
+            .SingleAsync(f => f.FeatureId == feature.FeatureId);
+
+        context.Entry(featureEntity).CurrentValues.SetValues(feature);
+
+        foreach (var property in feature.Properties)
+        {
+            var propertyEntity = featureEntity.Properties
+                .FirstOrDefault(p => p.Key == property.Key);
+
+            if (propertyEntity == null)
+            {
+                featureEntity.Properties.Add(property);
+            }
+            else
+            {
+                context.Entry(propertyEntity).CurrentValues.SetValues(property);
+            }
+        }
+
         await context.SaveChangesAsync();
-        return featureEntity.Entity;
+        return featureEntity;
     }
 
     public async Task<Policy> UpdatePolicy(Policy policy)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var policyEntity = context.Update(policy);
+        var policyEntity = await context.Policies
+            .Include(p => p.Properties)
+            .SingleAsync(p => p.PolicyId == policy.PolicyId);
+
+        context.Entry(policyEntity).CurrentValues.SetValues(policy);
+
+        foreach (var property in policy.Properties)
+        {
+            var propertyEntity = policyEntity.Properties
+                .FirstOrDefault(p => p.Key == property.Key);
+
+            if (propertyEntity == null)
+            {
+                policyEntity.Properties.Add(property);
+            }
+            else
+            {
+                context.Entry(propertyEntity).CurrentValues.SetValues(property);
+            }
+        }
+
         await context.SaveChangesAsync();
-        return policyEntity.Entity;
+        return policyEntity;
     }
 
     #endregion

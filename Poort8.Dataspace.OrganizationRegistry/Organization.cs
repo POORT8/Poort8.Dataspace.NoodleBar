@@ -56,11 +56,12 @@ public class OrganizationRole
     }
 }
 
-[Owned]
 public class Property
 {
     [Key]
     public string Key { get; set; }
+    public string OrganizationId { get; set; }
+    public Organization Organization { get; set; }
     public string Value { get; set; }
     public bool IsIdentifier { get; set; } = false;
 
