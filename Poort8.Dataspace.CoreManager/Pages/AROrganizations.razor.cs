@@ -13,8 +13,9 @@ public partial class AROrganizations
     private Organization? _selectedOrganization;
     private Organization? _newOrganization;
     private Organization? EditedOrganization => _selectedOrganization ?? _newOrganization;
-    private Employee _employee = new();
-    private Property _organizationProperty = new(string.Empty, string.Empty);
+    private Employee _employee = new(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+    private Organization.OrganizationProperty _organizationProperty = new(string.Empty, string.Empty);
+    private Employee.EmployeeProperty _employeeProperty = new(string.Empty, string.Empty);
     private static bool DisableUpdateOrganization(Organization organization) => string.IsNullOrWhiteSpace(organization.Name);
     private bool DisableCreateOrganization(Organization organization) => DisableUpdateOrganization(organization) || string.IsNullOrWhiteSpace(organization.Identifier) || _organizations?.Any(o => organization.Identifier.Equals(o.Identifier, StringComparison.OrdinalIgnoreCase)) == true;
 
@@ -31,6 +32,21 @@ public partial class AROrganizations
         _selectedOrganization = _organizations?.FirstOrDefault(o => o.Identifier.Equals(organization.Identifier))?.DeepCopy();
         _newOrganization = null;
         if (_selectedOrganization is not null) ResetEmployee();
+    }
+
+    private void OnEmployeeRowClick(Employee employee)
+    {
+        Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with employee {identifier} ({name})", employee.EmployeeId, employee.GivenName + " " + employee.FamilyName);
+        var existingEmployee = EditedOrganization!.Employees.FirstOrDefault(e => e.EmployeeId.Equals(employee.EmployeeId))?.DeepCopy();
+        if (existingEmployee is not null)
+        {
+            _employee = existingEmployee;
+            _employeeProperty = new(string.Empty, string.Empty);
+        }
+        else
+        {
+            ResetEmployee();
+        }
     }
 
     private void AddNewOrganization()
@@ -76,6 +92,7 @@ public partial class AROrganizations
             OrganizationId = EditedOrganization!.Identifier,
             Organization = EditedOrganization
         };
+        _employeeProperty = new(string.Empty, string.Empty);
     }
 
     private void AddEmployee()
@@ -84,9 +101,21 @@ public partial class AROrganizations
         ResetEmployee();
     }
 
+    private void UpdateEmployee()
+    {
+        EditedOrganization!.Employees.Remove(EditedOrganization.Employees.First(e => e.EmployeeId.Equals(_employee.EmployeeId, StringComparison.OrdinalIgnoreCase)));
+        AddEmployee();
+    }
+
     private void AddOrganizationProperty()
     {
         EditedOrganization!.Properties.Add(_organizationProperty);
         _organizationProperty = new(string.Empty, string.Empty);
+    }
+
+    private void AddEmployeeProperty()
+    {
+        _employee!.Properties.Add(_employeeProperty);
+        _employeeProperty = new(string.Empty, string.Empty);
     }
 }

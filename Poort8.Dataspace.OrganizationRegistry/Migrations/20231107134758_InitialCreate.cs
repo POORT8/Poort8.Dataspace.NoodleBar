@@ -66,18 +66,17 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                 name: "Property",
                 columns: table => new
                 {
-                    PropertyId = table.Column<string>(type: "TEXT", nullable: false),
-                    OrganizationId = table.Column<string>(type: "TEXT", nullable: false),
                     Key = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false)
+                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
+                    OrganizationIdentifier = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Property", x => x.PropertyId);
+                    table.PrimaryKey("PK_Property", x => x.Key);
                     table.ForeignKey(
-                        name: "FK_Property_Organizations_OrganizationId",
-                        column: x => x.OrganizationId,
+                        name: "FK_Property_Organizations_OrganizationIdentifier",
+                        column: x => x.OrganizationIdentifier,
                         principalTable: "Organizations",
                         principalColumn: "Identifier",
                         onDelete: ReferentialAction.Cascade);
@@ -89,9 +88,9 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                 column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Property_OrganizationId",
+                name: "IX_Property_OrganizationIdentifier",
                 table: "Property",
-                column: "OrganizationId");
+                column: "OrganizationIdentifier");
         }
 
         /// <inheritdoc />

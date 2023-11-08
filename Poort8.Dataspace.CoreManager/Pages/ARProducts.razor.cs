@@ -13,14 +13,14 @@ public partial class ARProducts
     private Product? _selectedProduct;
     private Product? _newProduct;
     private Product? EditedProduct => _selectedProduct ?? _newProduct;
-    private Property _productProperty = new(string.Empty, string.Empty);
+    private Product.ProductProperty _productProperty = new(string.Empty, string.Empty);
     private static bool DisableUpdateProduct(Product product) => string.IsNullOrWhiteSpace(product.Name);
     private bool DisableCreateProduct(Product product) => DisableUpdateProduct(product) || string.IsNullOrWhiteSpace(product.ProductId) || _products?.Any(p => product.ProductId.Equals(p.ProductId, StringComparison.OrdinalIgnoreCase)) == true;
     private List<Feature>? _features = new();
     private Feature? _selectedFeature;
     private Feature? _newFeature;
     private Feature? EditedFeature => _selectedFeature ?? _newFeature;
-    private Property _featureProperty = new(string.Empty, string.Empty);
+    private Feature.FeatureProperty _featureProperty = new(string.Empty, string.Empty);
     private static bool DisableUpdateFeature(Feature feature) => string.IsNullOrWhiteSpace(feature.Name);
     private bool DisableCreateFeature(Feature feature) => DisableUpdateFeature(feature) || string.IsNullOrWhiteSpace(feature.FeatureId) || _features?.Any(f => feature.FeatureId.Equals(f.FeatureId, StringComparison.OrdinalIgnoreCase)) == true;
 
@@ -144,7 +144,7 @@ public partial class ARProducts
 
     private async void AddFeatureToProduct(string featureId, string productId)
     {
-        _ = await AuthorizationRegistryService!.AddFeature(productId, featureId);
+        _ = await AuthorizationRegistryService!.AddExistingFeatureToProduct(productId, featureId);
         var product = _products!.First(p => p.ProductId.Equals(productId, StringComparison.OrdinalIgnoreCase));
         var feature = _features!.First(f => f.FeatureId.Equals(featureId, StringComparison.OrdinalIgnoreCase));
         feature.Products.Add(product);
@@ -156,7 +156,7 @@ public partial class ARProducts
 
     private async void RemoveFeatureFromProduct(string featureId, string productId)
     {
-        _ = await AuthorizationRegistryService!.RemoveFeature(productId, featureId);
+        _ = await AuthorizationRegistryService!.RemoveFeatureFromProduct(productId, featureId);
 
         var feature = _features!.First(f => f.FeatureId.Equals(featureId, StringComparison.OrdinalIgnoreCase));
         feature.Products.Remove(feature.Products.First(p => p.ProductId.Equals(productId, StringComparison.OrdinalIgnoreCase)));

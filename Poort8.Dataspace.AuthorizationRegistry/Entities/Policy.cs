@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Poort8.Dataspace.AuthorizationRegistry.Entities;
 public class Policy
@@ -13,7 +14,7 @@ public class Policy
     public string SubjectId { get; set; }
     public string ResourceId { get; set; }
     public string Action { get; set; }
-    public ICollection<Property> Properties { get; set; } = new List<Property>();
+    public ICollection<PolicyProperty> Properties { get; set; } = new List<PolicyProperty>();
 
     public Policy(string issuerId, string subjectId, string resourceId, string action)
     {
@@ -23,7 +24,7 @@ public class Policy
         Action = action;
     }
 
-    public Policy(string issuerId, string subjectId, string resourceId, string action, ICollection<Property> properties)
+    public Policy(string issuerId, string subjectId, string resourceId, string action, ICollection<PolicyProperty> properties)
     {
         IssuerId = issuerId;
         SubjectId = subjectId;
@@ -41,7 +42,7 @@ public class Policy
         Action = action;
     }
 
-    public Policy(string useCase, string issuerId, string subjectId, string resourceId, string action, ICollection<Property> properties)
+    public Policy(string useCase, string issuerId, string subjectId, string resourceId, string action, ICollection<PolicyProperty> properties)
     {
         UseCase = useCase;
         IssuerId = issuerId;
@@ -49,5 +50,27 @@ public class Policy
         ResourceId = resourceId;
         Action = action;
         Properties = properties;
+    }
+
+    [Owned]
+    public class PolicyProperty
+    {
+        [Key]
+        public string Key { get; set; }
+        public string Value { get; set; }
+        public bool IsIdentifier { get; set; } = false;
+
+        public PolicyProperty(string key, string value)
+        {
+            Key = key;
+            Value = value;
+        }
+
+        public PolicyProperty(string key, string value, bool isIdentifier)
+        {
+            Key = key;
+            Value = value;
+            IsIdentifier = isIdentifier;
+        }
     }
 }
