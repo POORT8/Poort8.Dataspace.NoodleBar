@@ -37,7 +37,7 @@ public partial class AROrganizations
     private void OnEmployeeRowClick(Employee employee)
     {
         Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with employee {identifier} ({name})", employee.EmployeeId, employee.GivenName + " " + employee.FamilyName);
-        var existingEmployee = EditedOrganization!.Employees.FirstOrDefault(e => e.EmployeeId.Equals(employee.EmployeeId))?.DeepCopy();
+        var existingEmployee = EditedOrganization!.Employees.FirstOrDefault(e => e.EmployeeId.Equals(employee.EmployeeId))?.DeepCopy(EditedOrganization);
         if (existingEmployee is not null)
         {
             _employee = existingEmployee;
