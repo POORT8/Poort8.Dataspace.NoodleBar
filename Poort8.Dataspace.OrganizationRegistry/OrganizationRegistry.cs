@@ -94,6 +94,14 @@ public class OrganizationRegistry : IOrganizationRegistry
             }
         }
 
+        foreach (var role in organizationEntity.Roles)
+        {
+            if (!organization.Roles.Any(r => r.RoleId == role.RoleId))
+            {
+                context.Remove(role);
+            }
+        }
+
         foreach (var property in organization.Properties)
         {
             var propertyEntity = organizationEntity.Properties
@@ -106,6 +114,14 @@ public class OrganizationRegistry : IOrganizationRegistry
             else
             {
                 context.Entry(propertyEntity).CurrentValues.SetValues(property);
+            }
+        }
+
+        foreach (var property in organizationEntity.Properties)
+        {
+            if (!organization.Properties.Any(p => p.OrganizationId == property.OrganizationId))
+            {
+                context.Remove(property);
             }
         }
 
