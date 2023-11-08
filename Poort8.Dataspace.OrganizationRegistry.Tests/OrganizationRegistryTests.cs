@@ -122,4 +122,25 @@ public class OrganizationRegistryTests
         var success = await _organizationRegistry.DeleteOrganization(organization.Identifier);
         Assert.True(success);
     }
+
+    [Fact]
+    public async Task DeleteRoleAndPropertiesOrganization()
+    {
+        var organization = CreateNewOrganization(nameof(DeleteRoleAndPropertiesOrganization), 1);
+        var organizationEntity = await _organizationRegistry.CreateOrganization(organization);
+
+        Assert.NotNull(organizationEntity);
+
+        organization.Roles.Clear();
+        organization.Properties.Clear();
+        var updateEntity = await _organizationRegistry.UpdateOrganization(organization);
+
+        Assert.NotNull(updateEntity);
+        Assert.Equal(organization.Identifier, updateEntity.Identifier);
+        Assert.Empty(updateEntity.Roles);
+        Assert.Empty(updateEntity.Properties);
+
+        var success = await _organizationRegistry.DeleteOrganization(organization.Identifier);
+        Assert.True(success);
+    }
 }
