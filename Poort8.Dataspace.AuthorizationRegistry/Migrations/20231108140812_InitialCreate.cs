@@ -77,9 +77,9 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 columns: table => new
                 {
                     Key = table.Column<string>(type: "TEXT", nullable: false),
+                    FeatureId = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
-                    FeatureId = table.Column<string>(type: "TEXT", nullable: false)
+                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -119,16 +119,16 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 columns: table => new
                 {
                     Key = table.Column<string>(type: "TEXT", nullable: false),
+                    OrganizationId = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
-                    OrganizationIdentifier = table.Column<string>(type: "TEXT", nullable: false)
+                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrganizationProperty", x => x.Key);
                     table.ForeignKey(
-                        name: "FK_OrganizationProperty_Organizations_OrganizationIdentifier",
-                        column: x => x.OrganizationIdentifier,
+                        name: "FK_OrganizationProperty_Organizations_OrganizationId",
+                        column: x => x.OrganizationId,
                         principalTable: "Organizations",
                         principalColumn: "Identifier",
                         onDelete: ReferentialAction.Cascade);
@@ -139,9 +139,9 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 columns: table => new
                 {
                     Key = table.Column<string>(type: "TEXT", nullable: false),
+                    PolicyId = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
-                    PolicyId = table.Column<string>(type: "TEXT", nullable: false)
+                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -183,9 +183,9 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 columns: table => new
                 {
                     Key = table.Column<string>(type: "TEXT", nullable: false),
+                    ProductId = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
-                    ProductId = table.Column<string>(type: "TEXT", nullable: false)
+                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -203,9 +203,9 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 columns: table => new
                 {
                     Key = table.Column<string>(type: "TEXT", nullable: false),
+                    EmployeeId = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
-                    EmployeeId = table.Column<string>(type: "TEXT", nullable: false)
+                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -239,9 +239,9 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 column: "FeatureId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganizationProperty_OrganizationIdentifier",
+                name: "IX_OrganizationProperty_OrganizationId",
                 table: "OrganizationProperty",
-                column: "OrganizationIdentifier");
+                column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PolicyProperty_PolicyId",

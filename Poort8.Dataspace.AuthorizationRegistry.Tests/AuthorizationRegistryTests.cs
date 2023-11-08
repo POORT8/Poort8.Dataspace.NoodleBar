@@ -358,7 +358,7 @@ public class AuthorizationRegistryTests
         Assert.Equal(1, productEntity.Features.Count);
 
         feature.FeatureId = "fail";
-        await Assert.ThrowsAsync<DbUpdateException>(async () => await _authorizationRegistry.UpdateFeature(feature));
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await _authorizationRegistry.UpdateFeature(feature));
 
         var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
         Assert.True(success);

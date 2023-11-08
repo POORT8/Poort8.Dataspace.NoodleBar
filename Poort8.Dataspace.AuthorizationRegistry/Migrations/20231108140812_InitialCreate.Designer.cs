@@ -10,7 +10,7 @@ using Poort8.Dataspace.AuthorizationRegistry;
 namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
 {
     [DbContext(typeof(AuthorizationContext))]
-    [Migration("20231107134315_InitialCreate")]
+    [Migration("20231108140812_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -66,6 +66,29 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee+EmployeeProperty", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EmployeeId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsIdentifier")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("EmployeeProperty");
+                });
+
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", b =>
                 {
                     b.Property<string>("FeatureId")
@@ -82,6 +105,29 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                     b.HasKey("FeatureId");
 
                     b.ToTable("Features");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature+FeatureProperty", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FeatureId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsIdentifier")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("FeatureId");
+
+                    b.ToTable("FeatureProperty");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization", b =>
@@ -108,6 +154,29 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                     b.HasKey("Identifier");
 
                     b.ToTable("Organizations");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization+OrganizationProperty", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsIdentifier")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("OrganizationId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("OrganizationProperty");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy", b =>
@@ -149,6 +218,29 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                     b.ToTable("Policies");
                 });
 
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy+PolicyProperty", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsIdentifier")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PolicyId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("PolicyId");
+
+                    b.ToTable("PolicyProperty");
+                });
+
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", b =>
                 {
                     b.Property<string>("ProductId")
@@ -171,6 +263,29 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                     b.HasKey("ProductId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product+ProductProperty", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsIdentifier")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductProperty");
                 });
 
             modelBuilder.Entity("FeatureProduct", b =>
@@ -196,164 +311,89 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee+EmployeeProperty", "Properties", b1 =>
-                        {
-                            b1.Property<string>("Key")
-                                .HasColumnType("TEXT");
+                    b.Navigation("Organization");
+                });
 
-                            b1.Property<string>("EmployeeId")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee+EmployeeProperty", b =>
+                {
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", "Employee")
+                        .WithMany("Properties")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                            b1.Property<bool>("IsIdentifier")
-                                .HasColumnType("INTEGER");
+                    b.Navigation("Employee");
+                });
 
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature+FeatureProperty", b =>
+                {
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", "Feature")
+                        .WithMany("Properties")
+                        .HasForeignKey("FeatureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                            b1.HasKey("Key");
+                    b.Navigation("Feature");
+                });
 
-                            b1.HasIndex("EmployeeId");
-
-                            b1.ToTable("EmployeeProperty");
-
-                            b1.WithOwner()
-                                .HasForeignKey("EmployeeId");
-                        });
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization+OrganizationProperty", b =>
+                {
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization", "Organization")
+                        .WithMany("Properties")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Organization");
+                });
 
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy+PolicyProperty", b =>
+                {
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy", "Policy")
+                        .WithMany("Properties")
+                        .HasForeignKey("PolicyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Policy");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product+ProductProperty", b =>
+                {
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", "Product")
+                        .WithMany("Properties")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", b =>
+                {
                     b.Navigation("Properties");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", b =>
                 {
-                    b.OwnsMany("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature+FeatureProperty", "Properties", b1 =>
-                        {
-                            b1.Property<string>("Key")
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("FeatureId")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.Property<bool>("IsIdentifier")
-                                .HasColumnType("INTEGER");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.HasKey("Key");
-
-                            b1.HasIndex("FeatureId");
-
-                            b1.ToTable("FeatureProperty");
-
-                            b1.WithOwner()
-                                .HasForeignKey("FeatureId");
-                        });
-
-                    b.Navigation("Properties");
-                });
-
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization", b =>
-                {
-                    b.OwnsMany("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization+OrganizationProperty", "Properties", b1 =>
-                        {
-                            b1.Property<string>("Key")
-                                .HasColumnType("TEXT");
-
-                            b1.Property<bool>("IsIdentifier")
-                                .HasColumnType("INTEGER");
-
-                            b1.Property<string>("OrganizationIdentifier")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.HasKey("Key");
-
-                            b1.HasIndex("OrganizationIdentifier");
-
-                            b1.ToTable("OrganizationProperty");
-
-                            b1.WithOwner()
-                                .HasForeignKey("OrganizationIdentifier");
-                        });
-
-                    b.Navigation("Properties");
-                });
-
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy", b =>
-                {
-                    b.OwnsMany("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy+PolicyProperty", "Properties", b1 =>
-                        {
-                            b1.Property<string>("Key")
-                                .HasColumnType("TEXT");
-
-                            b1.Property<bool>("IsIdentifier")
-                                .HasColumnType("INTEGER");
-
-                            b1.Property<string>("PolicyId")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.HasKey("Key");
-
-                            b1.HasIndex("PolicyId");
-
-                            b1.ToTable("PolicyProperty");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PolicyId");
-                        });
-
-                    b.Navigation("Properties");
-                });
-
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", b =>
-                {
-                    b.OwnsMany("Poort8.Dataspace.AuthorizationRegistry.Entities.Product+ProductProperty", "Properties", b1 =>
-                        {
-                            b1.Property<string>("Key")
-                                .HasColumnType("TEXT");
-
-                            b1.Property<bool>("IsIdentifier")
-                                .HasColumnType("INTEGER");
-
-                            b1.Property<string>("ProductId")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.HasKey("Key");
-
-                            b1.HasIndex("ProductId");
-
-                            b1.ToTable("ProductProperty");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ProductId");
-                        });
-
                     b.Navigation("Properties");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization", b =>
                 {
                     b.Navigation("Employees");
+
+                    b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy", b =>
+                {
+                    b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", b =>
+                {
+                    b.Navigation("Properties");
                 });
 #pragma warning restore 612, 618
         }
