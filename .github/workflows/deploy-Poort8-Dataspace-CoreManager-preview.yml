@@ -7,6 +7,8 @@ on:
       - master
     paths:
       - 'Poort8.Dataspace.CoreManager/**'
+      - 'Poort8.Dataspace.AuthorizationRegistry/**'
+      - 'Poort8.Dataspace.OrganizationRegistry/**'
 
 permissions:
   id-token: write
