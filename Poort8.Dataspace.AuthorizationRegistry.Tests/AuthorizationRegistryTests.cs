@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using Poort8.Dataspace.AuthorizationRegistry.Extensions;
@@ -123,6 +122,17 @@ public class AuthorizationRegistryTests
         Assert.Equal(organizationUpdate.Name, updateEntity.Name);
         Assert.NotEqual(organization.Name, updateEntity.Name);
 
+        var employee = CreateNewEmployee(nameof(EmployeeUpdate), 1);
+        organizationUpdate.Employees.Add(employee);
+        updateEntity = await _authorizationRegistry.UpdateOrganization(organizationUpdate);
+
+        Assert.Single(updateEntity.Employees);
+
+        updateEntity.Employees.First().GivenName = "updated-name";
+        updateEntity = await _authorizationRegistry.UpdateOrganization(organizationUpdate);
+
+        Assert.Equal("updated-name", updateEntity.Employees.First().GivenName);
+
         var success = await _authorizationRegistry.DeleteOrganization(organization.Identifier);
         Assert.True(success);
     }
@@ -160,8 +170,6 @@ public class AuthorizationRegistryTests
         Assert.Equal(employee.EmployeeId, readByOrganizationIdEntity[0].EmployeeId);
 
         var employeeUpdate = CreateNewEmployee(nameof(EmployeeCrud), 2);
-        employeeUpdate.OrganizationId = organization.Identifier;
-        employeeUpdate.Organization = organizationEntity;
         var updateEntity = await _authorizationRegistry.UpdateEmployee(employeeUpdate);
 
         Assert.NotNull(updateEntity);
@@ -200,11 +208,25 @@ public class AuthorizationRegistryTests
         Assert.Equal(organization.Identifier, organizationEntity.Identifier);
         Assert.NotNull(organizationEntity.Properties);
         Assert.Equal(organization.Properties.Count, organizationEntity.Properties.Count);
-        Assert.Equal(1, organizationEntity.Employees.Count);
+        Assert.Single(organizationEntity.Employees);
 
-        employee.OrganizationId = "fail";
-        employee.Organization = CreateNewOrganization("fail", 2);
-        await Assert.ThrowsAsync<DbUpdateException>(async () => await _authorizationRegistry.UpdateEmployee(employee));
+        var employee2 = CreateNewEmployee(nameof(EmployeeUpdate), 2);
+        organization.Employees.Add(employee2);
+        var updateEntity = await _authorizationRegistry.UpdateEmployee(employee);
+
+        Assert.Equal(2, organizationEntity.Employees.Count);
+
+        organization.Employees.Remove(employee2);
+        updateEntity = await _authorizationRegistry.UpdateEmployee(employee);
+
+        Assert.Single(organizationEntity.Employees);
+
+        organization.Employees.First().GivenName = "updated-name";
+        organization.Employees.First().Properties.Add(new Employee.EmployeeProperty("test", "test"));
+        updateEntity = await _authorizationRegistry.UpdateEmployee(employee);
+
+        Assert.Equal("updated-name", organizationEntity.Employees.First().GivenName);
+        Assert.Equal(3, organizationEntity.Employees.First().Properties.Count);
 
         var success = await _authorizationRegistry.DeleteOrganization(organization.Identifier);
         Assert.True(success);
@@ -293,6 +315,21 @@ public class AuthorizationRegistryTests
         Assert.Equal(productUpdate.Name, updateEntity.Name);
         Assert.NotEqual(product.Name, updateEntity.Name);
 
+        var feature = CreateNewFeature(nameof(ProductUpdate), 1);
+        productUpdate.Features.Add(feature);
+        
+        updateEntity = await _authorizationRegistry.UpdateProduct(productUpdate);
+
+        Assert.Single(updateEntity.Features);
+
+        updateEntity.Features.First().Name = "updated-name";
+        productUpdate.Properties.Add(new Product.ProductProperty("test", "test"));
+        updateEntity = await _authorizationRegistry.UpdateProduct(productUpdate);
+
+        Assert.NotNull(updateEntity);
+        Assert.Equal("updated-name", updateEntity.Features.First().Name);
+        Assert.Equal(3, updateEntity.Properties.Count);
+
         var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
         Assert.True(success);
     }
@@ -355,10 +392,18 @@ public class AuthorizationRegistryTests
         Assert.Equal(product.ProductId, productEntity.ProductId);
         Assert.NotNull(productEntity.Properties);
         Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
-        Assert.Equal(1, productEntity.Features.Count);
+        Assert.Single(productEntity.Features);
 
         feature.FeatureId = "fail";
         await Assert.ThrowsAsync<InvalidOperationException>(async () => await _authorizationRegistry.UpdateFeature(feature));
+
+        var feature2 = CreateNewFeature(nameof(FeatureUpdate), 2);
+        feature2.Properties.Add(new Feature.FeatureProperty("test", "test"));
+        var featureEntity = await _authorizationRegistry.UpdateFeature(feature2);
+
+        Assert.NotNull(featureEntity);
+        Assert.Equal(feature2.FeatureId, featureEntity.FeatureId);
+        Assert.Equal(3, featureEntity.Properties.Count);
 
         var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
         Assert.True(success);
@@ -416,12 +461,12 @@ public class AuthorizationRegistryTests
         await _authorizationRegistry.AddNewFeatureToProduct(product.ProductId, feature);
 
         productEntity = await _authorizationRegistry.ReadProduct(product.ProductId);
-        Assert.Equal(1, productEntity!.Features.Count);
+        Assert.Single(productEntity!.Features);
 
         await _authorizationRegistry.RemoveFeatureFromProduct(product.ProductId, feature.FeatureId);
 
         productEntity = await _authorizationRegistry.ReadProduct(product.ProductId);
-        Assert.Equal(0, productEntity!.Features.Count);
+        Assert.Empty(productEntity!.Features);
 
         var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
         Assert.True(success);

@@ -13,4 +13,41 @@ public class AuthorizationContext : DbContext
     public AuthorizationContext(DbContextOptions<AuthorizationContext> options) : base(options)
     {
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Organization>()
+            .HasMany(o => o.Employees)
+            .WithOne()
+            .IsRequired();
+
+        modelBuilder.Entity<Product>()
+            .HasMany(p => p.Features)
+            .WithMany();
+
+        modelBuilder.Entity<Organization>()
+            .HasMany(e => e.Properties)
+            .WithOne()
+            .IsRequired();
+
+        modelBuilder.Entity<Employee>()
+            .HasMany(e => e.Properties)
+            .WithOne()
+            .IsRequired();
+
+        modelBuilder.Entity<Product>()
+            .HasMany(e => e.Properties)
+            .WithOne()
+            .IsRequired();
+
+        modelBuilder.Entity<Feature>()
+            .HasMany(e => e.Properties)
+            .WithOne()
+            .IsRequired();
+
+        modelBuilder.Entity<Policy>()
+            .HasMany(e => e.Properties)
+            .WithOne()
+            .IsRequired();
+    }
 }

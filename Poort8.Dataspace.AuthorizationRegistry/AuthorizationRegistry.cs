@@ -156,8 +156,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var employee = await context.Employees
-            .Include(e => e.Organization)
-            .ThenInclude(e => e.Properties)
             .Include(e => e.Properties)
             .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
 
@@ -165,8 +163,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             return employee;
 
         return await context.Employees
-            .Include(e => e.Organization)
-            .ThenInclude(e => e.Properties)
             .Include(e => e.Properties)
             .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == employeeId));
     }
@@ -195,7 +191,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             .Where(e => familyName == default || familyName == e.FamilyName)
             .Where(e => email == default || email == e.Email)
             .Where(e => propertyKey == default || e.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
-            .Include(e => e.Organization)
             .Include(e => e.Properties)
             .ToListAsync();
     }
@@ -234,6 +229,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             .Where(p => name == default || name == p.Name)
             .Where(p => propertyKey == default || p.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
             .Include(p => p.Features)
+            .ThenInclude(f => f.Properties)
             .Include(p => p.Properties)
             .ToListAsync();
     }
@@ -243,7 +239,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var feature = await context.Features
-            .Include(e => e.Products)
             .Include(e => e.Properties)
             .FirstOrDefaultAsync(e => e.FeatureId == featureId);
 
@@ -251,7 +246,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             return feature;
 
         return await context.Features
-            .Include(e => e.Products)
             .Include(e => e.Properties)
             .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == featureId));
     }
@@ -269,7 +263,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         return await context.Features
             .Where(f => name == default || name == f.Name)
             .Where(f => propertyKey == default || f.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
-            .Include(f => f.Products)
             .Include(f => f.Properties)
             .ToListAsync();
     }
@@ -303,6 +296,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             .Where(p => resourceId == default || resourceId == p.ResourceId)
             .Where(p => action == default || action == p.Action)
             .Where(p => propertyKey == default || p.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
+            .Include(p => p.Properties)
             .ToListAsync();
     }
 

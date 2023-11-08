@@ -55,8 +55,6 @@ public class Policy
     {
         [Key]
         public string Key { get; set; }
-        public string PolicyId { get; set; } = default!;
-        public Policy Policy { get; set; } = default!;
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;
 
