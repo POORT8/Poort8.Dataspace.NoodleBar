@@ -330,6 +330,14 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             }
         }
 
+        foreach (var employee in organizationEntity.Employees)
+        {
+            if (!organization.Employees.Any(p => p.EmployeeId == employee.EmployeeId))
+            {
+                context.Remove(employee);
+            }
+        }
+
         foreach (var property in organization.Properties)
         {
             var propertyEntity = organizationEntity.Properties
@@ -342,6 +350,14 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             else
             {
                 context.Entry(propertyEntity).CurrentValues.SetValues(property);
+            }
+        }
+
+        foreach (var property in organizationEntity.Properties)
+        {
+            if (!organization.Properties.Any(p => p.Key == property.Key))
+            {
+                context.Remove(property);
             }
         }
 
@@ -371,6 +387,14 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             else
             {
                 context.Entry(propertyEntity).CurrentValues.SetValues(property);
+            }
+        }
+
+        foreach (var property in employeeEntity.Properties)
+        {
+            if (!employee.Properties.Any(p => p.Key == property.Key))
+            {
+                context.Remove(property);
             }
         }
 
@@ -405,6 +429,14 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             }
         }
 
+        foreach (var feature in productEntity.Features)
+        {
+            if (!product.Features.Any(p => p.FeatureId == feature.FeatureId))
+            {
+                context.Remove(feature);
+            }
+        }
+
         foreach (var property in product.Properties)
         {
             var propertyEntity = productEntity.Properties
@@ -417,6 +449,14 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             else
             {
                 context.Entry(propertyEntity).CurrentValues.SetValues(property);
+            }
+        }
+
+        foreach (var property in productEntity.Properties)
+        {
+            if (!product.Properties.Any(p => p.Key == property.Key))
+            {
+                context.Remove(property);
             }
         }
 
@@ -449,6 +489,14 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             }
         }
 
+        foreach (var property in featureEntity.Properties)
+        {
+            if (!feature.Properties.Any(p => p.Key == property.Key))
+            {
+                context.Remove(property);
+            }
+        }
+
         await context.SaveChangesAsync();
         return featureEntity;
     }
@@ -475,6 +523,14 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             else
             {
                 context.Entry(propertyEntity).CurrentValues.SetValues(property);
+            }
+        }
+
+        foreach (var property in policyEntity.Properties)
+        {
+            if (!policy.Properties.Any(p => p.Key == property.Key))
+            {
+                context.Remove(property);
             }
         }
 

@@ -133,6 +133,13 @@ public class AuthorizationRegistryTests
 
         Assert.Equal("updated-name", updateEntity.Employees.First().GivenName);
 
+        updateEntity.Employees.Clear();
+        updateEntity.Properties.Clear();
+        updateEntity = await _authorizationRegistry.UpdateOrganization(updateEntity);
+
+        Assert.Empty(updateEntity.Employees);
+        Assert.Empty(updateEntity.Properties);
+
         var success = await _authorizationRegistry.DeleteOrganization(organization.Identifier);
         Assert.True(success);
     }
@@ -227,6 +234,11 @@ public class AuthorizationRegistryTests
 
         Assert.Equal("updated-name", organizationEntity.Employees.First().GivenName);
         Assert.Equal(3, organizationEntity.Employees.First().Properties.Count);
+
+        updateEntity.Properties.Clear();
+        updateEntity = await _authorizationRegistry.UpdateEmployee(updateEntity);
+
+        Assert.Empty(updateEntity.Properties);
 
         var success = await _authorizationRegistry.DeleteOrganization(organization.Identifier);
         Assert.True(success);
@@ -330,6 +342,13 @@ public class AuthorizationRegistryTests
         Assert.Equal("updated-name", updateEntity.Features.First().Name);
         Assert.Equal(3, updateEntity.Properties.Count);
 
+        updateEntity.Features.Clear();
+        updateEntity.Properties.Clear();
+        updateEntity = await _authorizationRegistry.UpdateProduct(updateEntity);
+
+        Assert.Empty(updateEntity.Features);
+        Assert.Empty(updateEntity.Properties);
+
         var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
         Assert.True(success);
     }
@@ -399,11 +418,16 @@ public class AuthorizationRegistryTests
 
         var feature2 = CreateNewFeature(nameof(FeatureUpdate), 2);
         feature2.Properties.Add(new Feature.FeatureProperty("test", "test"));
-        var featureEntity = await _authorizationRegistry.UpdateFeature(feature2);
+        var updateEntity = await _authorizationRegistry.UpdateFeature(feature2);
 
-        Assert.NotNull(featureEntity);
-        Assert.Equal(feature2.FeatureId, featureEntity.FeatureId);
-        Assert.Equal(3, featureEntity.Properties.Count);
+        Assert.NotNull(updateEntity);
+        Assert.Equal(feature2.FeatureId, updateEntity.FeatureId);
+        Assert.Equal(3, updateEntity.Properties.Count);
+
+        updateEntity.Properties.Clear();
+        updateEntity = await _authorizationRegistry.UpdateFeature(updateEntity);
+
+        Assert.Empty(updateEntity.Properties);
 
         var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
         Assert.True(success);
