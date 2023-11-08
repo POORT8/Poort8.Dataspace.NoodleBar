@@ -230,17 +230,29 @@ resource ipRestriction 'Microsoft.Web/sites/config@2022-03-01' = {
     netFrameworkVersion: 'v7.0'
     ipSecurityRestrictions: [
       {
-        ipAddress: '193.172.20.145/32'
-        action: 'Allow'
-        priority: 1
-        name: 'Kantoor IP'
-      }
-      {
         ipAddress: 'ApplicationInsightsAvailability'
         action: 'Allow'
         tag: 'ServiceTag'
-        priority: 2
+        priority: 1
         name: 'ApplicationInsightsAvailability'
+      }
+      {
+        ipAddress: '193.172.20.145/32'
+        action: 'Allow'
+        priority: 2
+        name: 'Kantoor IP'
+      }
+      {
+        ipAddress: '83.128.161.194/32'
+        action: 'Allow'
+        priority: 3
+        name: 'Cunes IP'
+      }
+      {
+        ipAddress: '143.177.169.7/32'
+        action: 'Allow'
+        priority: 4
+        name: 'Merijn IP'
       }
       {
         ipAddress: 'Any'
