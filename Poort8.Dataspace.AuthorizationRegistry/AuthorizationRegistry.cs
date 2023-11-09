@@ -315,6 +315,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         context.Entry(organizationEntity).CurrentValues.SetValues(organization);
 
+        //NOTE: context.Update(organization) does not work as expected
         foreach (var employee in organization.Employees)
         {
             var employeeEntity = organizationEntity.Employees
@@ -327,6 +328,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             else
             {
                 context.Entry(employeeEntity).CurrentValues.SetValues(employee);
+                UpdateEmployeeProperties(context, employee, employeeEntity);
             }
         }
 
@@ -374,7 +376,14 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             .SingleAsync(e => e.EmployeeId == employee.EmployeeId);
 
         context.Entry(employeeEntity).CurrentValues.SetValues(employee);
+        UpdateEmployeeProperties(context, employee, employeeEntity);
 
+        await context.SaveChangesAsync();
+        return employeeEntity;
+    }
+
+    private static void UpdateEmployeeProperties(AuthorizationContext context, Employee employee, Employee employeeEntity)
+    {
         foreach (var property in employee.Properties)
         {
             var propertyEntity = employeeEntity.Properties
@@ -397,9 +406,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
                 context.Remove(property);
             }
         }
-
-        await context.SaveChangesAsync();
-        return employeeEntity;
     }
 
     public async Task<Product> UpdateProduct(Product product)
@@ -426,6 +432,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             else
             {
                 context.Entry(featureEntity).CurrentValues.SetValues(feature);
+                UpdateFeatureProperties(context, feature, featureEntity);
             }
         }
 
@@ -473,7 +480,14 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             .SingleAsync(f => f.FeatureId == feature.FeatureId);
 
         context.Entry(featureEntity).CurrentValues.SetValues(feature);
+        UpdateFeatureProperties(context, feature, featureEntity);
 
+        await context.SaveChangesAsync();
+        return featureEntity;
+    }
+
+    private static void UpdateFeatureProperties(AuthorizationContext context, Feature feature, Feature featureEntity)
+    {
         foreach (var property in feature.Properties)
         {
             var propertyEntity = featureEntity.Properties
@@ -496,9 +510,6 @@ public class AuthorizationRegistry : IAuthorizationRegistry
                 context.Remove(property);
             }
         }
-
-        await context.SaveChangesAsync();
-        return featureEntity;
     }
 
     public async Task<Policy> UpdatePolicy(Policy policy)

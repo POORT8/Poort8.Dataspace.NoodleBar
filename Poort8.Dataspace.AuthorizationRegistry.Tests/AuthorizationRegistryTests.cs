@@ -129,9 +129,11 @@ public class AuthorizationRegistryTests
         Assert.Single(updateEntity.Employees);
 
         updateEntity.Employees.First().GivenName = "updated-name";
+        updateEntity.Employees.First().Properties.Add(new Employee.EmployeeProperty("test", "test"));
         updateEntity = await _authorizationRegistry.UpdateOrganization(organizationUpdate);
 
         Assert.Equal("updated-name", updateEntity.Employees.First().GivenName);
+        Assert.Equal(3, updateEntity.Employees.First().Properties.Count);
 
         updateEntity.Employees.Clear();
         updateEntity.Properties.Clear();
