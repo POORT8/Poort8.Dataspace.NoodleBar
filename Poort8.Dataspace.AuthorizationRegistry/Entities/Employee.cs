@@ -5,9 +5,6 @@ public class Employee //https://schema.org/Person
 {
     [Key]
     public string EmployeeId { get; set; }
-    public string OrganizationId { get; set; } = default!;
-    public Organization Organization { get; set; } = default!;
-    public Organization WorksFor => Organization;
     public string GivenName { get; set; }
     public string FamilyName { get; set; }
     public string Telephone { get; set; }
@@ -37,8 +34,6 @@ public class Employee //https://schema.org/Person
     {
         [Key]
         public string Key { get; set; }
-        public string EmployeeId { get; set; } = default!;
-        public Employee Employee { get; set; } = default!;
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;
 

@@ -7,7 +7,6 @@ public class Feature //https://schema.org/Service
     public string FeatureId { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
-    public ICollection<Product> Products { get; set; } = new List<Product>();
     public ICollection<FeatureProperty> Properties { get; set; } = new List<FeatureProperty>();
 
     public Feature(string featureId, string name, string description)
@@ -29,8 +28,6 @@ public class Feature //https://schema.org/Service
     {
         [Key]
         public string Key { get; set; }
-        public string FeatureId { get; set; } = default!;
-        public Feature Feature { get; set; } = default!;
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;
 
