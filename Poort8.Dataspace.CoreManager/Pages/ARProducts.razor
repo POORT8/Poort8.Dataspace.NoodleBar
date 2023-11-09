@@ -191,21 +191,6 @@
         </div>
 
         <br>
-        <h4>Products</h4>
-        <TableMolecule TItem=Product Items=EditedFeature.Products.ToList() Context="product">
-            <TableHeader>
-                <th>Product ID</th>
-                <th>Name</th>
-                <th>Description</th>
-            </TableHeader>
-            <RowTemplate>
-                <td>@product.ProductId</td>
-                <td>@product.Name</td>
-                <td>@product.Description</td>
-            </RowTemplate>
-        </TableMolecule>
-
-        <br>
         <h4>Properties</h4>
         <TableMolecule TItem=Feature.FeatureProperty Items=EditedFeature.Properties.ToList() Context="property">
             <TableHeader>

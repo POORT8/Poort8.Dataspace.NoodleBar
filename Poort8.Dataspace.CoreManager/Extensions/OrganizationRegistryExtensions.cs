@@ -6,17 +6,12 @@ public static class OrganizationRegistryExtensions
 {
     public static Organization DeepCopy(this Organization organization)
     {
-        var newOrganization = new Organization(
+        return new Organization(
             organization.Identifier,
-            organization.Name)
-        {
-            Adherence = organization.Adherence.DeepCopy()
-        };
-
-        newOrganization.Roles = organization.Roles.Select(r => r.DeepCopy(newOrganization)).ToList();
-        newOrganization.Properties = organization.Properties.Select(p => p.DeepCopy(newOrganization)).ToList();
-
-        return newOrganization;
+            organization.Name,
+            organization.Adherence.DeepCopy(),
+            organization.Roles.Select(r => r.DeepCopy()).ToList(),
+            organization.Properties.Select(p => p.DeepCopy()).ToList());
     }
 
     private static Adherence DeepCopy(this Adherence adherence)
@@ -27,25 +22,19 @@ public static class OrganizationRegistryExtensions
             adherence.ValidUntil);
     }
 
-    private static OrganizationRole DeepCopy(this OrganizationRole organizationRole, Organization newOrganization)
+    private static OrganizationRole DeepCopy(this OrganizationRole organizationRole)
     {
         return new OrganizationRole(organizationRole.Role)
         {
-            RoleId = organizationRole.RoleId,
-            OrganizationId = organizationRole.OrganizationId,
-            Organization = newOrganization
+            RoleId = organizationRole.RoleId
         };
     }
 
-    private static Property DeepCopy(this Property property, Organization newOrganization)
+    private static Property DeepCopy(this Property property)
     {
         return new Property(
             property.Key,
             property.Value,
-            property.IsIdentifier)
-        {
-            OrganizationId = property.OrganizationId,
-            Organization = newOrganization
-        };
+            property.IsIdentifier);
     }
 }

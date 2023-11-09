@@ -37,7 +37,7 @@ public partial class AROrganizations
     private void OnEmployeeRowClick(Employee employee)
     {
         Logger?.LogInformation("P8.inf - AuthorizationRegistry - Clicked on row with employee {identifier} ({name})", employee.EmployeeId, employee.GivenName + " " + employee.FamilyName);
-        var existingEmployee = EditedOrganization!.Employees.FirstOrDefault(e => e.EmployeeId.Equals(employee.EmployeeId))?.DeepCopy(EditedOrganization);
+        var existingEmployee = EditedOrganization!.Employees.FirstOrDefault(e => e.EmployeeId.Equals(employee.EmployeeId))?.DeepCopy();
         if (existingEmployee is not null)
         {
             _employee = existingEmployee;
@@ -87,11 +87,7 @@ public partial class AROrganizations
 
     private void ResetEmployee()
     {
-        _employee = new(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty)
-        {
-            OrganizationId = EditedOrganization!.Identifier,
-            Organization = EditedOrganization
-        };
+        _employee = new(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
         _employeeProperty = new(string.Empty, string.Empty);
     }
 

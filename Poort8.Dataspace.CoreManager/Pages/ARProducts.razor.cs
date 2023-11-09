@@ -76,13 +76,6 @@ public partial class ARProducts
         Logger?.LogInformation("P8.inf - AuthorizationRegistry - Delete button clicked for product {identifier} ({name})", product.ProductId, product.Name);
         await AuthorizationRegistryService!.DeleteProduct(product.ProductId);
         _products?.Remove(product);
-        foreach (var feature in _features ?? Enumerable.Empty<Feature>())
-        {
-            var featureProduct = feature.Products.FirstOrDefault(p => p.ProductId.Equals(product.ProductId, StringComparison.OrdinalIgnoreCase));
-            if (featureProduct is not null) feature.Products.Remove(featureProduct);
-        }
-        var selectedFeatureProduct = _selectedFeature?.Products.FirstOrDefault(p => p.ProductId.Equals(product.ProductId, StringComparison.OrdinalIgnoreCase));
-        if (selectedFeatureProduct is not null) _selectedFeature!.Products.Remove(selectedFeatureProduct);
         StateHasChanged();
     }
 
@@ -145,22 +138,18 @@ public partial class ARProducts
     private async void AddFeatureToProduct(string featureId, string productId)
     {
         _ = await AuthorizationRegistryService!.AddExistingFeatureToProduct(productId, featureId);
+
         var product = _products!.First(p => p.ProductId.Equals(productId, StringComparison.OrdinalIgnoreCase));
         var feature = _features!.First(f => f.FeatureId.Equals(featureId, StringComparison.OrdinalIgnoreCase));
-        feature.Products.Add(product);
-        if (_selectedFeature?.FeatureId == featureId) _selectedFeature.Products.Add(product);
         product.Features.Add(feature);
         if (_selectedProduct?.ProductId == productId) _selectedProduct.Features.Add(feature);
+
         StateHasChanged();
     }
 
     private async void RemoveFeatureFromProduct(string featureId, string productId)
     {
         _ = await AuthorizationRegistryService!.RemoveFeatureFromProduct(productId, featureId);
-
-        var feature = _features!.First(f => f.FeatureId.Equals(featureId, StringComparison.OrdinalIgnoreCase));
-        feature.Products.Remove(feature.Products.First(p => p.ProductId.Equals(productId, StringComparison.OrdinalIgnoreCase)));
-        if (featureId.Equals(_selectedFeature?.FeatureId, StringComparison.OrdinalIgnoreCase)) _selectedFeature.Products.Remove(_selectedFeature.Products.First(p => p.ProductId.Equals(productId, StringComparison.OrdinalIgnoreCase)));
 
         var product = _products!.First(p => p.ProductId.Equals(productId, StringComparison.OrdinalIgnoreCase));
         product.Features.Remove(product.Features.First(f => f.FeatureId.Equals(featureId, StringComparison.OrdinalIgnoreCase)));

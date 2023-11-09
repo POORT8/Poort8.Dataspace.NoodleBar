@@ -6,178 +6,106 @@ public static class AuthorizationRegistryExtensions
 {
     public static Organization DeepCopy(this Organization organization)
     {
-        var newOrganization = new Organization(
+        return new Organization(
             organization.Identifier,
             organization.Name,
             organization.Url,
             organization.Representative,
-            organization.InvoicingContact);
-
-        newOrganization.Employees = organization.Employees.Select(e => e.DeepCopy(newOrganization)).ToList();
-        newOrganization.Properties = organization.Properties.Select(p => p.DeepCopy(newOrganization)).ToList();
-
-        return newOrganization;
+            organization.InvoicingContact,
+            organization.Properties.Select(p => p.DeepCopy()).ToList())
+        {
+            Employees = organization.Employees.Select(e => e.DeepCopy()).ToList()
+        };
     }
 
-    private static Organization.OrganizationProperty DeepCopy(this Organization.OrganizationProperty property, Organization newOrganization)
+    private static Organization.OrganizationProperty DeepCopy(this Organization.OrganizationProperty property)
     {
         return new Organization.OrganizationProperty(
             property.Key,
             property.Value,
-            property.IsIdentifier)
-        {
-            OrganizationId = property.OrganizationId,
-            Organization = newOrganization
-        };
+            property.IsIdentifier);
     }
 
-    public static Employee DeepCopy(this Employee employee, Organization newOrganization)
+    public static Employee DeepCopy(this Employee employee)
     {
-        var newEmployee = new Employee(
+        return new Employee(
             employee.EmployeeId,
             employee.GivenName,
             employee.FamilyName,
             employee.Telephone,
-            employee.Email)
-        {
-            OrganizationId = employee.OrganizationId,
-            Organization = newOrganization
-        };
-
-        newEmployee.Properties = employee.Properties.Select(p => p.DeepCopy(newEmployee)).ToList();
-
-        return newEmployee;
+            employee.Email,
+            employee.Properties.Select(p => p.DeepCopy()).ToList());
     }
 
-    private static Employee.EmployeeProperty DeepCopy(this Employee.EmployeeProperty property, Employee newEmployee)
+    private static Employee.EmployeeProperty DeepCopy(this Employee.EmployeeProperty property)
     {
         return new Employee.EmployeeProperty(
             property.Key,
             property.Value,
-            property.IsIdentifier)
-        {
-            EmployeeId = property.EmployeeId,
-            Employee = newEmployee
-        };
+            property.IsIdentifier);
     }
 
     public static Policy DeepCopy(this Policy policy)
     {
-        var newPolicy = new Policy(
+        return new Policy(
             policy.UseCase,
             policy.IssuerId,
             policy.SubjectId,
             policy.ResourceId,
-            policy.Action)
+            policy.Action,
+            policy.Properties.Select(p => p.DeepCopy()).ToList())
         {
             PolicyId = policy.PolicyId,
             IssuedAt = policy.IssuedAt,
             NotBefore = policy.NotBefore,
             Expiration = policy.Expiration
         };
-
-        newPolicy.Properties = policy.Properties.Select(p => p.DeepCopy(newPolicy)).ToList();
-
-        return newPolicy;
     }
 
-    private static Policy.PolicyProperty DeepCopy(this Policy.PolicyProperty property, Policy newPolicy)
+    private static Policy.PolicyProperty DeepCopy(this Policy.PolicyProperty property)
     {
         return new Policy.PolicyProperty(
             property.Key,
             property.Value,
-            property.IsIdentifier)
-        {
-            PolicyId = property.PolicyId,
-            Policy = newPolicy
-        };
+            property.IsIdentifier);
     }
 
     public static Product DeepCopy(this Product product)
     {
-        var newProduct = new Product(
+        return new Product(
             product.ProductId,
             product.Name,
             product.Description,
             product.Provider,
-            product.Url);
-
-        newProduct.Features = product.Features.Select(f => f.DeepCopy(newProduct)).ToList();
-        newProduct.Properties = product.Properties.Select(p => p.DeepCopy(newProduct)).ToList();
-
-        return newProduct;
+            product.Url,
+            product.Properties.Select(p => p.DeepCopy()).ToList())
+        {
+            Features = product.Features.Select(f => f.DeepCopy()).ToList()
+        };
     }
 
-    private static Product DeepCopy(this Product product, Feature newFeature)
-    {
-        var newProduct = new Product(
-            product.ProductId,
-            product.Name,
-            product.Description,
-            product.Provider,
-            product.Url);
-
-        var featureList = product.Features.Select(f => f).ToList();
-        featureList.RemoveAll(f => f.FeatureId.Equals(newFeature.FeatureId, StringComparison.OrdinalIgnoreCase));
-        featureList.Add(newFeature);
-
-        newProduct.Features = featureList;
-        newProduct.Properties = product.Properties.Select(p => p.DeepCopy(newProduct)).ToList();
-
-        return newProduct;
-    }
-
-    private static Product.ProductProperty DeepCopy(this Product.ProductProperty property, Product newProduct)
+    private static Product.ProductProperty DeepCopy(this Product.ProductProperty property)
     {
         return new Product.ProductProperty(
             property.Key,
             property.Value,
-            property.IsIdentifier)
-        {
-            ProductId = property.ProductId,
-            Product = newProduct
-        };
+            property.IsIdentifier);
     }
 
     public static Feature DeepCopy(this Feature feature)
     {
-        var newFeature = new Feature(
+        return new Feature(
             feature.FeatureId,
             feature.Name,
-            feature.Description);
-
-        newFeature.Products = feature.Products.Select(p => p.DeepCopy(newFeature)).ToList();
-        newFeature.Properties = feature.Properties.Select(p => p.DeepCopy(newFeature)).ToList();
-
-        return newFeature;
+            feature.Description,
+            feature.Properties.Select(p => p.DeepCopy()).ToList());
     }
 
-    private static Feature DeepCopy(this Feature feature, Product newProduct)
-    {
-        var newFeature = new Feature(
-            feature.FeatureId,
-            feature.Name,
-            feature.Description);
-
-        var productList = feature.Products.Select(p => p).ToList();
-        productList.RemoveAll(p => p.ProductId.Equals(newProduct.ProductId, StringComparison.OrdinalIgnoreCase));
-        productList.Add(newProduct);
-
-        newFeature.Products = productList;
-        newFeature.Properties = feature.Properties.Select(p => p.DeepCopy(newFeature)).ToList();
-
-        return newFeature;
-    }
-
-    private static Feature.FeatureProperty DeepCopy(this Feature.FeatureProperty property, Feature newFeature)
+    private static Feature.FeatureProperty DeepCopy(this Feature.FeatureProperty property)
     {
         return new Feature.FeatureProperty(
             property.Key,
             property.Value,
-            property.IsIdentifier)
-        {
-            FeatureId = property.FeatureId,
-            Feature = newFeature
-        };
+            property.IsIdentifier);
     }
 }
