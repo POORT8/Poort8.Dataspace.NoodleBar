@@ -21,7 +21,7 @@ public class OrganizationRegistry : IOrganizationRegistry
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var organizationEntity = await context.Organizations.AddAsync(organization);
+        var organizationEntity = await context.AddAsync(organization);
         await context.SaveChangesAsync();
         return organizationEntity.Entity;
     }
@@ -119,7 +119,7 @@ public class OrganizationRegistry : IOrganizationRegistry
 
         foreach (var property in organizationEntity.Properties)
         {
-            if (!organization.Properties.Any(p => p.OrganizationId == property.OrganizationId))
+            if (!organization.Properties.Any(p => p.Key == property.Key))
             {
                 context.Remove(property);
             }

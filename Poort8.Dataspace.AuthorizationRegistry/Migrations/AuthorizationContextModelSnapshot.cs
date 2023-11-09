@@ -14,19 +14,19 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
 
             modelBuilder.Entity("FeatureProduct", b =>
                 {
                     b.Property<string>("FeaturesFeatureId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProductsProductId")
+                    b.Property<string>("ProductId")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("FeaturesFeatureId", "ProductsProductId");
+                    b.HasKey("FeaturesFeatureId", "ProductId");
 
-                    b.HasIndex("ProductsProductId");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("FeatureProduct");
                 });
@@ -48,7 +48,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("OrganizationId")
+                    b.Property<string>("OrganizationIdentifier")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -58,7 +58,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
 
                     b.HasKey("EmployeeId");
 
-                    b.HasIndex("OrganizationId");
+                    b.HasIndex("OrganizationIdentifier");
 
                     b.ToTable("Employees");
                 });
@@ -161,7 +161,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                     b.Property<bool>("IsIdentifier")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("OrganizationId")
+                    b.Property<string>("OrganizationIdentifier")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -171,7 +171,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
 
                     b.HasKey("Key");
 
-                    b.HasIndex("OrganizationId");
+                    b.HasIndex("OrganizationIdentifier");
 
                     b.ToTable("OrganizationProperty");
                 });
@@ -295,75 +295,63 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
 
                     b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", null)
                         .WithMany()
-                        .HasForeignKey("ProductsProductId")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization", "Organization")
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization", null)
                         .WithMany("Employees")
-                        .HasForeignKey("OrganizationId")
+                        .HasForeignKey("OrganizationIdentifier")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee+EmployeeProperty", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", "Employee")
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", null)
                         .WithMany("Properties")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature+FeatureProperty", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", "Feature")
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", null)
                         .WithMany("Properties")
                         .HasForeignKey("FeatureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Feature");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization+OrganizationProperty", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization", "Organization")
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization", null)
                         .WithMany("Properties")
-                        .HasForeignKey("OrganizationId")
+                        .HasForeignKey("OrganizationIdentifier")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy+PolicyProperty", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy", "Policy")
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy", null)
                         .WithMany("Properties")
                         .HasForeignKey("PolicyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Policy");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product+ProductProperty", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", "Product")
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", null)
                         .WithMany("Properties")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", b =>

@@ -87,11 +87,7 @@ public partial class AROrganizations
 
     private void ResetEmployee()
     {
-        _employee = new(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty)
-        {
-            OrganizationId = EditedOrganization!.Identifier,
-            Organization = EditedOrganization
-        };
+        _employee = new(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
         _employeeProperty = new(string.Empty, string.Empty);
     }
 

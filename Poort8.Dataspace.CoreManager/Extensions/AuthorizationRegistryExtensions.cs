@@ -6,27 +6,24 @@ public static class AuthorizationRegistryExtensions
 {
     public static Organization DeepCopy(this Organization organization)
     {
-        var newOrganization = new Organization(
+        return new Organization(
             organization.Identifier,
             organization.Name,
             organization.Url,
             organization.Representative,
             organization.InvoicingContact,
-            organization.Properties.Select(p => new Organization.OrganizationProperty(p.Key, p.Value, p.IsIdentifier)).ToList());
-
-        newOrganization.Employees = organization.Employees.Select(e => new Employee(
-            e.EmployeeId,
-            e.GivenName,
-            e.FamilyName,
-            e.Telephone,
-            e.Email,
-            e.Properties.Select(p => new Employee.EmployeeProperty(p.Key, p.Value, p.IsIdentifier)).ToList())
+            organization.Properties.Select(p => p.DeepCopy()).ToList())
         {
-            OrganizationId = newOrganization.Identifier,
-            Organization = newOrganization
-        }).ToList();
+            Employees = organization.Employees.Select(e => e.DeepCopy()).ToList()
+        };
+    }
 
-        return newOrganization;
+    private static Organization.OrganizationProperty DeepCopy(this Organization.OrganizationProperty property)
+    {
+        return new Organization.OrganizationProperty(
+            property.Key,
+            property.Value,
+            property.IsIdentifier);
     }
 
     public static Employee DeepCopy(this Employee employee)
@@ -37,11 +34,15 @@ public static class AuthorizationRegistryExtensions
             employee.FamilyName,
             employee.Telephone,
             employee.Email,
-            employee.Properties.Select(p => new Employee.EmployeeProperty(p.Key, p.Value, p.IsIdentifier)).ToList())
-        {
-            OrganizationId = employee.OrganizationId,
-            Organization = employee.Organization
-        };
+            employee.Properties.Select(p => p.DeepCopy()).ToList());
+    }
+
+    private static Employee.EmployeeProperty DeepCopy(this Employee.EmployeeProperty property)
+    {
+        return new Employee.EmployeeProperty(
+            property.Key,
+            property.Value,
+            property.IsIdentifier);
     }
 
     public static Policy DeepCopy(this Policy policy)
@@ -52,7 +53,7 @@ public static class AuthorizationRegistryExtensions
             policy.SubjectId,
             policy.ResourceId,
             policy.Action,
-            policy.Properties.Select(p => new Policy.PolicyProperty(p.Key, p.Value, p.IsIdentifier)).ToList())
+            policy.Properties.Select(p => p.DeepCopy()).ToList())
         {
             PolicyId = policy.PolicyId,
             IssuedAt = policy.IssuedAt,
@@ -61,18 +62,34 @@ public static class AuthorizationRegistryExtensions
         };
     }
 
+    private static Policy.PolicyProperty DeepCopy(this Policy.PolicyProperty property)
+    {
+        return new Policy.PolicyProperty(
+            property.Key,
+            property.Value,
+            property.IsIdentifier);
+    }
+
     public static Product DeepCopy(this Product product)
     {
-        return new(
+        return new Product(
             product.ProductId,
             product.Name,
             product.Description,
             product.Provider,
             product.Url,
-            product.Properties.Select(p => new Product.ProductProperty(p.Key, p.Value, p.IsIdentifier)).ToList())
+            product.Properties.Select(p => p.DeepCopy()).ToList())
         {
-            Features = product.Features.Select(f => f).ToList()
+            Features = product.Features.Select(f => f.DeepCopy()).ToList()
         };
+    }
+
+    private static Product.ProductProperty DeepCopy(this Product.ProductProperty property)
+    {
+        return new Product.ProductProperty(
+            property.Key,
+            property.Value,
+            property.IsIdentifier);
     }
 
     public static Feature DeepCopy(this Feature feature)
@@ -81,9 +98,14 @@ public static class AuthorizationRegistryExtensions
             feature.FeatureId,
             feature.Name,
             feature.Description,
-            feature.Properties.Select(p => new Feature.FeatureProperty(p.Key, p.Value, p.IsIdentifier)).ToList())
-        {
-            Products = feature.Products.Select(p => p).ToList()
-        };
+            feature.Properties.Select(p => p.DeepCopy()).ToList());
+    }
+
+    private static Feature.FeatureProperty DeepCopy(this Feature.FeatureProperty property)
+    {
+        return new Feature.FeatureProperty(
+            property.Key,
+            property.Value,
+            property.IsIdentifier);
     }
 }

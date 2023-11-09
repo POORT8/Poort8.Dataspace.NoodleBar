@@ -48,15 +48,15 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                 columns: table => new
                 {
                     RoleId = table.Column<string>(type: "TEXT", nullable: false),
-                    OrganizationId = table.Column<string>(type: "TEXT", nullable: false),
-                    Role = table.Column<string>(type: "TEXT", nullable: false)
+                    Role = table.Column<string>(type: "TEXT", nullable: false),
+                    OrganizationIdentifier = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrganizationRole", x => x.RoleId);
                     table.ForeignKey(
-                        name: "FK_OrganizationRole_Organizations_OrganizationId",
-                        column: x => x.OrganizationId,
+                        name: "FK_OrganizationRole_Organizations_OrganizationIdentifier",
+                        column: x => x.OrganizationIdentifier,
                         principalTable: "Organizations",
                         principalColumn: "Identifier",
                         onDelete: ReferentialAction.Cascade);
@@ -67,30 +67,30 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                 columns: table => new
                 {
                     Key = table.Column<string>(type: "TEXT", nullable: false),
-                    OrganizationId = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false)
+                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
+                    OrganizationIdentifier = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Property", x => x.Key);
                     table.ForeignKey(
-                        name: "FK_Property_Organizations_OrganizationId",
-                        column: x => x.OrganizationId,
+                        name: "FK_Property_Organizations_OrganizationIdentifier",
+                        column: x => x.OrganizationIdentifier,
                         principalTable: "Organizations",
                         principalColumn: "Identifier",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganizationRole_OrganizationId",
+                name: "IX_OrganizationRole_OrganizationIdentifier",
                 table: "OrganizationRole",
-                column: "OrganizationId");
+                column: "OrganizationIdentifier");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Property_OrganizationId",
+                name: "IX_Property_OrganizationIdentifier",
                 table: "Property",
-                column: "OrganizationId");
+                column: "OrganizationIdentifier");
         }
 
         /// <inheritdoc />

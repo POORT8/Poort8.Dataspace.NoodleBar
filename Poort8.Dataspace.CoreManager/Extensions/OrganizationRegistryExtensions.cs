@@ -9,8 +9,32 @@ public static class OrganizationRegistryExtensions
         return new Organization(
             organization.Identifier,
             organization.Name,
-            new Adherence(organization.Adherence.Status, organization.Adherence.ValidFrom, organization.Adherence.ValidUntil),
-            organization.Roles.Select(r => new OrganizationRole(r.Role)).ToList(),
-            organization.Properties.Select(p => new Property(p.Key, p.Value, p.IsIdentifier)).ToList());
+            organization.Adherence.DeepCopy(),
+            organization.Roles.Select(r => r.DeepCopy()).ToList(),
+            organization.Properties.Select(p => p.DeepCopy()).ToList());
+    }
+
+    private static Adherence DeepCopy(this Adherence adherence)
+    {
+        return new Adherence(
+            adherence.Status,
+            adherence.ValidFrom,
+            adherence.ValidUntil);
+    }
+
+    private static OrganizationRole DeepCopy(this OrganizationRole organizationRole)
+    {
+        return new OrganizationRole(organizationRole.Role)
+        {
+            RoleId = organizationRole.RoleId
+        };
+    }
+
+    private static Property DeepCopy(this Property property)
+    {
+        return new Property(
+            property.Key,
+            property.Value,
+            property.IsIdentifier);
     }
 }

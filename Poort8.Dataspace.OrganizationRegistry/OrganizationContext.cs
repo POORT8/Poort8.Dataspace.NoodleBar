@@ -11,6 +11,22 @@ public class OrganizationContext : DbContext
     {
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Organization>()
+            .OwnsOne(o => o.Adherence);
+
+        modelBuilder.Entity<Organization>()
+            .HasMany(o => o.Roles)
+            .WithOne()
+            .IsRequired();
+
+        modelBuilder.Entity<Organization>()
+            .HasMany(o => o.Properties)
+            .WithOne()
+            .IsRequired();
+    }
+
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
         //TODO: Fix audit
