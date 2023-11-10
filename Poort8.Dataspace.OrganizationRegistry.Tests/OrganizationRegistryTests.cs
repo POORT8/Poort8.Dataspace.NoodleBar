@@ -22,7 +22,7 @@ public class OrganizationRegistryTests
     private async Task RunMigrations()
     {
         var runMigrations = _organizationRegistry.GetType().GetMethod("RunMigrations", BindingFlags.Public | BindingFlags.Instance);
-        await (Task)runMigrations.Invoke(_organizationRegistry, null);
+        await (Task)runMigrations!.Invoke(_organizationRegistry, null)!;
     }
 
     private static Organization CreateNewOrganization(string id, int index)

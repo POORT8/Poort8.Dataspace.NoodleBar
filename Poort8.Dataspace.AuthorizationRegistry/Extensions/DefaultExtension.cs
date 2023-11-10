@@ -14,6 +14,7 @@ public static class DefaultExtension
 
         services.AddDbContextFactory<AuthorizationContext>(options => options.UseSqlite(sqliteOptions.ConnectionString));
         services.AddSingleton<IAuthorizationRegistry, AuthorizationRegistry>();
+        services.AddSingleton<IRepository, Repository>();
 
         return services;
     }

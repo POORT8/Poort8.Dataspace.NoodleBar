@@ -42,6 +42,9 @@ public interface IAuthorizationRegistry //TODO: Add authorizations for managing 
     Task<Policy> UpdatePolicy(Policy policy);
     Task<bool> DeletePolicy(string policyId);
 
-    //TODO: Add enforce
+    //Authorization
+    Task<bool> Enforce(string subjectId, string resourceId, string action, string useCase = "default");
+    Task<(bool allowed, List<Policy> explainPolicy)> ExplainedEnforce(string subjectId, string resourceId, string action, string useCase = "default");
+
     //TOOD: Audit
 }

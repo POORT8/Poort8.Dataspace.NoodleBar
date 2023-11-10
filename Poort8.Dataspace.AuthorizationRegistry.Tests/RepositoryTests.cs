@@ -4,13 +4,12 @@ using Poort8.Dataspace.AuthorizationRegistry.Extensions;
 using System.Reflection;
 
 namespace Poort8.Dataspace.AuthorizationRegistry.Tests;
-
-public class AuthorizationRegistryTests
+public class RepositoryTests
 {
     private readonly ServiceProvider _serviceProvider;
     private readonly IAuthorizationRegistry _authorizationRegistry;
 
-    public AuthorizationRegistryTests()
+    public RepositoryTests()
     {
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddAuthorizationRegistrySqlite(options => options.ConnectionString = $"Data Source={Guid.NewGuid()}.db");
@@ -23,7 +22,7 @@ public class AuthorizationRegistryTests
     private async Task RunMigrations()
     {
         var runMigrations = _authorizationRegistry.GetType().GetMethod("RunMigrations", BindingFlags.Public | BindingFlags.Instance);
-        await (Task)runMigrations.Invoke(_authorizationRegistry, null);
+        await (Task)runMigrations!.Invoke(_authorizationRegistry, null)!;
     }
 
     private static Organization CreateNewOrganization(string id, int index)

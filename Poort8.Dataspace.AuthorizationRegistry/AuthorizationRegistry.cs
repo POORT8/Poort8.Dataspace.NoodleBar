@@ -1,14 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Casbin;
+using Microsoft.EntityFrameworkCore;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
+using Poort8.Dataspace.AuthorizationRegistry.Exceptions;
 
 namespace Poort8.Dataspace.AuthorizationRegistry;
 public class AuthorizationRegistry : IAuthorizationRegistry
 {
     private readonly IDbContextFactory<AuthorizationContext> _contextFactory;
+    private readonly IRepository _repository;
+    private readonly IEnforcer _enforcer;
 
-    public AuthorizationRegistry(IDbContextFactory<AuthorizationContext> dbContextFactory)
+    public AuthorizationRegistry(IDbContextFactory<AuthorizationContext> dbContextFactory, IRepository repository)
     {
-        _contextFactory = dbContextFactory;
+        _contextFactory = dbContextFactory; //TODO: Can be removed later?
+        _repository = repository;
+        _enforcer = new Enforcer(EnforcerModel.Create());
     }
 
     public async Task RunMigrations()
@@ -52,11 +58,20 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Policy> CreatePolicy(Policy policy)
     {
-        using var context = await _contextFactory.CreateDbContextAsync();
+        var success = await _enforcer.AddPolicyAsync(policy.ToPolicyValues());
+        if (!success) throw new EnforcerException("Could not add policy to enforcer.");
 
-        var policyEntity = await context.AddAsync(policy);
-        await context.SaveChangesAsync();
-        return policyEntity.Entity;
+        try
+        {
+            return await _repository.Create(policy);
+        }
+        catch (Exception)
+        {
+            success = await _enforcer.RemovePolicyAsync(policy.ToPolicyValues());
+            if (!success) throw new EnforcerException("_repository.Create failed and could not remove policy from enforcer.");
+
+            throw;
+        }
     }
 
     public async Task<Employee> AddNewEmployeeToOrganization(string organizationId, Employee employee)
@@ -269,10 +284,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Policy?> ReadPolicy(string policyId)
     {
-        using var context = await _contextFactory.CreateDbContextAsync();
-        return await context.Policies
-            .Include(p => p.Properties)
-            .FirstOrDefaultAsync(p => p.PolicyId == policyId);
+        return await _repository.Read(policyId);
     }
 
     public async Task<IReadOnlyList<Policy>> ReadPolicies(
@@ -514,39 +526,22 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Policy> UpdatePolicy(Policy policy)
     {
-        using var context = await _contextFactory.CreateDbContextAsync();
+        var oldPolicy = await ReadPolicy(policy.PolicyId) ?? throw new RepositoryException("Policy not found.");
 
-        var policyEntity = await context.Policies
-            .Include(p => p.Properties)
-            .SingleAsync(p => p.PolicyId == policy.PolicyId);
+        var success = await _enforcer.UpdateNamedPolicyAsync("p", oldPolicy.ToPolicyValues(), policy.ToPolicyValues());
+        if (!success) throw new EnforcerException("Could not update policy in enforcer.");
 
-        context.Entry(policyEntity).CurrentValues.SetValues(policy);
-
-        foreach (var property in policy.Properties)
+        try
         {
-            var propertyEntity = policyEntity.Properties
-                .FirstOrDefault(p => p.Key == property.Key);
-
-            if (propertyEntity == null)
-            {
-                policyEntity.Properties.Add(property);
-            }
-            else
-            {
-                context.Entry(propertyEntity).CurrentValues.SetValues(property);
-            }
+            return await _repository.Update(policy);
         }
-
-        foreach (var property in policyEntity.Properties)
+        catch (Exception)
         {
-            if (!policy.Properties.Any(p => p.Key == property.Key))
-            {
-                context.Remove(property);
-            }
-        }
+            success = await _enforcer.UpdateNamedPolicyAsync("p", policy.ToPolicyValues(), oldPolicy.ToPolicyValues());
+            if (!success) throw new EnforcerException("_repository.Update failed and could not update policy in enforcer.");
 
-        await context.SaveChangesAsync();
-        return policyEntity;
+            throw;
+        }
     }
 
     #endregion
@@ -627,16 +622,47 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<bool> DeletePolicy(string policyId)
     {
-        using var context = await _contextFactory.CreateDbContextAsync();
+        var policyEntity = await ReadPolicy(policyId) ?? throw new RepositoryException("Policy not found.");
 
-        var policyEntity = await context.Policies
-            .FirstOrDefaultAsync(p => p.PolicyId == policyId);
+        var success = await _enforcer.RemovePolicyAsync(policyEntity.ToPolicyValues());
+        if (!success) throw new EnforcerException("Could not delete policy from enforcer.");
 
-        if (policyEntity == null) return false;
+        try
+        {
+            return await _repository.Delete(policyEntity.PolicyId);
+        }
+        catch (Exception)
+        {
+            success = await _enforcer.AddPolicyAsync(policyEntity.ToPolicyValues());
+            if (!success) throw new EnforcerException("_repository.Delete failed and could not add policy to enforcer.");
 
-        context.Remove(policyEntity);
-        await context.SaveChangesAsync();
-        return true;
+            throw;
+        }
+    }
+
+    #endregion
+
+    #region Authorization
+
+    public async Task<bool> Enforce(string subjectId, string resourceId, string action, string useCase = "default")
+    {
+        var now = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+        return await _enforcer.EnforceAsync(useCase, now, subjectId, resourceId, action);
+    }
+
+    public async Task<(bool allowed, List<Policy> explainPolicy)> ExplainedEnforce(string subjectId, string resourceId, string action, string useCase = "default")
+    {
+        var now = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+        var (allowed, explainCasbinPolicies) = await _enforcer.EnforceExAsync(useCase, now, subjectId, resourceId, action);
+
+        var explainPolicies = new List<Policy>(explainCasbinPolicies.Count());
+        foreach (var explainCasbinPolicy in explainCasbinPolicies)
+        {
+            var explainPolicy = await ReadPolicy(explainCasbinPolicy.First()) ?? throw new EnforcerException("Explain policy not found.");
+            explainPolicies.Add(explainPolicy);
+        }
+
+        return (allowed, explainPolicies);
     }
 
     #endregion
