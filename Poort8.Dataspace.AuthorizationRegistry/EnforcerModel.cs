@@ -1,9 +1,9 @@
 ﻿using Casbin.Model;
 
 namespace Poort8.Dataspace.AuthorizationRegistry;
-internal class EnforcerModel
+public class EnforcerModel
 {
-    internal static IModel Create()
+    public static IModel Create()
     {
         //TODO: Refactor?
         var model = DefaultModel.Create();

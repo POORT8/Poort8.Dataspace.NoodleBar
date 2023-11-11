@@ -11,7 +11,7 @@ public class Repository : IRepository
         _contextFactory = dbContextFactory;
     }
 
-    public async Task<Policy> Create(Policy policy)
+    public async Task<Policy> CreatePolicy(Policy policy)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
@@ -20,7 +20,7 @@ public class Repository : IRepository
         return policyEntity.Entity;
     }
 
-    public async Task<Policy?> Read(string policyId)
+    public async Task<Policy?> ReadPolicy(string policyId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
         return await context.Policies
@@ -28,7 +28,7 @@ public class Repository : IRepository
             .FirstOrDefaultAsync(p => p.PolicyId == policyId);
     }
 
-    public async Task<Policy> Update(Policy policy)
+    public async Task<Policy> UpdatePolicy(Policy policy)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
@@ -65,7 +65,7 @@ public class Repository : IRepository
         return policyEntity;
     }
 
-    public async Task<bool> Delete(string policyId)
+    public async Task<bool> DeletePolicy(string policyId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
@@ -75,6 +75,55 @@ public class Repository : IRepository
         if (policyEntity == null) return false;
 
         context.Remove(policyEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<Employee> AddNewEmployeeToOrganization(string organizationId, Employee employee)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organizationEntity = await context.Organizations
+            .FirstAsync(o => o.Identifier == organizationId);
+        organizationEntity.Employees.Add(employee);
+
+        context.Update(organizationEntity);
+        await context.SaveChangesAsync();
+        return employee;
+    }
+
+    public async Task<Organization> CreateOrganization(Organization organization)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organizationEntity = await context.AddAsync(organization);
+        await context.SaveChangesAsync();
+        return organizationEntity.Entity;
+    }
+
+    public async Task<IReadOnlyList<Organization>> ReadOrganizations(string? name, string? propertyKey, string? propertyValue)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        return await context.Organizations
+            .Where(o => name == default || name == o.Name)
+            .Where(o => propertyKey == default || o.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
+            .Include(o => o.Employees)
+            .ThenInclude(e => e.Properties)
+            .Include(o => o.Properties)
+            .ToListAsync();
+    }
+
+    public async Task<bool> DeleteEmployee(string employeeId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var employeeEntity = await context.Employees
+            .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
+
+        if (employeeEntity == null) return false;
+
+        context.Remove(employeeEntity);
         await context.SaveChangesAsync();
         return true;
     }

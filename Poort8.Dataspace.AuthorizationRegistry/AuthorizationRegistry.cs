@@ -27,11 +27,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Organization> CreateOrganization(Organization organization)
     {
-        using var context = await _contextFactory.CreateDbContextAsync();
-
-        var organizationEntity = await context.AddAsync(organization);
-        await context.SaveChangesAsync();
-        return organizationEntity.Entity;
+        return await _repository.CreateOrganization(organization);
     }
 
     public async Task<Product> CreateProduct(Product product)
@@ -63,7 +59,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         try
         {
-            return await _repository.Create(policy);
+            return await _repository.CreatePolicy(policy);
         }
         catch (Exception)
         {
@@ -76,15 +72,9 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Employee> AddNewEmployeeToOrganization(string organizationId, Employee employee)
     {
-        using var context = await _contextFactory.CreateDbContextAsync();
-
-        var organizationEntity = await context.Organizations
-            .FirstAsync(o => o.Identifier == organizationId);
-        organizationEntity.Employees.Add(employee);
-
-        context.Update(organizationEntity);
-        await context.SaveChangesAsync();
-        return employee;
+        var employeeEntity = await _repository.AddNewEmployeeToOrganization(organizationId, employee);
+        await ResetSubjectGroup();
+        return employeeEntity;
     }
 
     public async Task<Feature> CreateFeature(Feature feature)
@@ -155,15 +145,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         if ((propertyKey != default && propertyValue == default) || (propertyKey == default && propertyValue != default))
             throw new ArgumentException("PropertyValue must be set when propertyKey is set.");
 
-        using var context = await _contextFactory.CreateDbContextAsync();
-
-        return await context.Organizations
-            .Where(o => name == default || name == o.Name)
-            .Where(o => propertyKey == default || o.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
-            .Include(o => o.Employees)
-            .ThenInclude(e => e.Properties)
-            .Include(o => o.Properties)
-            .ToListAsync();
+        return await _repository.ReadOrganizations(name, propertyKey, propertyValue);
     }
 
     public async Task<Employee?> ReadEmployee(string employeeId)
@@ -284,7 +266,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Policy?> ReadPolicy(string policyId)
     {
-        return await _repository.Read(policyId);
+        return await _repository.ReadPolicy(policyId);
     }
 
     public async Task<IReadOnlyList<Policy>> ReadPolicies(
@@ -533,7 +515,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         try
         {
-            return await _repository.Update(policy);
+            return await _repository.UpdatePolicy(policy);
         }
         catch (Exception)
         {
@@ -563,16 +545,9 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<bool> DeleteEmployee(string employeeId)
     {
-        using var context = await _contextFactory.CreateDbContextAsync();
-
-        var employeeEntity = await context.Employees
-            .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
-
-        if (employeeEntity == null) return false;
-
-        context.Remove(employeeEntity);
-        await context.SaveChangesAsync();
-        return true;
+        var success = await _repository.DeleteEmployee(employeeId);
+        if (success) await ResetSubjectGroup();
+        return success;
     }
 
     public async Task<bool> DeleteProduct(string productId)
@@ -629,7 +604,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         try
         {
-            return await _repository.Delete(policyEntity.PolicyId);
+            return await _repository.DeletePolicy(policyEntity.PolicyId);
         }
         catch (Exception)
         {
@@ -666,4 +641,18 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     }
 
     #endregion
+
+    private async Task ResetSubjectGroup()
+    {
+        //TODO: Add other identifiers
+        var currentGroups = _enforcer.GetNamedGroupingPolicy("subjectGroup");
+        var success = await _enforcer.RemoveNamedGroupingPoliciesAsync("subjectGroup", currentGroups);
+        if (!success) throw new EnforcerException("Could not remove current groups from enforcer.");
+
+        var organizationEntities = await ReadOrganizations();
+        var newGroups = organizationEntities
+            .SelectMany(o => o.Employees, (o, e) => new List<string> { e.EmployeeId, o.Identifier })
+            .ToList();
+        success = await _enforcer.AddNamedGroupingPoliciesAsync("subjectGroup", newGroups);
+    }
 }
