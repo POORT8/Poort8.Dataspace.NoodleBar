@@ -10,13 +10,6 @@ public class OrganizationRegistry : IOrganizationRegistry
         _contextFactory = dbContextFactory;
     }
 
-    public async Task RunMigrations()
-    {
-        using var context = await _contextFactory.CreateDbContextAsync();
-
-        await context.Database.MigrateAsync();
-    }
-
     public async Task<Organization> CreateOrganization(Organization organization)
     {
         using var context = await _contextFactory.CreateDbContextAsync();

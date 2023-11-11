@@ -21,7 +21,7 @@ public static class DefaultExtension
 
     public class SqliteOptions
     {
-        public string ConnectionString { get; set; } = "DataSource=file::memory:?cache=shared";
+        public string ConnectionString { get; set; } = "DataSource=file::memory:";
     }
 
     public static void RunAuthorizationRegistryMigrations(this IApplicationBuilder app)

@@ -1,4 +1,5 @@
 ﻿using Casbin;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Poort8.Dataspace.AuthorizationRegistry.Extensions;
@@ -22,13 +23,9 @@ public class EnforceTests
         _serviceProvider = serviceCollection.BuildServiceProvider();
         _authorizationRegistry = _serviceProvider.GetRequiredService<IAuthorizationRegistry>();
 
-        RunMigrations().Wait();
-    }
-
-    private async Task RunMigrations()
-    {
-        var runMigrations = _authorizationRegistry.GetType().GetMethod("RunMigrations", BindingFlags.Public | BindingFlags.Instance);
-        await (Task)runMigrations!.Invoke(_authorizationRegistry, null)!;
+        var factory = _serviceProvider.GetRequiredService<IDbContextFactory<AuthorizationContext>>();
+        using var context = factory.CreateDbContext();
+        context.Database.Migrate();
     }
 
     [Fact]

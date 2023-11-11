@@ -1,6 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Poort8.Dataspace.OrganizationRegistry.Extensions;
-using System.Reflection;
 
 namespace Poort8.Dataspace.OrganizationRegistry.Tests;
 
@@ -16,13 +16,9 @@ public class OrganizationRegistryTests
         _serviceProvider = serviceCollection.BuildServiceProvider();
         _organizationRegistry = _serviceProvider.GetRequiredService<IOrganizationRegistry>();
 
-        RunMigrations().Wait();
-    }
-
-    private async Task RunMigrations()
-    {
-        var runMigrations = _organizationRegistry.GetType().GetMethod("RunMigrations", BindingFlags.Public | BindingFlags.Instance);
-        await (Task)runMigrations!.Invoke(_organizationRegistry, null)!;
+        var factory = _serviceProvider.GetRequiredService<IDbContextFactory<OrganizationContext>>();
+        using var context = factory.CreateDbContext();
+        context.Database.Migrate();
     }
 
     private static Organization CreateNewOrganization(string id, int index)

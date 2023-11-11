@@ -68,4 +68,109 @@ public class FakeRepository : IRepository
         }
         return Task.FromResult(false);
     }
+
+    public Task<Organization?> ReadOrganization(string identifier)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Organization> UpdateOrganization(Organization organization)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> DeleteOrganization(string identifier)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Employee?> ReadEmployee(string employeeId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IReadOnlyList<Employee>> ReadEmployees(string? organizationId = null, string? familyName = null, string? email = null, string? propertyKey = null, string? propertyValue = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Employee> UpdateEmployee(Employee employee)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Product> CreateProduct(Product product)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Product> CreateProductWithExistingFeatures(Product product, ICollection<string> featureIds)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Product?> ReadProduct(string productId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IReadOnlyList<Product>> ReadProducts(string? name = null, string? propertyKey = null, string? propertyValue = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Product> UpdateProduct(Product product)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> DeleteProduct(string productId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Feature> CreateFeature(Feature feature)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Feature> AddExistingFeatureToProduct(string productId, string featureId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Feature> AddNewFeatureToProduct(string productId, Feature feature)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Feature?> ReadFeature(string featureId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IReadOnlyList<Feature>> ReadFeatures(string? name = null, string? propertyKey = null, string? propertyValue = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Feature> UpdateFeature(Feature feature)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> DeleteFeature(string featureId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> RemoveFeatureFromProduct(string productId, string featureId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IReadOnlyList<Policy>> ReadPolicies(string? useCase = null, string? issuerId = null, string? subjectId = null, string? resourceId = null, string? action = null, string? propertyKey = null, string? propertyValue = null)
+    {
+        throw new NotImplementedException();
+    }
 }
