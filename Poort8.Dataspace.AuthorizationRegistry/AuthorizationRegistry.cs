@@ -1,18 +1,15 @@
 ﻿using Casbin;
-using Microsoft.EntityFrameworkCore;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using Poort8.Dataspace.AuthorizationRegistry.Exceptions;
 
 namespace Poort8.Dataspace.AuthorizationRegistry;
 public class AuthorizationRegistry : IAuthorizationRegistry
 {
-    private readonly IDbContextFactory<AuthorizationContext> _contextFactory;
     private readonly IRepository _repository;
     private readonly IEnforcer _enforcer;
 
-    public AuthorizationRegistry(IDbContextFactory<AuthorizationContext> dbContextFactory, IRepository repository)
+    public AuthorizationRegistry(IRepository repository)
     {
-        _contextFactory = dbContextFactory; //TODO: Can be removed later?
         _repository = repository;
         _enforcer = new Enforcer(EnforcerModel.Create());
     }
@@ -21,12 +18,16 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Organization> CreateOrganization(Organization organization)
     {
-        return await _repository.CreateOrganization(organization);
+        var organizationEntity = await _repository.CreateOrganization(organization);
+        if (organization.Employees.Any()) await ResetSubjectGroup();
+        return organizationEntity;
     }
 
     public async Task<Product> CreateProduct(Product product)
     {
-        return await _repository.CreateProduct(product);
+        var productEntity = await _repository.CreateProduct(product);
+        if (product.Features.Any()) await ResetResourceGroup();
+        return productEntity;
     }
 
     public async Task<Product> CreateProductWithExistingFeatures(Product product, ICollection<string> featureIds)
@@ -74,12 +75,16 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Feature> AddExistingFeatureToProduct(string productId, string featureId)
     {
-        return await _repository.AddExistingFeatureToProduct(productId, featureId);
+        var featureEntity = await _repository.AddExistingFeatureToProduct(productId, featureId);
+        await ResetResourceGroup();
+        return featureEntity;
     }
 
     public async Task<Feature> AddNewFeatureToProduct(string productId, Feature feature)
     {
-        return await _repository.AddNewFeatureToProduct(productId, feature);
+        var featureEntity = await _repository.AddNewFeatureToProduct(productId, feature);
+        await ResetResourceGroup();
+        return featureEntity;
     }
 
     #endregion
@@ -209,6 +214,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<bool> DeleteOrganization(string identifier)
     {
+        //TODO: What to do with the policies?
         return await _repository.DeleteOrganization(identifier);
     }
 
@@ -221,12 +227,15 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<bool> DeleteProduct(string productId)
     {
+        //TODO: What to do with the policies?
         return await _repository.DeleteProduct(productId);
     }
 
     public async Task<bool> DeleteFeature(string featureId)
     {
-        return await _repository.DeleteFeature(featureId);
+        var success =  await _repository.DeleteFeature(featureId);
+        if (success) await ResetResourceGroup();
+        return success;
     }
 
     public async Task<bool> RemoveFeatureFromProduct(string productId, string featureId)
@@ -286,13 +295,35 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         //TODO: Add other identifiers
         var currentGroups = _enforcer.GetNamedGroupingPolicy("subjectGroup");
         var success = await _enforcer.RemoveNamedGroupingPoliciesAsync("subjectGroup", currentGroups);
-        if (!success) throw new EnforcerException("Could not remove current groups from enforcer.");
+        if (!success) throw new EnforcerException("Could not remove current subject groups from enforcer.");
 
         var organizationEntities = await ReadOrganizations();
         var newGroups = organizationEntities
             .SelectMany(o => o.Employees, (o, e) => new List<string> { e.EmployeeId, o.Identifier })
             .ToList();
-        success = await _enforcer.AddNamedGroupingPoliciesAsync("subjectGroup", newGroups);
+        if (newGroups.Any())
+        {
+            success = await _enforcer.AddNamedGroupingPoliciesAsync("subjectGroup", newGroups);
+            if (!success) throw new EnforcerException("Could not add new subject groups to enforcer.");
+        }
+    }
+
+    private async Task ResetResourceGroup()
+    {
+        //TODO: Add other identifiers
+        var currentGroups = _enforcer.GetNamedGroupingPolicy("resourceGroup");
+        var success = await _enforcer.RemoveNamedGroupingPoliciesAsync("resourceGroup", currentGroups);
+        if (!success) throw new EnforcerException("Could not remove current resource groups from enforcer.");
+
+        var productEntities = await ReadProducts();
+        var newGroups = productEntities
+            .SelectMany(p => p.Features, (p, f) => new List<string> { f.FeatureId, p.ProductId })
+            .ToList();
+        if (newGroups.Any())
+        {
+            success = await _enforcer.AddNamedGroupingPoliciesAsync("resourceGroup", newGroups);
+            if (!success) throw new EnforcerException("Could not add new resource groups to enforcer.");
+        } 
     }
 
     private static void ValidateReadQuery(string? propertyKey, string? propertyValue)

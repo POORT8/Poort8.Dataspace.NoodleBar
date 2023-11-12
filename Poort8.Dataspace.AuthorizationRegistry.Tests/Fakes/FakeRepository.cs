@@ -7,6 +7,8 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Tests.Fakes;
 public class FakeRepository : IRepository
 {
     private readonly List<Organization> _organizations = new();
+    private readonly List<Product> _products = new();
+    private readonly List<Feature> _features = new();
     private readonly List<Policy> _policies = new();
 
     public Task<Policy> CreatePolicy(Policy policy)
@@ -101,7 +103,8 @@ public class FakeRepository : IRepository
 
     public Task<Product> CreateProduct(Product product)
     {
-        throw new NotImplementedException();
+        _products.Add(product);
+        return Task.FromResult(product.DeepClone());
     }
 
     public Task<Product> CreateProductWithExistingFeatures(Product product, ICollection<string> featureIds)
@@ -111,12 +114,13 @@ public class FakeRepository : IRepository
 
     public Task<Product?> ReadProduct(string productId)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(_products.FirstOrDefault(p => p.ProductId == productId));
     }
 
     public Task<IReadOnlyList<Product>> ReadProducts(string? name = null, string? propertyKey = null, string? propertyValue = null)
     {
-        throw new NotImplementedException();
+        var products = _products.Select(o => o.DeepClone()).ToList() as IReadOnlyList<Product>;
+        return Task.FromResult(products);
     }
 
     public Task<Product> UpdateProduct(Product product)
@@ -131,17 +135,20 @@ public class FakeRepository : IRepository
 
     public Task<Feature> CreateFeature(Feature feature)
     {
-        throw new NotImplementedException();
+        _features.Add(feature);
+        return Task.FromResult(feature.DeepClone());
     }
 
     public Task<Feature> AddExistingFeatureToProduct(string productId, string featureId)
     {
-        throw new NotImplementedException();
+        _products.First(o => o.ProductId == productId).Features.Add(_features.First(f => f.FeatureId == featureId));
+        return Task.FromResult(_features.First(f => f.FeatureId == featureId).DeepClone());
     }
 
     public Task<Feature> AddNewFeatureToProduct(string productId, Feature feature)
     {
-        throw new NotImplementedException();
+        _products.First(o => o.ProductId == productId).Features.Add(feature);
+        return Task.FromResult(feature.DeepClone());
     }
 
     public Task<Feature?> ReadFeature(string featureId)
@@ -161,7 +168,19 @@ public class FakeRepository : IRepository
 
     public Task<bool> DeleteFeature(string featureId)
     {
-        throw new NotImplementedException();
+        _features.RemoveAll(f => f.FeatureId == featureId);
+        foreach (var product in _products)
+        {
+            foreach (var feature in product.Features)
+            {
+                if (feature.FeatureId == featureId)
+                {
+                    product.Features.Remove(feature);
+                    return Task.FromResult(true);
+                }
+            }
+        }
+        return Task.FromResult(false);
     }
 
     public Task<bool> RemoveFeatureFromProduct(string productId, string featureId)

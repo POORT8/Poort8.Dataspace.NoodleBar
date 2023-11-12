@@ -1,5 +1,4 @@
 ﻿using Casbin;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Poort8.Dataspace.AuthorizationRegistry.Extensions;
@@ -16,16 +15,12 @@ public class EnforceTests
     public EnforceTests()
     {
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddAuthorizationRegistrySqlite(options => options.ConnectionString = $"Data Source={Guid.NewGuid()}.db");
+        serviceCollection.AddAuthorizationRegistrySqlite(options => { });
 
         serviceCollection.Replace(new ServiceDescriptor(typeof(IRepository), typeof(FakeRepository), ServiceLifetime.Singleton));
 
         _serviceProvider = serviceCollection.BuildServiceProvider();
         _authorizationRegistry = _serviceProvider.GetRequiredService<IAuthorizationRegistry>();
-
-        var factory = _serviceProvider.GetRequiredService<IDbContextFactory<AuthorizationContext>>();
-        using var context = factory.CreateDbContext();
-        context.Database.Migrate();
     }
 
     [Fact]
@@ -230,4 +225,120 @@ public class EnforceTests
         allowed = await _authorizationRegistry.Enforce(employeeEntity.EmployeeId, "resource", "action");
         Assert.False(allowed);
     }
+
+    [Fact]
+    public async Task OrganizationWithEmployeeEnforce()
+    {
+        var organization = TestData.CreateNewOrganization(nameof(OrganizationWithEmployeeEnforce), 1);
+        var employee = TestData.CreateNewEmployee(nameof(OrganizationWithEmployeeEnforce), 1);
+        organization.Employees.Add(employee);
+        var organizationEntity = await _authorizationRegistry.CreateOrganization(organization);
+        Assert.NotNull(organizationEntity);
+
+        var policy = TestData.CreateNewPolicy();
+        policy.SubjectId = organizationEntity.Identifier;
+        var policyEntity = await _authorizationRegistry.CreatePolicy(policy);
+        Assert.NotNull(policyEntity);
+
+        var allowed = await _authorizationRegistry.Enforce(organizationEntity.Identifier, "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce(employee.EmployeeId, "resource", "action");
+        Assert.True(allowed);
+
+        var success = await _authorizationRegistry.DeleteEmployee(employee.EmployeeId);
+        Assert.True(success);
+
+        allowed = await _authorizationRegistry.Enforce(employee.EmployeeId, "resource", "action");
+        Assert.False(allowed);
+    }
+
+    [Fact]
+    public async Task ProductFeatureEnforce()
+    {
+        var product = TestData.CreateNewProduct(nameof(ProductFeatureEnforce), 1);
+        var productEntity = await _authorizationRegistry.CreateProduct(product);
+        Assert.NotNull(productEntity);
+
+        var policy = TestData.CreateNewPolicy();
+        policy.ResourceId = productEntity.ProductId;
+        var policyEntity = await _authorizationRegistry.CreatePolicy(policy);
+        Assert.NotNull(policyEntity);
+
+        var allowed = await _authorizationRegistry.Enforce("subject", productEntity.ProductId, "action");
+        Assert.True(allowed);
+
+        var feature = TestData.CreateNewFeature(nameof(ProductFeatureEnforce), 1);
+        var featureEntity = await _authorizationRegistry.AddNewFeatureToProduct(productEntity.ProductId, feature);
+        Assert.NotNull(featureEntity);
+
+        allowed = await _authorizationRegistry.Enforce("subject", featureEntity.FeatureId, "action");
+        Assert.True(allowed);
+
+        var success = await _authorizationRegistry.DeleteFeature(featureEntity.FeatureId);
+        Assert.True(success);
+
+        allowed = await _authorizationRegistry.Enforce("subject", featureEntity.FeatureId, "action");
+        Assert.False(allowed);
+    }
+
+    [Fact]
+    public async Task ProductWithFeatureEnforce()
+    {
+        var product = TestData.CreateNewProduct(nameof(ProductWithFeatureEnforce), 1);
+        var feature = TestData.CreateNewFeature(nameof(ProductWithFeatureEnforce), 1);
+        product.Features.Add(feature);
+        var productEntity = await _authorizationRegistry.CreateProduct(product);
+        Assert.NotNull(productEntity);
+
+        var policy = TestData.CreateNewPolicy();
+        policy.ResourceId = productEntity.ProductId;
+        var policyEntity = await _authorizationRegistry.CreatePolicy(policy);
+        Assert.NotNull(policyEntity);
+
+        var allowed = await _authorizationRegistry.Enforce("subject", productEntity.ProductId, "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce("subject", feature.FeatureId, "action");
+        Assert.True(allowed);
+
+        var success = await _authorizationRegistry.DeleteFeature(feature.FeatureId);
+        Assert.True(success);
+
+        allowed = await _authorizationRegistry.Enforce("subject", feature.FeatureId, "action");
+        Assert.False(allowed);
+    }
+
+    [Fact]
+    public async Task CreateProductWithExistingFeatures()
+    {
+        var feature = TestData.CreateNewFeature(nameof(CreateProductWithExistingFeatures), 1);
+        var featureEntity = await _authorizationRegistry.CreateFeature(feature);
+        Assert.NotNull(featureEntity);
+
+        var product = TestData.CreateNewProduct(nameof(CreateProductWithExistingFeatures), 1);
+        var productEntity = await _authorizationRegistry.CreateProductWithExistingFeatures(
+            product,
+            new List<string> { featureEntity.FeatureId });
+        Assert.NotNull(productEntity);
+
+        var policy = TestData.CreateNewPolicy();
+        policy.ResourceId = productEntity.ProductId;
+        var policyEntity = await _authorizationRegistry.CreatePolicy(policy);
+        Assert.NotNull(policyEntity);
+
+        var allowed = await _authorizationRegistry.Enforce("subject", productEntity.ProductId, "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce("subject", featureEntity.FeatureId, "action");
+        Assert.True(allowed);
+
+        var success = await _authorizationRegistry.DeleteFeature(featureEntity.FeatureId);
+        Assert.True(success);
+
+        allowed = await _authorizationRegistry.Enforce("subject", featureEntity.FeatureId, "action");
+        Assert.False(allowed);
+    }
+
+
 }
