@@ -303,7 +303,7 @@ public class RepositoryTests
 
         var feature = TestData.CreateNewFeature(nameof(ProductUpdate), 1);
         productUpdate.Features.Add(feature);
-        
+
         updateEntity = await _authorizationRegistry.UpdateProduct(productUpdate);
 
         Assert.Single(updateEntity.Features);

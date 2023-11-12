@@ -31,7 +31,7 @@ public class ModelTests
 
         var allowed = await _enforcer.EnforceAsync("default", "1", "org", "resourceId", "action");
         Assert.True(allowed);
-        
+
         allowed = await _enforcer.EnforceAsync("default", "1", "emp", "resourceId", "action");
         Assert.True(allowed);
     }

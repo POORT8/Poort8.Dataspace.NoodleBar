@@ -249,7 +249,7 @@ public class Repository : IRepository
     public async Task<Policy?> ReadPolicy(string policyId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
-        
+
         return await context.Policies
             .Include(p => p.Properties)
             .FirstOrDefaultAsync(p => p.PolicyId == policyId);

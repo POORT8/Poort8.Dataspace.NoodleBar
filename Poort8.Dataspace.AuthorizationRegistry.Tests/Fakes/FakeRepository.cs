@@ -39,8 +39,8 @@ public class FakeRepository : IRepository
 
     public Task<Employee> AddNewEmployeeToOrganization(string organizationId, Employee employee)
     {
-       _organizations.First(o => o.Identifier == organizationId).Employees.Add(employee);
-       return Task.FromResult(employee.DeepClone());
+        _organizations.First(o => o.Identifier == organizationId).Employees.Add(employee);
+        return Task.FromResult(employee.DeepClone());
     }
 
     public Task<Organization> CreateOrganization(Organization organization)

@@ -106,7 +106,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Employee?> ReadEmployee(string employeeId)
     {
-        return await _repository.ReadEmployee(employeeId);   
+        return await _repository.ReadEmployee(employeeId);
     }
 
     public async Task<IReadOnlyList<Employee>> ReadEmployees(
@@ -241,7 +241,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<bool> DeleteFeature(string featureId)
     {
-        var success =  await _repository.DeleteFeature(featureId);
+        var success = await _repository.DeleteFeature(featureId);
         if (success) await ResetResourceGroup();
         return success;
     }
@@ -365,7 +365,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         {
             var success = await _enforcer.AddNamedGroupingPoliciesAsync("resourceGroup", newGroups);
             if (!success) throw new EnforcerException("Could not add new resource groups to enforcer.");
-        } 
+        }
     }
 
     private static List<List<string>> GetAllResourceGroups(IReadOnlyList<Product> productEntities)

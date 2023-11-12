@@ -56,7 +56,7 @@ public class EnforceTests
 
         allowed = await enforcer.EnforceAsync(policy.UseCase, now, "emp", policy.ResourceId, policy.Action);
         Assert.True(allowed);
-    } 
+    }
 
     [Fact]
     public async Task CreateAndEnforcePolicy()
