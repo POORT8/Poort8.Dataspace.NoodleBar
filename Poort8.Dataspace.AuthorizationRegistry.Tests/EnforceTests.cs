@@ -340,5 +340,102 @@ public class EnforceTests
         Assert.False(allowed);
     }
 
+    [Fact]
+    public async Task OrganizationWithOtherIdEnforce()
+    {
+        var organization = TestData.CreateNewOrganization(nameof(OrganizationWithEmployeeEnforce), 1);
+        var employee = TestData.CreateNewEmployee(nameof(OrganizationWithEmployeeEnforce), 1);
+        organization.Employees.Add(employee);
+        var organizationEntity = await _authorizationRegistry.CreateOrganization(organization);
+        Assert.NotNull(organizationEntity);
 
+        var policy = TestData.CreateNewPolicy();
+        policy.SubjectId = organizationEntity.Identifier;
+        var policyEntity = await _authorizationRegistry.CreatePolicy(policy);
+        Assert.NotNull(policyEntity);
+
+        var allowed = await _authorizationRegistry.Enforce(organizationEntity.Identifier, "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce(employee.EmployeeId, "resource", "action");
+        Assert.True(allowed);
+
+        var otherId = organizationEntity.Properties.First(p => p.Key == "otherIdentifier").Value;
+        allowed = await _authorizationRegistry.Enforce(otherId, "resource", "action");
+        Assert.True(allowed);
+
+        otherId = organization.Employees.First().Properties.First(p => p.Key == "otherIdentifier").Value;
+        allowed = await _authorizationRegistry.Enforce(employee.EmployeeId, "resource", "action");
+        Assert.True(allowed);
+
+        var success = await _authorizationRegistry.DeleteEmployee(employee.EmployeeId);
+        Assert.True(success);
+
+        allowed = await _authorizationRegistry.Enforce(employee.EmployeeId, "resource", "action");
+        Assert.False(allowed);
+    }
+
+    [Fact]
+    public async Task ProductWithOtherIdEnforce()
+    {
+        var product = TestData.CreateNewProduct(nameof(ProductWithOtherIdEnforce), 1);
+        var feature = TestData.CreateNewFeature(nameof(ProductWithOtherIdEnforce), 1);
+        product.Features.Add(feature);
+        var productEntity = await _authorizationRegistry.CreateProduct(product);
+        Assert.NotNull(productEntity);
+
+        var policy = TestData.CreateNewPolicy();
+        policy.ResourceId = productEntity.ProductId;
+        var policyEntity = await _authorizationRegistry.CreatePolicy(policy);
+        Assert.NotNull(policyEntity);
+
+        var allowed = await _authorizationRegistry.Enforce("subject", productEntity.ProductId, "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce("subject", feature.FeatureId, "action");
+        Assert.True(allowed);
+
+        var otherId = productEntity.Properties.First(p => p.Key == "otherIdentifier").Value;
+        allowed = await _authorizationRegistry.Enforce("subject", otherId, "action");
+        Assert.True(allowed);
+
+        otherId = product.Features.First().Properties.First(p => p.Key == "otherIdentifier").Value;
+        allowed = await _authorizationRegistry.Enforce("subject", otherId, "action");
+        Assert.True(allowed);
+
+        var success = await _authorizationRegistry.DeleteFeature(feature.FeatureId);
+        Assert.True(success);
+
+        allowed = await _authorizationRegistry.Enforce(feature.FeatureId, "resource", "action");
+        Assert.False(allowed);
+    }
+
+    [Fact]
+    public async Task EmployeeEmailTelephoneIdentifier()
+    {
+        var organization = TestData.CreateNewOrganization(nameof(OrganizationWithEmployeeEnforce), 1);
+        var employee = TestData.CreateNewEmployee(nameof(OrganizationWithEmployeeEnforce), 1);
+        employee.Email = "email@domain.com";
+        employee.Telephone = "1234567890";
+        organization.Employees.Add(employee);
+        var organizationEntity = await _authorizationRegistry.CreateOrganization(organization);
+        Assert.NotNull(organizationEntity);
+
+        var policy = TestData.CreateNewPolicy();
+        policy.SubjectId = organizationEntity.Identifier;
+        var policyEntity = await _authorizationRegistry.CreatePolicy(policy);
+        Assert.NotNull(policyEntity);
+
+        var allowed = await _authorizationRegistry.Enforce(organizationEntity.Identifier, "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce(employee.EmployeeId, "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce(employee.Email, "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce(employee.Telephone, "resource", "action");
+        Assert.True(allowed);
+    }
 }

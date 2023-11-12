@@ -290,40 +290,99 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     #endregion
 
+    private async Task ResetGroup(string groupKey)
+    {
+        var currentGroups = _enforcer.GetNamedGroupingPolicy(groupKey);
+        var success = await _enforcer.RemoveNamedGroupingPoliciesAsync(groupKey, currentGroups);
+        if (!success) throw new EnforcerException($"Could not remove current {groupKey} from enforcer.");
+    }
+
     private async Task ResetSubjectGroup()
     {
-        //TODO: Add other identifiers
-        var currentGroups = _enforcer.GetNamedGroupingPolicy("subjectGroup");
-        var success = await _enforcer.RemoveNamedGroupingPoliciesAsync("subjectGroup", currentGroups);
-        if (!success) throw new EnforcerException("Could not remove current subject groups from enforcer.");
+        await ResetGroup("subjectGroup");
 
         var organizationEntities = await ReadOrganizations();
-        var newGroups = organizationEntities
-            .SelectMany(o => o.Employees, (o, e) => new List<string> { e.EmployeeId, o.Identifier })
-            .ToList();
+        var newGroups = GetAllSubjectGroups(organizationEntities);
         if (newGroups.Any())
         {
-            success = await _enforcer.AddNamedGroupingPoliciesAsync("subjectGroup", newGroups);
+            var success = await _enforcer.AddNamedGroupingPoliciesAsync("subjectGroup", newGroups);
             if (!success) throw new EnforcerException("Could not add new subject groups to enforcer.");
         }
     }
 
+    private static List<List<string>> GetAllSubjectGroups(IReadOnlyList<Organization> organizationEntities)
+    {
+        var organizationPropertyIdentifiers = organizationEntities
+            .SelectMany(org => org.Properties
+            .Where(p => p.IsIdentifier)
+            .Select(p => new List<string> { p.Value, org.Identifier }))
+            .ToList();
+
+        var employeeIdentifiers = organizationEntities
+            .SelectMany(org => org.Employees, (o, e) => new List<string> { e.EmployeeId, o.Identifier })
+            .ToList();
+
+        var employeeEmail = organizationEntities
+            .SelectMany(org => org.Employees
+            .Select(e => new List<string> { e.Email, org.Identifier }))
+            .ToList();
+
+        var employeeTelephone = organizationEntities
+            .SelectMany(org => org.Employees
+            .Select(e => new List<string> { e.Telephone, org.Identifier }))
+            .ToList();
+
+        var employeePropertyIdentifiers = organizationEntities
+            .SelectMany(org => org.Employees
+            .SelectMany(emp => emp.Properties
+            .Where(p => p.IsIdentifier)
+            .Select(p => new List<string> { p.Value, org.Identifier })))
+            .ToList();
+
+        return organizationPropertyIdentifiers
+            .Concat(employeeIdentifiers)
+            .Concat(employeeEmail)
+            .Concat(employeeTelephone)
+            .Concat(employeePropertyIdentifiers)
+            .ToList();
+    }
+
     private async Task ResetResourceGroup()
     {
-        //TODO: Add other identifiers
-        var currentGroups = _enforcer.GetNamedGroupingPolicy("resourceGroup");
-        var success = await _enforcer.RemoveNamedGroupingPoliciesAsync("resourceGroup", currentGroups);
-        if (!success) throw new EnforcerException("Could not remove current resource groups from enforcer.");
+        await ResetGroup("resourceGroup");
 
         var productEntities = await ReadProducts();
-        var newGroups = productEntities
-            .SelectMany(p => p.Features, (p, f) => new List<string> { f.FeatureId, p.ProductId })
-            .ToList();
+        var newGroups = GetAllResourceGroups(productEntities);
         if (newGroups.Any())
         {
-            success = await _enforcer.AddNamedGroupingPoliciesAsync("resourceGroup", newGroups);
+            var success = await _enforcer.AddNamedGroupingPoliciesAsync("resourceGroup", newGroups);
             if (!success) throw new EnforcerException("Could not add new resource groups to enforcer.");
         } 
+    }
+
+    private static List<List<string>> GetAllResourceGroups(IReadOnlyList<Product> productEntities)
+    {
+        var productPropertyIdentifiers = productEntities
+            .SelectMany(prod => prod.Properties
+            .Where(prop => prop.IsIdentifier)
+            .Select(p => new List<string> { p.Value, prod.ProductId }))
+            .ToList();
+
+        var featureIdentifiers = productEntities
+            .SelectMany(prod => prod.Features, (prod, f) => new List<string> { f.FeatureId, prod.ProductId })
+            .ToList();
+
+        var featurePropertyIdentifiers = productEntities
+            .SelectMany(prod => prod.Features
+            .SelectMany(feat => feat.Properties
+            .Where(p => p.IsIdentifier)
+            .Select(p => new List<string> { p.Value, prod.ProductId })))
+            .ToList();
+
+        return productPropertyIdentifiers
+            .Concat(featureIdentifiers)
+            .Concat(featurePropertyIdentifiers)
+            .ToList();
     }
 
     private static void ValidateReadQuery(string? propertyKey, string? propertyValue)
