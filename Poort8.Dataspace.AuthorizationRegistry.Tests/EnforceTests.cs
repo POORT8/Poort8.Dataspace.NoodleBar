@@ -437,5 +437,72 @@ public class EnforceTests
 
         allowed = await _authorizationRegistry.Enforce(employee.Telephone, "resource", "action");
         Assert.True(allowed);
+
+        organization.Employees.First().Email = "updated-email@domain.com";
+        organization.Employees.First().Telephone = "updated-1234567890";
+        var organizationUpdateEntity = await _authorizationRegistry.UpdateOrganization(organization);
+        Assert.NotNull(organizationUpdateEntity);
+
+        allowed = await _authorizationRegistry.Enforce("updated-email@domain.com", "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce("updated-1234567890", "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce("email@domain.com", "resource", "action");
+        Assert.False(allowed);
+
+        allowed = await _authorizationRegistry.Enforce("1234567890", "resource", "action");
+        Assert.False(allowed);
+    }
+
+    [Fact]
+    public async Task EmployeePropertyUpdate()
+    {
+        var organization = TestData.CreateNewOrganization(nameof(EmployeePropertyUpdate), 1);
+        var employee = TestData.CreateNewEmployee(nameof(EmployeePropertyUpdate), 1);
+        employee.Email = "email@domain.com";
+        employee.Telephone = "1234567890";
+        organization.Employees.Add(employee);
+        var organizationEntity = await _authorizationRegistry.CreateOrganization(organization);
+        Assert.NotNull(organizationEntity);
+
+        var policy = TestData.CreateNewPolicy();
+        policy.SubjectId = organizationEntity.Identifier;
+        var policyEntity = await _authorizationRegistry.CreatePolicy(policy);
+        Assert.NotNull(policyEntity);
+
+        var allowed = await _authorizationRegistry.Enforce(organizationEntity.Identifier, "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce(employee.EmployeeId, "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce(employee.Email, "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce(employee.Telephone, "resource", "action");
+        Assert.True(allowed);
+
+        employee.Email = "updated-email@domain.com";
+        employee.Telephone = "updated-1234567890";
+        employee.Properties.First(p => p.Key == "otherIdentifier").Value = "updated-otherIdentifier";
+        var employeeUpdateEntity = await _authorizationRegistry.UpdateEmployee(employee);
+        Assert.NotNull(employeeUpdateEntity);
+
+        allowed = await _authorizationRegistry.Enforce("updated-email@domain.com", "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce("updated-1234567890", "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce("updated-otherIdentifier", "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce("email@domain.com", "resource", "action");
+        Assert.False(allowed);
+
+        allowed = await _authorizationRegistry.Enforce("1234567890", "resource", "action");
+        Assert.False(allowed);
     }
 }

@@ -78,7 +78,9 @@ public class FakeRepository : IRepository
 
     public Task<Organization> UpdateOrganization(Organization organization)
     {
-        throw new NotImplementedException();
+        _organizations.RemoveAll(o => o.Identifier == organization.Identifier);
+        _organizations.Add(organization);
+        return Task.FromResult(organization.DeepClone());
     }
 
     public Task<bool> DeleteOrganization(string identifier)
@@ -98,7 +100,19 @@ public class FakeRepository : IRepository
 
     public Task<Employee> UpdateEmployee(Employee employee)
     {
-        throw new NotImplementedException();
+        foreach (var organization in _organizations)
+        {
+            foreach (var emp in organization.Employees)
+            {
+                if (emp.EmployeeId == employee.EmployeeId)
+                {
+                    organization.Employees.Remove(emp);
+                    organization.Employees.Add(employee);
+                    break;
+                }
+            }
+        }
+        return Task.FromResult(employee.DeepClone());
     }
 
     public Task<Product> CreateProduct(Product product)

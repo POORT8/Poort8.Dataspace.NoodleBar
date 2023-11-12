@@ -171,22 +171,30 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Organization> UpdateOrganization(Organization organization)
     {
-        return await _repository.UpdateOrganization(organization);
+        var organizationEntity = await _repository.UpdateOrganization(organization);
+        await ResetSubjectGroup();
+        return organizationEntity;
     }
 
     public async Task<Employee> UpdateEmployee(Employee employee)
     {
-        return await _repository.UpdateEmployee(employee);
+        var employeeEntity = await _repository.UpdateEmployee(employee);
+        await ResetSubjectGroup();
+        return employeeEntity;
     }
 
     public async Task<Product> UpdateProduct(Product product)
     {
-        return await _repository.UpdateProduct(product);
+        var productEntity = await _repository.UpdateProduct(product);
+        await ResetResourceGroup();
+        return productEntity;
     }
 
     public async Task<Feature> UpdateFeature(Feature feature)
     {
-        return await _repository.UpdateFeature(feature);
+        var featureEntity = await _repository.UpdateFeature(feature);
+        await ResetResourceGroup();
+        return featureEntity;
     }
 
     public async Task<Policy> UpdatePolicy(Policy policy)

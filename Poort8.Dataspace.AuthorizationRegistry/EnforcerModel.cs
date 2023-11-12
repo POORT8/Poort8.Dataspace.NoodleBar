@@ -5,7 +5,7 @@ public class EnforcerModel
 {
     public static IModel Create()
     {
-        //TODO: Refactor?
+        //TODO: Refactor? Using magic strings in places.
         var model = DefaultModel.Create();
 
         model.AddDef("r", "r", "useCase, now, subjectId, resourceId, action");
