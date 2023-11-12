@@ -1,7 +1,7 @@
 ﻿using Poort8.Dataspace.AuthorizationRegistry.Entities;
 
 namespace Poort8.Dataspace.AuthorizationRegistry;
-public interface IAuthorizationRegistry //TODO: Add authorizations for managing the registry itself
+public interface IRepository
 {
     //Organization
     Task<Organization> CreateOrganization(Organization organization);
@@ -41,10 +41,4 @@ public interface IAuthorizationRegistry //TODO: Add authorizations for managing 
     Task<IReadOnlyList<Policy>> ReadPolicies(string? useCase = default, string? issuerId = default, string? subjectId = default, string? resourceId = default, string? action = default, string? propertyKey = default, string? propertyValue = default);
     Task<Policy> UpdatePolicy(Policy policy);
     Task<bool> DeletePolicy(string policyId);
-
-    //Authorization
-    Task<bool> Enforce(string subjectId, string resourceId, string action, string useCase = "default");
-    Task<(bool allowed, List<Policy> explainPolicy)> ExplainedEnforce(string subjectId, string resourceId, string action, string useCase = "default");
-
-    //TOOD: Audit
 }

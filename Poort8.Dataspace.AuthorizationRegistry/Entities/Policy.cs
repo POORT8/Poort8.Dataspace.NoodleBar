@@ -5,7 +5,7 @@ public class Policy
 {
     [Key]
     public string PolicyId { get; init; } = Guid.NewGuid().ToString();
-    public string UseCase { get; set; } = "default"; //TODO: Check with Casbin implementation
+    public string UseCase { get; set; } = "default";
     public long IssuedAt { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
     public long NotBefore { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
     public long Expiration { get; set; } = DateTimeOffset.Now.AddYears(1).ToUnixTimeSeconds();
@@ -70,5 +70,21 @@ public class Policy
             Value = value;
             IsIdentifier = isIdentifier;
         }
+    }
+
+    internal string[] ToPolicyValues()
+    {
+        return new string[]
+        {
+            PolicyId,
+            UseCase,
+            IssuedAt.ToString(),
+            NotBefore.ToString(),
+            Expiration.ToString(),
+            IssuerId,
+            SubjectId,
+            ResourceId,
+            Action
+        };
     }
 }

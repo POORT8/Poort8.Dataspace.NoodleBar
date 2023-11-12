@@ -14,13 +14,14 @@ public static class DefaultExtension
 
         services.AddDbContextFactory<AuthorizationContext>(options => options.UseSqlite(sqliteOptions.ConnectionString));
         services.AddSingleton<IAuthorizationRegistry, AuthorizationRegistry>();
+        services.AddSingleton<IRepository, Repository>();
 
         return services;
     }
 
     public class SqliteOptions
     {
-        public string ConnectionString { get; set; } = "DataSource=file::memory:?cache=shared";
+        public string ConnectionString { get; set; } = "DataSource=file::memory:";
     }
 
     public static void RunAuthorizationRegistryMigrations(this IApplicationBuilder app)
