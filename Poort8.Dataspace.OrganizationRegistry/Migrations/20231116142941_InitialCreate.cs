@@ -17,7 +17,7 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
                     Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Caller = table.Column<string>(type: "TEXT", nullable: false),
+                    User = table.Column<string>(type: "TEXT", nullable: false),
                     EntityType = table.Column<string>(type: "TEXT", nullable: false),
                     EntityId = table.Column<string>(type: "TEXT", nullable: false),
                     Action = table.Column<string>(type: "TEXT", nullable: false),

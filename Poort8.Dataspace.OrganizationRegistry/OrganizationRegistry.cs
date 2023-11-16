@@ -135,4 +135,11 @@ public class OrganizationRegistry : IOrganizationRegistry
         await context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<IReadOnlyList<AuditRecord>> GetAuditRecords()
+    {
+        using var context = _contextFactory.CreateDbContext();
+
+        return await context.AuditRecords.ToListAsync();
+    }
 }

@@ -617,4 +617,11 @@ public class Repository : IRepository
     }
 
     #endregion
+
+    public async Task<IReadOnlyList<AuditRecord>> ReadAuditRecords()
+    {
+        using var context = _contextFactory.CreateDbContext();
+
+        return await context.AuditRecords.ToListAsync();
+    }
 }

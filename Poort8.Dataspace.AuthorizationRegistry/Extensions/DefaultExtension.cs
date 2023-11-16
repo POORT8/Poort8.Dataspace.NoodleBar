@@ -16,6 +16,8 @@ public static class DefaultExtension
         services.AddSingleton<IAuthorizationRegistry, AuthorizationRegistry>();
         services.AddSingleton<IRepository, Repository>();
 
+        //NOTE: The audit uses IHttpContextAccessor to get the user.
+
         return services;
     }
 

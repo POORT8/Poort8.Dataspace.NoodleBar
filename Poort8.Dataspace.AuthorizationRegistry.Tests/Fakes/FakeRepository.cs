@@ -206,4 +206,9 @@ public class FakeRepository : IRepository
     {
         throw new NotImplementedException();
     }
+
+    public Task<IReadOnlyList<AuditRecord>> ReadAuditRecords()
+    {
+        throw new NotImplementedException();
+    }
 }

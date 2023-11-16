@@ -11,7 +11,7 @@ using Poort8.Dataspace.OrganizationRegistry;
 namespace Poort8.Dataspace.OrganizationRegistry.Migrations
 {
     [DbContext(typeof(OrganizationContext))]
-    [Migration("20231108155803_InitialCreate")]
+    [Migration("20231116142941_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -29,10 +29,6 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Caller")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Entity")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -46,6 +42,10 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("User")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
