@@ -26,10 +26,6 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Caller")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Entity")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -43,6 +39,10 @@ namespace Poort8.Dataspace.OrganizationRegistry.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("User")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

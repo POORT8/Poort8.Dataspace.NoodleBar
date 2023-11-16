@@ -1,14 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace Poort8.Dataspace.OrganizationRegistry;
 public class OrganizationContext : DbContext
 {
+    private readonly ClaimsPrincipal? _currentUser;
+
     public DbSet<AuditRecord> AuditRecords { get; set; }
     public DbSet<Organization> Organizations { get; set; }
 
-    public OrganizationContext(DbContextOptions<OrganizationContext> options) : base(options)
+    public OrganizationContext(DbContextOptions<OrganizationContext> options, IHttpContextAccessor? httpContextAccessor = null) : base(options)
     {
+        _currentUser = httpContextAccessor?.HttpContext?.User;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,12 +34,11 @@ public class OrganizationContext : DbContext
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
-        //TODO: Fix audit
-        //var auditRecords = HandleAudit();
+        var auditRecords = HandleAudit();
 
         var result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        //await SaveAuditRecordChanges(auditRecords);
+        await SaveAuditRecordChanges(auditRecords);
 
         return result;
     }
@@ -51,9 +55,9 @@ public class OrganizationContext : DbContext
 
             var auditRecord = new AuditRecord(
                 DateTime.Now,
-                "Caller", //TODO: get caller somehow
+                _currentUser?.Identity?.Name ?? "unknown",
                 entry.Metadata.ClrType.Name,
-                entry.Properties!.Single(p => p.Metadata!.IsPrimaryKey()).CurrentValue!.ToString()!,
+                entry.Properties!.First(p => p.Metadata!.IsPrimaryKey()).CurrentValue!.ToString()!,
                 entry.State.ToString(),
                 JsonSerializer.Serialize(entry.Entity));
 

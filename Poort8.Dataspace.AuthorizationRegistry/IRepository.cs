@@ -41,4 +41,7 @@ public interface IRepository
     Task<IReadOnlyList<Policy>> ReadPolicies(string? useCase = default, string? issuerId = default, string? subjectId = default, string? resourceId = default, string? action = default, string? propertyKey = default, string? propertyValue = default);
     Task<Policy> UpdatePolicy(Policy policy);
     Task<bool> DeletePolicy(string policyId);
+
+    //Audit
+    Task<IReadOnlyList<AuditRecord>> ReadAuditRecords();
 }

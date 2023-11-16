@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Poort8.Dataspace.OrganizationRegistry;
+namespace Poort8.Dataspace.AuthorizationRegistry;
 public class AuditRecord
 {
     [Key]

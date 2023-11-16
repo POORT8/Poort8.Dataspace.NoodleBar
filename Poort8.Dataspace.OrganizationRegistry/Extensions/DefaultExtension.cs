@@ -15,6 +15,8 @@ public static class DefaultExtension
         services.AddDbContextFactory<OrganizationContext>(options => options.UseSqlite(sqliteOptions.ConnectionString));
         services.AddSingleton<IOrganizationRegistry, OrganizationRegistry>();
 
+        //NOTE: The audit uses IHttpContextAccessor to get the user.
+
         return services;
     }
 

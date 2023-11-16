@@ -21,7 +21,7 @@ public class OrganizationRegistryTests
         context.Database.Migrate();
     }
 
-    private static Organization CreateNewOrganization(string id, int index)
+    public static Organization CreateNewOrganization(string id, int index)
     {
         var adherence = new Adherence("active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now.AddYears(1)));
         var roles = new List<OrganizationRole>() { new OrganizationRole("role") };

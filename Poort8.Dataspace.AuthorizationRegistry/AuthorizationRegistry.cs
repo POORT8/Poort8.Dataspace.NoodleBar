@@ -398,4 +398,9 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         if ((propertyKey != default && propertyValue == default) || (propertyKey == default && propertyValue != default))
             throw new ArgumentException("PropertyValue must be set when propertyKey is set.");
     }
+
+    public async Task<IReadOnlyList<AuditRecord>> GetAuditRecords()
+    {
+        return await _repository.ReadAuditRecords();
+    }
 }
