@@ -37,7 +37,7 @@ public class AuditTests
         var auditRecords = await _authorizationRegisty.GetAuditRecords();
 
         Assert.NotNull(auditRecords);
-        Assert.Single(auditRecords.Where(a => 
+        Assert.Single(auditRecords.Where(a =>
             a.EntityId == organizationEntity.Identifier &&
             a.EntityType == "Organization" &&
             a.Action == "Added"));

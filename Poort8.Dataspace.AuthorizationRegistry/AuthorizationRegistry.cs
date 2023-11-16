@@ -1,5 +1,4 @@
 ﻿using Casbin;
-using Microsoft.EntityFrameworkCore.Internal;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using Poort8.Dataspace.AuthorizationRegistry.Exceptions;
 
