@@ -1,4 +1,5 @@
-﻿using Poort8.Dataspace.AuthorizationRegistry.Entities;
+﻿using Poort8.Dataspace.AuthorizationRegistry.Audit;
+using Poort8.Dataspace.AuthorizationRegistry.Entities;
 
 namespace Poort8.Dataspace.AuthorizationRegistry;
 public interface IRepository
@@ -43,5 +44,7 @@ public interface IRepository
     Task<bool> DeletePolicy(string policyId);
 
     //Audit
-    Task<IReadOnlyList<AuditRecord>> ReadAuditRecords();
+    Task<IReadOnlyList<EntityAuditRecord>> ReadEntityAuditRecords();
+    Task<IReadOnlyList<EnforceAuditRecord>> ReadEnforceAuditRecords();
+    Task<EnforceAuditRecord> CreateEnforceAuditRecord(string user, string useCase, string subjectId, string resourceId, string action, bool allow, List<Policy>? explains = null);
 }

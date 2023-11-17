@@ -1,16 +1,22 @@
 ﻿using Casbin;
+using Microsoft.AspNetCore.Http;
+using Poort8.Dataspace.AuthorizationRegistry.Audit;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using Poort8.Dataspace.AuthorizationRegistry.Exceptions;
+using System.Security.Claims;
 
 namespace Poort8.Dataspace.AuthorizationRegistry;
 public class AuthorizationRegistry : IAuthorizationRegistry
 {
     private readonly IRepository _repository;
     private readonly IEnforcer _enforcer;
+    private readonly ClaimsPrincipal? _currentUser;
 
-    public AuthorizationRegistry(IRepository repository)
+    public AuthorizationRegistry(IRepository repository, IHttpContextAccessor? httpContextAccessor = null)
     {
         _repository = repository;
+        _currentUser = httpContextAccessor?.HttpContext?.User;
+
         _enforcer = new Enforcer(EnforcerModel.Create());
     }
 
@@ -278,7 +284,12 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     public async Task<bool> Enforce(string subjectId, string resourceId, string action, string useCase = "default")
     {
         var now = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
-        return await _enforcer.EnforceAsync(useCase, now, subjectId, resourceId, action);
+        var allowed = await _enforcer.EnforceAsync(useCase, now, subjectId, resourceId, action);
+
+        var user = _currentUser?.Identity?.Name ?? "unknown";
+        await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed);
+
+        return allowed;
     }
 
     public async Task<(bool allowed, List<Policy> explainPolicy)> ExplainedEnforce(string subjectId, string resourceId, string action, string useCase = "default")
@@ -292,6 +303,9 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             var explainPolicy = await ReadPolicy(explainCasbinPolicy.First()) ?? throw new EnforcerException("Explain policy not found.");
             explainPolicies.Add(explainPolicy);
         }
+
+        var user = _currentUser?.Identity?.Name ?? "unknown";
+        await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed, explainPolicies);
 
         return (allowed, explainPolicies);
     }
@@ -399,8 +413,13 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             throw new ArgumentException("PropertyValue must be set when propertyKey is set.");
     }
 
-    public async Task<IReadOnlyList<AuditRecord>> GetAuditRecords()
+    public async Task<IReadOnlyList<EntityAuditRecord>> GetEntityAuditRecords()
     {
-        return await _repository.ReadAuditRecords();
+        return await _repository.ReadEntityAuditRecords();
+    }
+
+    public async Task<IReadOnlyList<EnforceAuditRecord>> GetEnforceAuditRecords()
+    {
+        return await _repository.ReadEnforceAuditRecords();
     }
 }

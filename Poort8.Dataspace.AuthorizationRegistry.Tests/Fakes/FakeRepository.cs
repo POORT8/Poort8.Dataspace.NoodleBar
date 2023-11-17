@@ -1,4 +1,5 @@
 ﻿using Force.DeepCloner;
+using Poort8.Dataspace.AuthorizationRegistry.Audit;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using Policy = Poort8.Dataspace.AuthorizationRegistry.Entities.Policy;
 
@@ -207,8 +208,18 @@ public class FakeRepository : IRepository
         throw new NotImplementedException();
     }
 
-    public Task<IReadOnlyList<AuditRecord>> ReadAuditRecords()
+    public Task<IReadOnlyList<EntityAuditRecord>> ReadEntityAuditRecords()
     {
         throw new NotImplementedException();
+    }
+
+    public Task<IReadOnlyList<EnforceAuditRecord>> ReadEnforceAuditRecords()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<EnforceAuditRecord> CreateEnforceAuditRecord(string user, string useCase, string subjectId, string resourceId, string action, bool allow, List<Policy>? explains = null)
+    {
+        return Task.FromResult(new EnforceAuditRecord(user, useCase, subjectId, resourceId, action, allow, explains));
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Poort8.Dataspace.AuthorizationRegistry.Audit;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 
 namespace Poort8.Dataspace.AuthorizationRegistry;
@@ -618,10 +619,28 @@ public class Repository : IRepository
 
     #endregion
 
-    public async Task<IReadOnlyList<AuditRecord>> ReadAuditRecords()
+    public async Task<IReadOnlyList<EntityAuditRecord>> ReadEntityAuditRecords()
     {
         using var context = _contextFactory.CreateDbContext();
 
-        return await context.AuditRecords.ToListAsync();
+        return await context.EntityAuditRecords.ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<EnforceAuditRecord>> ReadEnforceAuditRecords()
+    {
+        using var context = _contextFactory.CreateDbContext();
+
+        return await context.EnforceAuditRecords.ToListAsync();
+    }
+
+    public async Task<EnforceAuditRecord> CreateEnforceAuditRecord(string user, string useCase, string subjectId, string resourceId, string action, bool allow, List<Policy>? explains = null)
+    {
+        using var context = _contextFactory.CreateDbContext();
+
+        var record = new EnforceAuditRecord(user, useCase, subjectId, resourceId, action, allow, explains);
+
+        var enforceAuditRecord = await context.AddAsync(record);
+        await context.SaveChangesAsync();
+        return enforceAuditRecord.Entity;
     }
 }

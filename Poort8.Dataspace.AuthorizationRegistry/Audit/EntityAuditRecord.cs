@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Poort8.Dataspace.AuthorizationRegistry;
-public class AuditRecord
+namespace Poort8.Dataspace.AuthorizationRegistry.Audit;
+public class EntityAuditRecord
 {
     [Key]
     public string Id { get; init; }
@@ -12,11 +12,11 @@ public class AuditRecord
     public string Action { get; set; }
     public string Entity { get; set; }
 
-    public AuditRecord(DateTime timestamp, string user, string entityType, string entityId, string action, string entity)
+    public EntityAuditRecord(string user, string entityType, string entityId, string action, string entity)
     {
         var guid = Guid.NewGuid().ToString().Split('-');
         Id = $"{entityType}-{entityId}-{guid[0]}";
-        Timestamp = timestamp;
+        Timestamp = DateTime.Now;
         User = user;
         EntityType = entityType;
         EntityId = entityId;
