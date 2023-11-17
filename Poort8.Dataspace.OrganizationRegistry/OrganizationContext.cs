@@ -54,7 +54,6 @@ public class OrganizationContext : DbContext
                 continue;
 
             var auditRecord = new AuditRecord(
-                DateTime.Now,
                 _currentUser?.Identity?.Name ?? "unknown",
                 entry.Metadata.ClrType.Name,
                 entry.Properties!.First(p => p.Metadata!.IsPrimaryKey()).CurrentValue!.ToString()!,
