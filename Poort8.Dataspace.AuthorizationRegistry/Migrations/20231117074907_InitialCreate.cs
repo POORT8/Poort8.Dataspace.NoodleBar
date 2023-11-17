@@ -12,7 +12,26 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AuditRecords",
+                name: "EnforceAuditRecords",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    User = table.Column<string>(type: "TEXT", nullable: false),
+                    UseCase = table.Column<string>(type: "TEXT", nullable: false),
+                    SubjectId = table.Column<string>(type: "TEXT", nullable: false),
+                    ResourceId = table.Column<string>(type: "TEXT", nullable: false),
+                    Action = table.Column<string>(type: "TEXT", nullable: false),
+                    Allow = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Explain = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EnforceAuditRecords", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EntityAuditRecords",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
@@ -25,7 +44,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AuditRecords", x => x.Id);
+                    table.PrimaryKey("PK_EntityAuditRecords", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -276,10 +295,13 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AuditRecords");
+                name: "EmployeeProperty");
 
             migrationBuilder.DropTable(
-                name: "EmployeeProperty");
+                name: "EnforceAuditRecords");
+
+            migrationBuilder.DropTable(
+                name: "EntityAuditRecords");
 
             migrationBuilder.DropTable(
                 name: "FeatureProduct");

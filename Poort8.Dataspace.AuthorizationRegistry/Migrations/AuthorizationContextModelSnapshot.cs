@@ -32,7 +32,47 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                     b.ToTable("FeatureProduct");
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.AuditRecord", b =>
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Audit.EnforceAuditRecord", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Allow")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Explain")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ResourceId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SubjectId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UseCase")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("User")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EnforceAuditRecords");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Audit.EntityAuditRecord", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -62,7 +102,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditRecords");
+                    b.ToTable("EntityAuditRecords");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", b =>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Poort8.Dataspace.AuthorizationRegistry.Audit;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using System.Security.Claims;
 using System.Text.Json;
@@ -8,7 +9,8 @@ namespace Poort8.Dataspace.AuthorizationRegistry;
 public class AuthorizationContext : DbContext
 {
     private readonly ClaimsPrincipal? _currentUser;
-    public DbSet<AuditRecord> AuditRecords { get; set; }
+    public DbSet<EntityAuditRecord> EntityAuditRecords { get; set; }
+    public DbSet<EnforceAuditRecord> EnforceAuditRecords { get; set; }
     public DbSet<Organization> Organizations { get; set; }
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Product> Products { get; set; }
@@ -68,18 +70,20 @@ public class AuthorizationContext : DbContext
         return result;
     }
 
-    private List<AuditRecord> HandleAudit()
+    private List<EntityAuditRecord> HandleAudit()
     {
         ChangeTracker.DetectChanges();
 
-        var auditRecords = new List<AuditRecord>();
+        var auditRecords = new List<EntityAuditRecord>();
         foreach (var entry in ChangeTracker.Entries())
         {
-            if (entry.Entity is AuditRecord || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+            if (entry.Entity is EntityAuditRecord ||
+                entry.Entity is EnforceAuditRecord ||
+                entry.State == EntityState.Detached ||
+                entry.State == EntityState.Unchanged)
                 continue;
 
-            var auditRecord = new AuditRecord(
-                DateTime.Now,
+            var auditRecord = new EntityAuditRecord(
                 _currentUser?.Identity?.Name ?? "unknown",
                 entry.Metadata.ClrType.Name,
                 entry.Properties!.First(p => p.Metadata!.IsPrimaryKey()).CurrentValue!.ToString()!,
@@ -92,11 +96,11 @@ public class AuthorizationContext : DbContext
         return auditRecords;
     }
 
-    private async Task SaveAuditRecordChanges(List<AuditRecord> auditRecords)
+    private async Task SaveAuditRecordChanges(List<EntityAuditRecord> auditRecords)
     {
         if (auditRecords.Count != 0)
         {
-            AuditRecords.AddRange(auditRecords);
+            EntityAuditRecords.AddRange(auditRecords);
             await SaveChangesAsync();
         }
     }

@@ -1,4 +1,5 @@
-﻿using Poort8.Dataspace.AuthorizationRegistry.Entities;
+﻿using Poort8.Dataspace.AuthorizationRegistry.Audit;
+using Poort8.Dataspace.AuthorizationRegistry.Entities;
 
 namespace Poort8.Dataspace.AuthorizationRegistry;
 public interface IAuthorizationRegistry //TODO: Add authorizations for managing the registry itself
@@ -47,5 +48,6 @@ public interface IAuthorizationRegistry //TODO: Add authorizations for managing 
     Task<(bool allowed, List<Policy> explainPolicy)> ExplainedEnforce(string subjectId, string resourceId, string action, string useCase = "default");
 
     //Audit
-    Task<IReadOnlyList<AuditRecord>> GetAuditRecords();
+    Task<IReadOnlyList<EntityAuditRecord>> GetEntityAuditRecords();
+    Task<IReadOnlyList<EnforceAuditRecord>> GetEnforceAuditRecords();
 }

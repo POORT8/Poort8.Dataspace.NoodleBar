@@ -11,7 +11,7 @@ using Poort8.Dataspace.OrganizationRegistry;
 namespace Poort8.Dataspace.OrganizationRegistry.Migrations
 {
     [DbContext(typeof(OrganizationContext))]
-    [Migration("20231116142941_InitialCreate")]
+    [Migration("20231117074928_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
