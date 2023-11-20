@@ -11,14 +11,14 @@ using Poort8.Dataspace.OrganizationRegistry;
 namespace Poort8.Dataspace.OrganizationRegistry.Migrations
 {
     [DbContext(typeof(OrganizationContext))]
-    [Migration("20231117074928_InitialCreate")]
+    [Migration("20231120133543_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.13");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
 
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.AuditRecord", b =>
                 {
