@@ -216,7 +216,7 @@ resource appService 'Microsoft.Web/sites@2022-09-01' = {
         }
       ]
       phpVersion: 'OFF'
-      netFrameworkVersion: 'v7.0'
+      netFrameworkVersion: 'v8.0'
       alwaysOn: true
       webSocketsEnabled: true
     }
@@ -227,7 +227,7 @@ resource ipRestriction 'Microsoft.Web/sites/config@2022-03-01' = {
   name: 'web'
   parent: appService
   properties: {
-    netFrameworkVersion: 'v7.0'
+    netFrameworkVersion: 'v8.0'
     ipSecurityRestrictions: [
       {
         ipAddress: 'ApplicationInsightsAvailability'
