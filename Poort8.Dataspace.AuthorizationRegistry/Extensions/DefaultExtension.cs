@@ -26,6 +26,27 @@ public static class DefaultExtension
         public string ConnectionString { get; set; } = "DataSource=file::memory:";
     }
 
+    public static IServiceCollection AddAuthorizationRegistrySqlServer(this IServiceCollection services, Action<SqlServerOptions> options)
+    {
+        services.Configure(options);
+
+        var sqlServerOptions = new SqlServerOptions();
+        options?.Invoke(sqlServerOptions);
+
+        services.AddDbContextFactory<AuthorizationContext>(options => options.UseSqlServer(sqlServerOptions.ConnectionString));
+        services.AddSingleton<IAuthorizationRegistry, AuthorizationRegistry>();
+        services.AddSingleton<IRepository, Repository>();
+
+        //NOTE: The audit uses IHttpContextAccessor to get the user.
+
+        return services;
+    }
+
+    public class SqlServerOptions
+    {
+        public string? ConnectionString { get; set; }
+    }
+
     public static void RunAuthorizationRegistryMigrations(this IApplicationBuilder app)
     {
         var factory = app.ApplicationServices.GetRequiredService<IDbContextFactory<AuthorizationContext>>();

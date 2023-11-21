@@ -25,6 +25,26 @@ public static class DefaultExtension
         public string ConnectionString { get; set; } = "DataSource=file::memory:";
     }
 
+    public static IServiceCollection AddOrganizationRegistrySqlServer(this IServiceCollection services, Action<SqlServerOptions> options)
+    {
+        services.Configure(options);
+
+        var sqlServerOptions = new SqlServerOptions();
+        options?.Invoke(sqlServerOptions);
+
+        services.AddDbContextFactory<OrganizationContext>(options => options.UseSqlServer(sqlServerOptions.ConnectionString));
+        services.AddSingleton<IOrganizationRegistry, OrganizationRegistry>();
+
+        //NOTE: The audit uses IHttpContextAccessor to get the user.
+
+        return services;
+    }
+
+    public class SqlServerOptions
+    {
+        public string? ConnectionString { get; set; }
+    }
+
     public static void RunOrganizationRegistryMigrations(this IApplicationBuilder app)
     {
         var factory = app.ApplicationServices.GetRequiredService<IDbContextFactory<OrganizationContext>>();
