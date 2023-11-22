@@ -43,11 +43,6 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.UseExceptionHandler(exceptionHandlerApp
-    => exceptionHandlerApp.Run(async context
-        => await Results.Problem()
-                     .ExecuteAsync(context)));
-
 app.MapFeatureEndpoints();
 
 app.Run();

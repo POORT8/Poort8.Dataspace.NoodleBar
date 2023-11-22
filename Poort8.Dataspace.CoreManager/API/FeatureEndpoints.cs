@@ -6,6 +6,7 @@ namespace Poort8.Dataspace.CoreManager.API;
 
 public static class FeatureEndpoints
 {
+    //TODO: Add tests and exception handling
     public static void MapFeatureEndpoints(this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/features").WithTags(nameof(Feature));
