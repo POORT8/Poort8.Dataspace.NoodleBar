@@ -2,20 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Poort8.Dataspace.AuthorizationRegistry;
 
 #nullable disable
 
-namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
+namespace Poort8.Dataspace.CoreManager.Migrations
 {
     [DbContext(typeof(AuthorizationContext))]
-    [Migration("20231120133515_InitialCreate")]
-    partial class InitialCreate
+    partial class AuthorizationContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
@@ -137,7 +134,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
 
                     b.HasIndex("OrganizationIdentifier");
 
-                    b.ToTable("Employees");
+                    b.ToTable("ArEmployee", (string)null);
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee+EmployeeProperty", b =>
@@ -178,7 +175,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
 
                     b.HasKey("FeatureId");
 
-                    b.ToTable("Features");
+                    b.ToTable("ArFeature", (string)null);
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature+FeatureProperty", b =>
@@ -227,7 +224,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
 
                     b.HasKey("Identifier");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("ArOrganization", (string)null);
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization+OrganizationProperty", b =>
@@ -289,7 +286,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
 
                     b.HasKey("PolicyId");
 
-                    b.ToTable("Policies");
+                    b.ToTable("ArPolicy", (string)null);
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy+PolicyProperty", b =>
@@ -336,7 +333,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.ToTable("Products");
+                    b.ToTable("ArProduct", (string)null);
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product+ProductProperty", b =>
