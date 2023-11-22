@@ -18,6 +18,22 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         _currentUser = httpContextAccessor?.HttpContext?.User;
 
         _enforcer = new Enforcer(EnforcerModel.Create());
+
+        LoadAllPoliciesAndGroupsFromStorage();
+    }
+
+    private async void LoadAllPoliciesAndGroupsFromStorage()
+    {
+        var policies = await _repository.ReadPolicies();
+
+        foreach (var policy in policies)
+        {
+            var success = await _enforcer.AddPolicyAsync(policy.ToPolicyValues());
+            if (!success) throw new EnforcerException("Could not add policy to enforcer.");
+        }
+
+        await ResetSubjectGroup();
+        await ResetResourceGroup();
     }
 
     #region Create

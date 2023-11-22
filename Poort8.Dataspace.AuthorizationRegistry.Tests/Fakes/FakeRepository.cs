@@ -205,7 +205,8 @@ public class FakeRepository : IRepository
 
     public Task<IReadOnlyList<Policy>> ReadPolicies(string? useCase = null, string? issuerId = null, string? subjectId = null, string? resourceId = null, string? action = null, string? propertyKey = null, string? propertyValue = null)
     {
-        throw new NotImplementedException();
+        var policies = _policies.Select(o => o.DeepClone()).ToList() as IReadOnlyList<Policy>;
+        return Task.FromResult(policies);
     }
 
     public Task<IReadOnlyList<EntityAuditRecord>> ReadEntityAuditRecords()
