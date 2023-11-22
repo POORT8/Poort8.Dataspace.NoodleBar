@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poort8.Dataspace.Organizati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poort8.Dataspace.OrganizationRegistry.SqlServerMigrations", "Poort8.Dataspace.OrganizationRegistry.SqlServerMigrations\Poort8.Dataspace.OrganizationRegistry.SqlServerMigrations.csproj", "{88A469B9-2535-4F3F-BCD6-848C7534CE9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poort8.Dataspace.AuthorizationRegistry.SqliteMigrations", "Poort8.Dataspace.AuthorizationRegistry.SqliteMigrations\Poort8.Dataspace.AuthorizationRegistry.SqliteMigrations.csproj", "{35F9F433-5AA5-486C-BA52-CE2B0BC052A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poort8.Dataspace.AuthorizationRegistry.SqlServerMigrations", "Poort8.Dataspace.AuthorizationRegistry.SqlServerMigrations\Poort8.Dataspace.AuthorizationRegistry.SqlServerMigrations.csproj", "{42EA2A46-1732-46CA-A92D-90802F15FB0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{88A469B9-2535-4F3F-BCD6-848C7534CE9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88A469B9-2535-4F3F-BCD6-848C7534CE9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88A469B9-2535-4F3F-BCD6-848C7534CE9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35F9F433-5AA5-486C-BA52-CE2B0BC052A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35F9F433-5AA5-486C-BA52-CE2B0BC052A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35F9F433-5AA5-486C-BA52-CE2B0BC052A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35F9F433-5AA5-486C-BA52-CE2B0BC052A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42EA2A46-1732-46CA-A92D-90802F15FB0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42EA2A46-1732-46CA-A92D-90802F15FB0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42EA2A46-1732-46CA-A92D-90802F15FB0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42EA2A46-1732-46CA-A92D-90802F15FB0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

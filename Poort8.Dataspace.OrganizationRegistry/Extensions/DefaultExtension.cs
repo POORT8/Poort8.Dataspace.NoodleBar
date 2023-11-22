@@ -12,6 +12,8 @@ public static class DefaultExtension
         var sqliteOptions = new SqliteOptions();
         options?.Invoke(sqliteOptions);
 
+        //NOTE: Use builder.MigrationsAssembly("Poort8.Dataspace.CoreManager") to create migrations and move them to the right project
+
         services.AddDbContextFactory<OrganizationContext>(
             options => options.UseSqlite(sqliteOptions.ConnectionString,
             builder => builder.MigrationsAssembly("Poort8.Dataspace.OrganizationRegistry.SqliteMigrations")));
