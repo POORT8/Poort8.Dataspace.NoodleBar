@@ -6,8 +6,8 @@ param environment string = 'preview'
 
 param location string = resourceGroup().location
 
-var isProd = environment == 'prod'
-var nameAddition = (isProd ? '' : '-${environment}')
+@minLength(3)
+param appName string
 
 var environmentSettings = {
   prod: {
@@ -19,7 +19,7 @@ var environmentSettings = {
 }
 
 resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-  name: 'Poort8-Dataspace-CoreManager${nameAddition}-ws'
+  name: '${appName}-ws'
   location: location
 }
 
