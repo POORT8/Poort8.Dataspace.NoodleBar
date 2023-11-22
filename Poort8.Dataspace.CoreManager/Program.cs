@@ -1,5 +1,6 @@
-using Poort8.Dataspace.AuthorizationRegistry.Extensions;
+﻿using Poort8.Dataspace.AuthorizationRegistry.Extensions;
 using Poort8.Dataspace.CoreManager;
+using Poort8.Dataspace.CoreManager.API;
 using Poort8.Dataspace.OrganizationRegistry.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,9 @@ builder.Services.AddAuthorizationRegistrySqlite(options => options.ConnectionStr
 //builder.Services.AddOrganizationRegistrySqlServer(options => options.ConnectionString = builder.Configuration["OrganizationRegistry:ConnectionString"]);
 //builder.Services.AddAuthorizationRegistrySqlServer(options => options.ConnectionString = builder.Configuration["AuthorizationRegistry:ConnectionString"]);
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -25,6 +29,12 @@ if (!app.Environment.IsDevelopment())
 app.RunOrganizationRegistryMigrations();
 app.RunAuthorizationRegistryMigrations();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+};
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -32,5 +42,7 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.MapFeatureEndpoints();
 
 app.Run();
