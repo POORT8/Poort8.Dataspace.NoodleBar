@@ -44,5 +44,6 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.MapFeatureEndpoints();
+app.MapAuthorizationEndpoints();
 
 app.Run();
