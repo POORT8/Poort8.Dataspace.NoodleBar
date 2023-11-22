@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
+namespace Poort8.Dataspace.CoreManager.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -15,15 +15,15 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "EnforceAuditRecords",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    User = table.Column<string>(type: "TEXT", nullable: false),
-                    UseCase = table.Column<string>(type: "TEXT", nullable: false),
-                    SubjectId = table.Column<string>(type: "TEXT", nullable: false),
-                    ResourceId = table.Column<string>(type: "TEXT", nullable: false),
-                    Action = table.Column<string>(type: "TEXT", nullable: false),
-                    Allow = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Explain = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    User = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UseCase = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SubjectId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ResourceId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Allow = table.Column<bool>(type: "bit", nullable: false),
+                    Explain = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,13 +34,13 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "EntityAuditRecords",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    User = table.Column<string>(type: "TEXT", nullable: false),
-                    EntityType = table.Column<string>(type: "TEXT", nullable: false),
-                    EntityId = table.Column<string>(type: "TEXT", nullable: false),
-                    Action = table.Column<string>(type: "TEXT", nullable: false),
-                    Entity = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    User = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EntityType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EntityId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Entity = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,9 +51,9 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "Features",
                 columns: table => new
                 {
-                    FeatureId = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false)
+                    FeatureId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,11 +64,11 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "Organizations",
                 columns: table => new
                 {
-                    Identifier = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Url = table.Column<string>(type: "TEXT", nullable: false),
-                    Representative = table.Column<string>(type: "TEXT", nullable: false),
-                    InvoicingContact = table.Column<string>(type: "TEXT", nullable: false)
+                    Identifier = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Representative = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InvoicingContact = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,15 +79,15 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "Policies",
                 columns: table => new
                 {
-                    PolicyId = table.Column<string>(type: "TEXT", nullable: false),
-                    UseCase = table.Column<string>(type: "TEXT", nullable: false),
-                    IssuedAt = table.Column<long>(type: "INTEGER", nullable: false),
-                    NotBefore = table.Column<long>(type: "INTEGER", nullable: false),
-                    Expiration = table.Column<long>(type: "INTEGER", nullable: false),
-                    IssuerId = table.Column<string>(type: "TEXT", nullable: false),
-                    SubjectId = table.Column<string>(type: "TEXT", nullable: false),
-                    ResourceId = table.Column<string>(type: "TEXT", nullable: false),
-                    Action = table.Column<string>(type: "TEXT", nullable: false)
+                    PolicyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UseCase = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IssuedAt = table.Column<long>(type: "bigint", nullable: false),
+                    NotBefore = table.Column<long>(type: "bigint", nullable: false),
+                    Expiration = table.Column<long>(type: "bigint", nullable: false),
+                    IssuerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SubjectId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ResourceId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,11 +98,11 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    ProductId = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    Provider = table.Column<string>(type: "TEXT", nullable: true),
-                    Url = table.Column<string>(type: "TEXT", nullable: true)
+                    ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Provider = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -113,10 +113,10 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "FeatureProperty",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "TEXT", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
-                    FeatureId = table.Column<string>(type: "TEXT", nullable: false)
+                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsIdentifier = table.Column<bool>(type: "bit", nullable: false),
+                    FeatureId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,12 +133,12 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "Employees",
                 columns: table => new
                 {
-                    EmployeeId = table.Column<string>(type: "TEXT", nullable: false),
-                    GivenName = table.Column<string>(type: "TEXT", nullable: false),
-                    FamilyName = table.Column<string>(type: "TEXT", nullable: false),
-                    Telephone = table.Column<string>(type: "TEXT", nullable: false),
-                    Email = table.Column<string>(type: "TEXT", nullable: false),
-                    OrganizationIdentifier = table.Column<string>(type: "TEXT", nullable: false)
+                    EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    GivenName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FamilyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telephone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrganizationIdentifier = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -155,10 +155,10 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "OrganizationProperty",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "TEXT", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
-                    OrganizationIdentifier = table.Column<string>(type: "TEXT", nullable: false)
+                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsIdentifier = table.Column<bool>(type: "bit", nullable: false),
+                    OrganizationIdentifier = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -175,10 +175,10 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "PolicyProperty",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "TEXT", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
-                    PolicyId = table.Column<string>(type: "TEXT", nullable: false)
+                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsIdentifier = table.Column<bool>(type: "bit", nullable: false),
+                    PolicyId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -195,8 +195,8 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "FeatureProduct",
                 columns: table => new
                 {
-                    FeaturesFeatureId = table.Column<string>(type: "TEXT", nullable: false),
-                    ProductId = table.Column<string>(type: "TEXT", nullable: false)
+                    FeaturesFeatureId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -219,10 +219,10 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "ProductProperty",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "TEXT", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
-                    ProductId = table.Column<string>(type: "TEXT", nullable: false)
+                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsIdentifier = table.Column<bool>(type: "bit", nullable: false),
+                    ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -239,10 +239,10 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Migrations
                 name: "EmployeeProperty",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "TEXT", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
-                    EmployeeId = table.Column<string>(type: "TEXT", nullable: false)
+                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsIdentifier = table.Column<bool>(type: "bit", nullable: false),
+                    EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {

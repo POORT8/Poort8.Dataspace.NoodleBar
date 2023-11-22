@@ -12,7 +12,11 @@ public static class DefaultExtension
         var sqliteOptions = new SqliteOptions();
         options?.Invoke(sqliteOptions);
 
-        services.AddDbContextFactory<AuthorizationContext>(options => options.UseSqlite(sqliteOptions.ConnectionString));
+        //NOTE: Use builder.MigrationsAssembly("Poort8.Dataspace.CoreManager") to create migrations and move them to the right project
+
+        services.AddDbContextFactory<AuthorizationContext>(
+            options => options.UseSqlite(sqliteOptions.ConnectionString,
+            builder => builder.MigrationsAssembly("Poort8.Dataspace.AuthorizationRegistry.SqliteMigrations")));
         services.AddSingleton<IAuthorizationRegistry, AuthorizationRegistry>();
         services.AddSingleton<IRepository, Repository>();
 
@@ -33,7 +37,9 @@ public static class DefaultExtension
         var sqlServerOptions = new SqlServerOptions();
         options?.Invoke(sqlServerOptions);
 
-        services.AddDbContextFactory<AuthorizationContext>(options => options.UseSqlServer(sqlServerOptions.ConnectionString));
+        services.AddDbContextFactory<AuthorizationContext>(
+            options => options.UseSqlServer(sqlServerOptions.ConnectionString,
+            builder => builder.MigrationsAssembly("Poort8.Dataspace.AuthorizationRegistry.SqlServerMigrations")));
         services.AddSingleton<IAuthorizationRegistry, AuthorizationRegistry>();
         services.AddSingleton<IRepository, Repository>();
 

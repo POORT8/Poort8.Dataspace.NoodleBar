@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Poort8.Dataspace.OrganizationRegistry.SqliteMigrations\Poort8.Dataspace.OrganizationRegistry.SqliteMigrations.csproj" />
     <ProjectReference Include="..\Poort8.Dataspace.OrganizationRegistry\Poort8.Dataspace.OrganizationRegistry.csproj" />
   </ItemGroup>
 

@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Poort8.Dataspace.AuthorizationRegistry.SqliteMigrations\Poort8.Dataspace.AuthorizationRegistry.SqliteMigrations.csproj" />
     <ProjectReference Include="..\Poort8.Dataspace.AuthorizationRegistry\Poort8.Dataspace.AuthorizationRegistry.csproj" />
   </ItemGroup>
 

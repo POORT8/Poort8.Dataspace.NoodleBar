@@ -12,7 +12,11 @@ public static class DefaultExtension
         var sqliteOptions = new SqliteOptions();
         options?.Invoke(sqliteOptions);
 
-        services.AddDbContextFactory<OrganizationContext>(options => options.UseSqlite(sqliteOptions.ConnectionString));
+        //NOTE: Use builder.MigrationsAssembly("Poort8.Dataspace.CoreManager") to create migrations and move them to the right project
+
+        services.AddDbContextFactory<OrganizationContext>(
+            options => options.UseSqlite(sqliteOptions.ConnectionString,
+            builder => builder.MigrationsAssembly("Poort8.Dataspace.OrganizationRegistry.SqliteMigrations")));
         services.AddSingleton<IOrganizationRegistry, OrganizationRegistry>();
 
         //NOTE: The audit uses IHttpContextAccessor to get the user.
@@ -32,7 +36,9 @@ public static class DefaultExtension
         var sqlServerOptions = new SqlServerOptions();
         options?.Invoke(sqlServerOptions);
 
-        services.AddDbContextFactory<OrganizationContext>(options => options.UseSqlServer(sqlServerOptions.ConnectionString));
+        services.AddDbContextFactory<OrganizationContext>(
+            options => options.UseSqlServer(sqlServerOptions.ConnectionString,
+            builder => builder.MigrationsAssembly("Poort8.Dataspace.OrganizationRegistry.SqlServerMigrations")));
         services.AddSingleton<IOrganizationRegistry, OrganizationRegistry>();
 
         //NOTE: The audit uses IHttpContextAccessor to get the user.
