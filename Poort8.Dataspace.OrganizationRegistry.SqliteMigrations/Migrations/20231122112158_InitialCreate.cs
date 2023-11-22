@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Poort8.Dataspace.OrganizationRegistry.Migrations
+namespace Poort8.Dataspace.CoreManager.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
