@@ -25,35 +25,42 @@ public class AuthorizationContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Organization>()
+            .ToTable("ArOrganization")
             .HasMany(o => o.Employees)
             .WithOne()
             .IsRequired();
 
         modelBuilder.Entity<Product>()
+            .ToTable("ArProduct")
             .HasMany(p => p.Features)
             .WithMany();
 
         modelBuilder.Entity<Organization>()
+            .ToTable("ArOrganization")
             .HasMany(e => e.Properties)
             .WithOne()
             .IsRequired();
 
         modelBuilder.Entity<Employee>()
+            .ToTable("ArEmployee")
             .HasMany(e => e.Properties)
             .WithOne()
             .IsRequired();
 
         modelBuilder.Entity<Product>()
+            .ToTable("ArProduct")
             .HasMany(e => e.Properties)
             .WithOne()
             .IsRequired();
 
         modelBuilder.Entity<Feature>()
+            .ToTable("ArFeature")
             .HasMany(e => e.Properties)
             .WithOne()
             .IsRequired();
 
         modelBuilder.Entity<Policy>()
+            .ToTable("ArPolicy")
             .HasMany(e => e.Properties)
             .WithOne()
             .IsRequired();

@@ -19,14 +19,17 @@ public class OrganizationContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Organization>()
+            .ToTable("OrOrganization")
             .OwnsOne(o => o.Adherence);
 
         modelBuilder.Entity<Organization>()
+            .ToTable("OrOrganization")
             .HasMany(o => o.Roles)
             .WithOne()
             .IsRequired();
 
         modelBuilder.Entity<Organization>()
+            .ToTable("OrOrganization")
             .HasMany(o => o.Properties)
             .WithOne()
             .IsRequired();

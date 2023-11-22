@@ -15,13 +15,13 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "AuditRecords",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    User = table.Column<string>(type: "TEXT", nullable: false),
-                    EntityType = table.Column<string>(type: "TEXT", nullable: false),
-                    EntityId = table.Column<string>(type: "TEXT", nullable: false),
-                    Action = table.Column<string>(type: "TEXT", nullable: false),
-                    Entity = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    User = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EntityType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EntityId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Entity = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,35 +29,35 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Organizations",
+                name: "OrOrganization",
                 columns: table => new
                 {
-                    Identifier = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Adherence_Status = table.Column<string>(type: "TEXT", nullable: false),
-                    Adherence_ValidFrom = table.Column<DateOnly>(type: "TEXT", nullable: false),
-                    Adherence_ValidUntil = table.Column<DateOnly>(type: "TEXT", nullable: false)
+                    Identifier = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Adherence_Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Adherence_ValidFrom = table.Column<DateOnly>(type: "date", nullable: false),
+                    Adherence_ValidUntil = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Organizations", x => x.Identifier);
+                    table.PrimaryKey("PK_OrOrganization", x => x.Identifier);
                 });
 
             migrationBuilder.CreateTable(
                 name: "OrganizationRole",
                 columns: table => new
                 {
-                    RoleId = table.Column<string>(type: "TEXT", nullable: false),
-                    Role = table.Column<string>(type: "TEXT", nullable: false),
-                    OrganizationIdentifier = table.Column<string>(type: "TEXT", nullable: false)
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrganizationIdentifier = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrganizationRole", x => x.RoleId);
                     table.ForeignKey(
-                        name: "FK_OrganizationRole_Organizations_OrganizationIdentifier",
+                        name: "FK_OrganizationRole_OrOrganization_OrganizationIdentifier",
                         column: x => x.OrganizationIdentifier,
-                        principalTable: "Organizations",
+                        principalTable: "OrOrganization",
                         principalColumn: "Identifier",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -66,18 +66,18 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "Property",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "TEXT", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: false),
-                    IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
-                    OrganizationIdentifier = table.Column<string>(type: "TEXT", nullable: false)
+                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsIdentifier = table.Column<bool>(type: "bit", nullable: false),
+                    OrganizationIdentifier = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Property", x => x.Key);
                     table.ForeignKey(
-                        name: "FK_Property_Organizations_OrganizationIdentifier",
+                        name: "FK_Property_OrOrganization_OrganizationIdentifier",
                         column: x => x.OrganizationIdentifier,
-                        principalTable: "Organizations",
+                        principalTable: "OrOrganization",
                         principalColumn: "Identifier",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -106,7 +106,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "Property");
 
             migrationBuilder.DropTable(
-                name: "Organizations");
+                name: "OrOrganization");
         }
     }
 }

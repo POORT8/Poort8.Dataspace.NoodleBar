@@ -134,7 +134,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.HasIndex("OrganizationIdentifier");
 
-                    b.ToTable("Employees");
+                    b.ToTable("ArEmployee", (string)null);
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee+EmployeeProperty", b =>
@@ -175,7 +175,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.HasKey("FeatureId");
 
-                    b.ToTable("Features");
+                    b.ToTable("ArFeature", (string)null);
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature+FeatureProperty", b =>
@@ -224,7 +224,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.HasKey("Identifier");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("ArOrganization", (string)null);
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization+OrganizationProperty", b =>
@@ -286,7 +286,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.HasKey("PolicyId");
 
-                    b.ToTable("Policies");
+                    b.ToTable("ArPolicy", (string)null);
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy+PolicyProperty", b =>
@@ -333,7 +333,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.ToTable("Products");
+                    b.ToTable("ArProduct", (string)null);
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product+ProductProperty", b =>
