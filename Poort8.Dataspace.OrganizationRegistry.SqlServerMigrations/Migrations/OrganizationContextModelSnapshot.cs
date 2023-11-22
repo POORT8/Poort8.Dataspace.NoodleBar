@@ -66,7 +66,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.HasKey("Identifier");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("OrOrganization", (string)null);
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.OrganizationRole", b =>
@@ -131,7 +131,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                             b1.HasKey("OrganizationIdentifier");
 
-                            b1.ToTable("Organizations");
+                            b1.ToTable("OrOrganization");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrganizationIdentifier");
