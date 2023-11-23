@@ -27,11 +27,11 @@ public static class FeatureEndpoints
         .Produces<Feature>()
         .WithOpenApi();
 
-        group.MapPut("/{id}", (string id, FeatureInput feature, IAuthorizationRegistry ar) =>
+        group.MapPut("/{id}", async (string id, FeatureInput feature, IAuthorizationRegistry ar) =>
         {
             var properties = feature.Properties.Select(p => new FeatureProperty(p.Key, p.Value, p.IsIdentifier)).ToList();
             var featureUpdate = new Feature(feature.FeatureId, feature.Name, feature.Description, properties);
-            var featureEntity = ar.UpdateFeature(featureUpdate);
+            var featureEntity = await ar.UpdateFeature(featureUpdate);
             return TypedResults.Ok(featureEntity);
         })
         .WithName("UpdateFeature")
