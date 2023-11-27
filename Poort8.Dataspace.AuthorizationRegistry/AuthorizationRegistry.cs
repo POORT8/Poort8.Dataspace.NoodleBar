@@ -12,6 +12,8 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     private readonly IEnforcer _enforcer;
     private readonly ClaimsPrincipal? _currentUser;
 
+    //TODO: Add tests for group reset in all cases.
+
     public AuthorizationRegistry(IRepository repository, IHttpContextAccessor? httpContextAccessor = null)
     {
         _repository = repository;
@@ -41,14 +43,14 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     public async Task<Organization> CreateOrganization(Organization organization)
     {
         var organizationEntity = await _repository.CreateOrganization(organization);
-        if (organization.Employees.Any()) await ResetSubjectGroup();
+        await ResetSubjectGroup();
         return organizationEntity;
     }
 
     public async Task<Product> CreateProduct(Product product)
     {
         var productEntity = await _repository.CreateProduct(product);
-        if (product.Features.Any()) await ResetResourceGroup();
+        await ResetResourceGroup();
         return productEntity;
     }
 
@@ -92,7 +94,9 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Feature> CreateFeature(Feature feature)
     {
-        return await _repository.CreateFeature(feature);
+        var featureEntity = await _repository.CreateFeature(feature);
+        await ResetResourceGroup();
+        return featureEntity;
     }
 
     public async Task<Feature> AddExistingFeatureToProduct(string productId, string featureId)
@@ -245,7 +249,9 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     public async Task<bool> DeleteOrganization(string identifier)
     {
         //TODO: What to do with the policies?
-        return await _repository.DeleteOrganization(identifier);
+        var success = await _repository.DeleteOrganization(identifier);
+        if (success) await ResetSubjectGroup();
+        return success;
     }
 
     public async Task<bool> DeleteEmployee(string employeeId)
@@ -258,7 +264,9 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     public async Task<bool> DeleteProduct(string productId)
     {
         //TODO: What to do with the policies?
-        return await _repository.DeleteProduct(productId);
+        var success = await _repository.DeleteProduct(productId);
+        if (success) await ResetResourceGroup();
+        return success;
     }
 
     public async Task<bool> DeleteFeature(string featureId)
@@ -270,7 +278,9 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<bool> RemoveFeatureFromProduct(string productId, string featureId)
     {
-        return await _repository.RemoveFeatureFromProduct(productId, featureId);
+        var success = await _repository.RemoveFeatureFromProduct(productId, featureId);
+        if (success) await ResetResourceGroup();
+        return success;
     }
 
     public async Task<bool> DeletePolicy(string policyId)
