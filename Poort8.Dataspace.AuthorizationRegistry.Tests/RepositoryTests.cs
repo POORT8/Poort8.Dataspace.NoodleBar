@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using Poort8.Dataspace.AuthorizationRegistry.Extensions;
 using Poort8.Dataspace.AuthorizationRegistry.Tests.Data;
+using static Poort8.Dataspace.AuthorizationRegistry.Entities.Organization;
 
 namespace Poort8.Dataspace.AuthorizationRegistry.Tests;
 public class RepositoryTests
@@ -488,5 +489,19 @@ public class RepositoryTests
 
         var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
         Assert.True(success);
+    }
+
+    [Fact]
+    public async Task SamePropertyKeyForTwoOrganizations()
+    {
+        var organization1 = TestData.CreateNewOrganization(nameof(SamePropertyKeyForTwoOrganizations), 1);
+        organization1.Properties.Add(new OrganizationProperty("sharedIdentifier", "shared"));
+        var organization1Entity = await _authorizationRegistry.CreateOrganization(organization1);
+        Assert.NotNull(organization1Entity);
+
+        var organization2 = TestData.CreateNewOrganization(nameof(SamePropertyKeyForTwoOrganizations) + "2", 1);
+        organization2.Properties.Add(new OrganizationProperty("sharedIdentifier", "shared"));
+        var organization2Entity = await _authorizationRegistry.CreateOrganization(organization2);
+        Assert.NotNull(organization2Entity);
     }
 }

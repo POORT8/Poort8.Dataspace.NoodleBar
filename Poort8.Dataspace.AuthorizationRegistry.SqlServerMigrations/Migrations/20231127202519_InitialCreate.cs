@@ -113,14 +113,15 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "FeatureProperty",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsIdentifier = table.Column<bool>(type: "bit", nullable: false),
                     FeatureId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FeatureProperty", x => x.Key);
+                    table.PrimaryKey("PK_FeatureProperty", x => x.PropertyId);
                     table.ForeignKey(
                         name: "FK_FeatureProperty_ArFeature_FeatureId",
                         column: x => x.FeatureId,
@@ -155,14 +156,15 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "OrganizationProperty",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsIdentifier = table.Column<bool>(type: "bit", nullable: false),
                     OrganizationIdentifier = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrganizationProperty", x => x.Key);
+                    table.PrimaryKey("PK_OrganizationProperty", x => x.PropertyId);
                     table.ForeignKey(
                         name: "FK_OrganizationProperty_ArOrganization_OrganizationIdentifier",
                         column: x => x.OrganizationIdentifier,
@@ -175,14 +177,15 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "PolicyProperty",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsIdentifier = table.Column<bool>(type: "bit", nullable: false),
                     PolicyId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PolicyProperty", x => x.Key);
+                    table.PrimaryKey("PK_PolicyProperty", x => x.PropertyId);
                     table.ForeignKey(
                         name: "FK_PolicyProperty_ArPolicy_PolicyId",
                         column: x => x.PolicyId,
@@ -219,14 +222,15 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "ProductProperty",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsIdentifier = table.Column<bool>(type: "bit", nullable: false),
                     ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductProperty", x => x.Key);
+                    table.PrimaryKey("PK_ProductProperty", x => x.PropertyId);
                     table.ForeignKey(
                         name: "FK_ProductProperty_ArProduct_ProductId",
                         column: x => x.ProductId,
@@ -239,14 +243,15 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "EmployeeProperty",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsIdentifier = table.Column<bool>(type: "bit", nullable: false),
                     EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeProperty", x => x.Key);
+                    table.PrimaryKey("PK_EmployeeProperty", x => x.PropertyId);
                     table.ForeignKey(
                         name: "FK_EmployeeProperty_ArEmployee_EmployeeId",
                         column: x => x.EmployeeId,

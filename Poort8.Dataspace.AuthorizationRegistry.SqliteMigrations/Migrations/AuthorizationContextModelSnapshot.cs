@@ -139,7 +139,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee+EmployeeProperty", b =>
                 {
-                    b.Property<string>("Key")
+                    b.Property<string>("PropertyId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EmployeeId")
@@ -149,11 +149,15 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.Property<bool>("IsIdentifier")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Key");
+                    b.HasKey("PropertyId");
 
                     b.HasIndex("EmployeeId");
 
@@ -180,7 +184,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature+FeatureProperty", b =>
                 {
-                    b.Property<string>("Key")
+                    b.Property<string>("PropertyId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FeatureId")
@@ -190,11 +194,15 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.Property<bool>("IsIdentifier")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Key");
+                    b.HasKey("PropertyId");
 
                     b.HasIndex("FeatureId");
 
@@ -229,11 +237,15 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization+OrganizationProperty", b =>
                 {
-                    b.Property<string>("Key")
+                    b.Property<string>("PropertyId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsIdentifier")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("OrganizationIdentifier")
                         .IsRequired()
@@ -243,7 +255,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Key");
+                    b.HasKey("PropertyId");
 
                     b.HasIndex("OrganizationIdentifier");
 
@@ -291,11 +303,15 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Policy+PolicyProperty", b =>
                 {
-                    b.Property<string>("Key")
+                    b.Property<string>("PropertyId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsIdentifier")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PolicyId")
                         .IsRequired()
@@ -305,7 +321,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Key");
+                    b.HasKey("PropertyId");
 
                     b.HasIndex("PolicyId");
 
@@ -338,11 +354,15 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product+ProductProperty", b =>
                 {
-                    b.Property<string>("Key")
+                    b.Property<string>("PropertyId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsIdentifier")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ProductId")
                         .IsRequired()
@@ -352,7 +372,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Key");
+                    b.HasKey("PropertyId");
 
                     b.HasIndex("ProductId");
 

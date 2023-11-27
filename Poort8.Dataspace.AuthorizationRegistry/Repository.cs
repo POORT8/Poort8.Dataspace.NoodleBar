@@ -321,7 +321,7 @@ public class Repository : IRepository
         foreach (var property in organization.Properties)
         {
             var propertyEntity = organizationEntity.Properties
-                .FirstOrDefault(p => p.Key == property.Key);
+                .FirstOrDefault(p => p.PropertyId == property.PropertyId);
 
             if (propertyEntity == null)
             {
@@ -335,7 +335,7 @@ public class Repository : IRepository
 
         foreach (var property in organizationEntity.Properties)
         {
-            if (!organization.Properties.Any(p => p.Key == property.Key))
+            if (!organization.Properties.Any(p => p.PropertyId == property.PropertyId))
             {
                 context.Remove(property);
             }
@@ -365,7 +365,7 @@ public class Repository : IRepository
         foreach (var property in employee.Properties)
         {
             var propertyEntity = employeeEntity.Properties
-                .FirstOrDefault(p => p.Key == property.Key);
+                .FirstOrDefault(p => p.PropertyId == property.PropertyId);
 
             if (propertyEntity == null)
             {
@@ -379,7 +379,7 @@ public class Repository : IRepository
 
         foreach (var property in employeeEntity.Properties)
         {
-            if (!employee.Properties.Any(p => p.Key == property.Key))
+            if (!employee.Properties.Any(p => p.PropertyId == property.PropertyId))
             {
                 context.Remove(property);
             }
@@ -425,7 +425,7 @@ public class Repository : IRepository
         foreach (var property in product.Properties)
         {
             var propertyEntity = productEntity.Properties
-                .FirstOrDefault(p => p.Key == property.Key);
+                .FirstOrDefault(p => p.PropertyId == property.PropertyId);
 
             if (propertyEntity == null)
             {
@@ -439,7 +439,7 @@ public class Repository : IRepository
 
         foreach (var property in productEntity.Properties)
         {
-            if (!product.Properties.Any(p => p.Key == property.Key))
+            if (!product.Properties.Any(p => p.PropertyId == property.PropertyId))
             {
                 context.Remove(property);
             }
@@ -469,7 +469,7 @@ public class Repository : IRepository
         foreach (var property in feature.Properties)
         {
             var propertyEntity = featureEntity.Properties
-                .FirstOrDefault(p => p.Key == property.Key);
+                .FirstOrDefault(p => p.PropertyId == property.PropertyId);
 
             if (propertyEntity == null)
             {
@@ -483,7 +483,7 @@ public class Repository : IRepository
 
         foreach (var property in featureEntity.Properties)
         {
-            if (!feature.Properties.Any(p => p.Key == property.Key))
+            if (!feature.Properties.Any(p => p.PropertyId == property.PropertyId))
             {
                 context.Remove(property);
             }
@@ -503,7 +503,7 @@ public class Repository : IRepository
         foreach (var property in policy.Properties)
         {
             var propertyEntity = policyEntity.Properties
-                .FirstOrDefault(p => p.Key == property.Key);
+                .FirstOrDefault(p => p.PropertyId == property.PropertyId);
 
             if (propertyEntity == null)
             {
@@ -517,7 +517,7 @@ public class Repository : IRepository
 
         foreach (var property in policyEntity.Properties)
         {
-            if (!policy.Properties.Any(p => p.Key == property.Key))
+            if (!policy.Properties.Any(p => p.PropertyId == property.PropertyId))
             {
                 context.Remove(property);
             }

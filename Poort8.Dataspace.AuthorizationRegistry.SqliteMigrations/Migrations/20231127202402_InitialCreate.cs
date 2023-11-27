@@ -113,6 +113,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "FeatureProperty",
                 columns: table => new
                 {
+                    PropertyId = table.Column<string>(type: "TEXT", nullable: false),
                     Key = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
                     IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -120,7 +121,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FeatureProperty", x => x.Key);
+                    table.PrimaryKey("PK_FeatureProperty", x => x.PropertyId);
                     table.ForeignKey(
                         name: "FK_FeatureProperty_ArFeature_FeatureId",
                         column: x => x.FeatureId,
@@ -155,6 +156,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "OrganizationProperty",
                 columns: table => new
                 {
+                    PropertyId = table.Column<string>(type: "TEXT", nullable: false),
                     Key = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
                     IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -162,7 +164,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrganizationProperty", x => x.Key);
+                    table.PrimaryKey("PK_OrganizationProperty", x => x.PropertyId);
                     table.ForeignKey(
                         name: "FK_OrganizationProperty_ArOrganization_OrganizationIdentifier",
                         column: x => x.OrganizationIdentifier,
@@ -175,6 +177,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "PolicyProperty",
                 columns: table => new
                 {
+                    PropertyId = table.Column<string>(type: "TEXT", nullable: false),
                     Key = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
                     IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -182,7 +185,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PolicyProperty", x => x.Key);
+                    table.PrimaryKey("PK_PolicyProperty", x => x.PropertyId);
                     table.ForeignKey(
                         name: "FK_PolicyProperty_ArPolicy_PolicyId",
                         column: x => x.PolicyId,
@@ -219,6 +222,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "ProductProperty",
                 columns: table => new
                 {
+                    PropertyId = table.Column<string>(type: "TEXT", nullable: false),
                     Key = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
                     IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -226,7 +230,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductProperty", x => x.Key);
+                    table.PrimaryKey("PK_ProductProperty", x => x.PropertyId);
                     table.ForeignKey(
                         name: "FK_ProductProperty_ArProduct_ProductId",
                         column: x => x.ProductId,
@@ -239,6 +243,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 name: "EmployeeProperty",
                 columns: table => new
                 {
+                    PropertyId = table.Column<string>(type: "TEXT", nullable: false),
                     Key = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
                     IsIdentifier = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -246,7 +251,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeProperty", x => x.Key);
+                    table.PrimaryKey("PK_EmployeeProperty", x => x.PropertyId);
                     table.ForeignKey(
                         name: "FK_EmployeeProperty_ArEmployee_EmployeeId",
                         column: x => x.EmployeeId,

@@ -33,6 +33,7 @@ public class Employee //https://schema.org/Person
     public class EmployeeProperty
     {
         [Key]
+        public string PropertyId { get; init; } = Guid.NewGuid().ToString();
         public string Key { get; set; }
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;
