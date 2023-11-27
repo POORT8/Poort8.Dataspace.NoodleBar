@@ -505,4 +505,29 @@ public class EnforceTests
         allowed = await _authorizationRegistry.Enforce("1234567890", "resource", "action");
         Assert.False(allowed);
     }
+
+    [Fact]
+    public async Task EmployeeEmailEqualsId()
+    {
+        var organization = TestData.CreateNewOrganization(nameof(EmployeeEmailEqualsId), 1);
+        var employee = TestData.CreateNewEmployee(nameof(EmployeeEmailEqualsId), 1);
+        employee.Email = employee.EmployeeId;
+        organization.Employees.Add(employee);
+        var organizationEntity = await _authorizationRegistry.CreateOrganization(organization);
+        Assert.NotNull(organizationEntity);
+
+        var policy = TestData.CreateNewPolicy();
+        policy.SubjectId = organizationEntity.Identifier;
+        var policyEntity = await _authorizationRegistry.CreatePolicy(policy);
+        Assert.NotNull(policyEntity);
+
+        var allowed = await _authorizationRegistry.Enforce(organizationEntity.Identifier, "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce(employee.EmployeeId, "resource", "action");
+        Assert.True(allowed);
+
+        allowed = await _authorizationRegistry.Enforce(employee.Email, "resource", "action");
+        Assert.True(allowed);
+    }
 }

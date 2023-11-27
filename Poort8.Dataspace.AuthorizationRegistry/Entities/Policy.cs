@@ -54,6 +54,7 @@ public class Policy
     public class PolicyProperty
     {
         [Key]
+        public string PropertyId { get; init; } = Guid.NewGuid().ToString();
         public string Key { get; set; }
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;

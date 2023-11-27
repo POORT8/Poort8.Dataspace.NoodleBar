@@ -27,6 +27,7 @@ public class Feature //https://schema.org/Service
     public class FeatureProperty
     {
         [Key]
+        public string PropertyId { get; init; } = Guid.NewGuid().ToString();
         public string Key { get; set; }
         public string Value { get; set; }
         public bool IsIdentifier { get; set; } = false;
