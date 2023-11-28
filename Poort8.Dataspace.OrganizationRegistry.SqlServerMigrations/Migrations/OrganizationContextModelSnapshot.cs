@@ -91,11 +91,15 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Property", b =>
                 {
-                    b.Property<string>("Key")
+                    b.Property<string>("PropertyId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsIdentifier")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationIdentifier")
                         .IsRequired()
@@ -105,7 +109,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Key");
+                    b.HasKey("PropertyId");
 
                     b.HasIndex("OrganizationIdentifier");
 
