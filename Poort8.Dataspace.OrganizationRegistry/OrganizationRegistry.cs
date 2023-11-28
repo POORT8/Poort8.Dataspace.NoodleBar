@@ -98,7 +98,7 @@ public class OrganizationRegistry : IOrganizationRegistry
         foreach (var property in organization.Properties)
         {
             var propertyEntity = organizationEntity.Properties
-                .FirstOrDefault(p => p.Key == property.Key);
+                .FirstOrDefault(p => p.PropertyId == property.PropertyId);
 
             if (propertyEntity == null)
             {
@@ -112,7 +112,7 @@ public class OrganizationRegistry : IOrganizationRegistry
 
         foreach (var property in organizationEntity.Properties)
         {
-            if (!organization.Properties.Any(p => p.Key == property.Key))
+            if (!organization.Properties.Any(p => p.PropertyId == property.PropertyId))
             {
                 context.Remove(property);
             }

@@ -35,6 +35,9 @@ public static class OrganizationRegistryExtensions
         return new Property(
             property.Key,
             property.Value,
-            property.IsIdentifier);
+            property.IsIdentifier)
+        {
+            PropertyId = property.PropertyId
+        };
     }
 }
