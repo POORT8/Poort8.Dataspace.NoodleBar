@@ -29,10 +29,14 @@ public partial class ARPolicies
     private static bool DisableCreatePolicy(Policy policy) => DisableUpdatePolicy(policy);
     private DateTime policyNotBefore { get => DateTimeOffset.FromUnixTimeSeconds(EditedPolicy!.NotBefore).LocalDateTime; set => EditedPolicy!.NotBefore = ((DateTimeOffset)value).ToUnixTimeSeconds(); }
     private DateTime policyExpiration { get => DateTimeOffset.FromUnixTimeSeconds(EditedPolicy!.Expiration).LocalDateTime; set => EditedPolicy!.Expiration = ((DateTimeOffset)value).ToUnixTimeSeconds(); }
+    private List<string> _organizationIds = new();
+    private List<string> _productIds = new();
 
     protected override async Task OnInitializedAsync()
     {
         _policies = (await AuthorizationRegistryService!.ReadPolicies()).ToList();
+        _organizationIds = (await AuthorizationRegistryService.ReadOrganizations()).Select(o => o.Identifier).ToList();
+        _productIds = (await AuthorizationRegistryService.ReadProducts()).Select(o => o.ProductId).ToList();
 
         _ = base.OnInitializedAsync();
     }
@@ -47,7 +51,7 @@ public partial class ARPolicies
     private void AddNewPolicy()
     {
         Logger?.LogInformation("P8.inf - AuthorizationRegistry - AddNewPolicy button clicked");
-        _newPolicy = new Policy(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+        _newPolicy = new Policy(string.Empty, string.Empty, string.Empty, string.Empty, "read");
         _selectedPolicy = null;
         StateHasChanged();
     }
