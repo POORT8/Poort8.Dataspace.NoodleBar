@@ -54,7 +54,7 @@
                 Issuer
             </label>
             <div class="col-sm-10">
-                <CustomInputText id="policyIssuer" class="form-control" placeholder="Issuer" @bind-Value="EditedPolicy.IssuerId" />
+                <CustomInputText id="policyIssuer" class="form-control" placeholder="Issuer" @bind-Value="EditedPolicy.IssuerId" list="organizations" />
             </div>
         </div>
         <div class="form-group row">
@@ -62,7 +62,7 @@
                 Subject
             </label>
             <div class="col-sm-10">
-                <CustomInputText id="policySubject" class="form-control" placeholder="Subject" @bind-Value="EditedPolicy.SubjectId" />
+                <CustomInputText id="policySubject" class="form-control" placeholder="Subject" @bind-Value="EditedPolicy.SubjectId" list="organizations" />
             </div>
         </div>
         <div class="form-group row">
@@ -70,7 +70,7 @@
                 Resource
             </label>
             <div class="col-sm-10">
-                <CustomInputText id="policyResource" class="form-control" placeholder="Resource" @bind-Value="EditedPolicy.ResourceId" />
+                <CustomInputText id="policyResource" class="form-control" placeholder="Resource" @bind-Value="EditedPolicy.ResourceId" list="products" />
             </div>
         </div>
         <div class="form-group row">
@@ -112,6 +112,20 @@
         <label for="isPolicyIdentifier">Identifier</label><br>
         <button type="button" @onclick=AddPolicyProperty disabled=@(string.IsNullOrWhiteSpace(_policyProperty.Key) || string.IsNullOrWhiteSpace(_policyProperty.Value) || EditedPolicy.Properties.Any(p => p.Key.Equals(_policyProperty.Key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
     </EditForm>
+
+    <datalist id="organizations">
+        @foreach(var organizationId in _organizationIds)
+        {
+            <option value=@organizationId />
+        }
+    </datalist>
+
+    <datalist id="products">
+        @foreach (var productId in _productIds)
+        {
+            <option value=@productId />
+        }
+    </datalist>
 
     <br>
 
