@@ -23,7 +23,10 @@ public static class AuthorizationRegistryExtensions
         return new Organization.OrganizationProperty(
             property.Key,
             property.Value,
-            property.IsIdentifier);
+            property.IsIdentifier)
+        {
+            PropertyId = property.PropertyId
+        };
     }
 
     public static Employee DeepCopy(this Employee employee)
@@ -42,7 +45,10 @@ public static class AuthorizationRegistryExtensions
         return new Employee.EmployeeProperty(
             property.Key,
             property.Value,
-            property.IsIdentifier);
+            property.IsIdentifier)
+        {
+            PropertyId = property.PropertyId
+        };
     }
 
     public static Policy DeepCopy(this Policy policy)
@@ -67,7 +73,10 @@ public static class AuthorizationRegistryExtensions
         return new Policy.PolicyProperty(
             property.Key,
             property.Value,
-            property.IsIdentifier);
+            property.IsIdentifier)
+        {
+            PropertyId = property.PropertyId
+        };
     }
 
     public static Product DeepCopy(this Product product)
@@ -89,7 +98,10 @@ public static class AuthorizationRegistryExtensions
         return new Product.ProductProperty(
             property.Key,
             property.Value,
-            property.IsIdentifier);
+            property.IsIdentifier)
+        {
+            PropertyId = property.PropertyId
+        };
     }
 
     public static Feature DeepCopy(this Feature feature)
@@ -106,6 +118,9 @@ public static class AuthorizationRegistryExtensions
         return new Feature.FeatureProperty(
             property.Key,
             property.Value,
-            property.IsIdentifier);
+            property.IsIdentifier)
+        {
+            PropertyId = property.PropertyId
+        };
     }
 }
