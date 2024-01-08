@@ -14,8 +14,7 @@ public class AuditRecord
 
     public AuditRecord(string user, string entityType, string entityId, string action, string entity)
     {
-        var guid = Guid.NewGuid().ToString().Split('-');
-        Id = $"{entityType}-{entityId}-{guid[0]}";
+        Id = $"{entityType}-{entityId}-{Guid.NewGuid()}";
         Timestamp = DateTime.Now;
         User = user;
         EntityType = entityType;

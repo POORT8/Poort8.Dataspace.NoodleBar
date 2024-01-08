@@ -30,8 +30,7 @@ public class EnforceAuditRecord
 
     public EnforceAuditRecord(string user, string useCase, string subjectId, string resourceId, string action, bool allow, List<Policy>? explains = null)
     {
-        var guid = Guid.NewGuid().ToString().Split('-');
-        Id = $"{user}-{useCase}-{guid[0]}";
+        Id = $"{user}-{useCase}-{Guid.NewGuid()}";
         Timestamp = DateTime.Now;
         User = user;
         UseCase = useCase;
