@@ -45,5 +45,6 @@ app.MapRazorComponents<App>()
 
 app.MapFeatureEndpoints();
 app.MapAuthorizationEndpoints();
+app.MapHealthEndpoints();
 
 app.Run();
