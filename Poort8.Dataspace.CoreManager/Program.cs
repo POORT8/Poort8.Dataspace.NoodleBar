@@ -16,6 +16,7 @@ builder.Services.AddAuthorizationRegistrySqlite(options => options.ConnectionStr
 //builder.Services.AddAuthorizationRegistrySqlServer(options => options.ConnectionString = builder.Configuration["AuthorizationRegistry:ConnectionString"]);
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHealthChecks();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -45,6 +46,6 @@ app.MapRazorComponents<App>()
 
 app.MapFeatureEndpoints();
 app.MapAuthorizationEndpoints();
-app.MapHealthEndpoints();
+app.MapHealthChecks("/health");
 
 app.Run();
