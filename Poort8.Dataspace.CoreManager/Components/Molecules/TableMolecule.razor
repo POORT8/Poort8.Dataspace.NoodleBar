@@ -1,0 +1,16 @@
+﻿@typeparam TItem
+
+<table class="table">
+    <thead>
+        <tr>@TableHeader</tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Items ?? Enumerable.Empty<TItem>())
+        {
+            if (RowTemplate is not null)
+            {
+                <tr @onclick=@(e => RowClick.InvokeAsync(item))>@RowTemplate(item)</tr>
+            }
+        }
+    </tbody>
+</table>

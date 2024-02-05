@@ -1,0 +1,124 @@
+﻿@page "/organizationregistry"
+@rendermode InteractiveServer
+@using Poort8.Dataspace.OrganizationRegistry;
+
+<PageTitle>Organization Registry</PageTitle>
+
+<button type="button" @onclick=AddNewOrganization disabled=@(_newOrganization is not null)>Nieuw</button>
+
+<TableMolecule TItem=Organization Items=_organizations Context="organization" RowClick="OnOrganizationRowClick">
+    <TableHeader>
+        <th>Identifier</th>
+        <th>Name</th>
+        <th></th>
+    </TableHeader>
+    <RowTemplate>
+        <td>@organization.Identifier</td>
+        <td>@organization.Name</td>
+        <td><button type="button" @onclick=@(() => DeleteOrganization(organization))>Verwijder</button></td>
+    </RowTemplate>
+</TableMolecule>
+
+<br>
+
+@if (EditedOrganization is not null)
+{
+    <EditForm Model="@EditedOrganization">
+        <h3>Organization</h3>
+        <div class="form-group row">
+            <label for="identifier" class="col-sm-2 col-form-label">
+                Identifier
+            </label>
+            <div class="col-sm-10">
+                @if (EditedOrganization == _selectedOrganization)
+                {
+                    <CustomInputText id="identifier" class="form-control" placeholder="Identifier" disabled @bind-Value=@EditedOrganization.Identifier />
+                }
+                else
+                {
+                    <CustomInputText id="identifier" class="form-control" placeholder="Identifier" @bind-Value=@EditedOrganization.Identifier />
+                }
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="name" class="col-sm-2 col-form-label">
+                Name
+            </label>
+            <div class="col-sm-10">
+                <CustomInputText id="name" class="form-control" placeholder="Name" @bind-Value="EditedOrganization.Name" />
+            </div>
+        </div>
+        <br>
+        <h4>Adherence</h4>
+        <div class="form-group row">
+            <div class="radio-button-group">
+                <div>
+                    <label for="active" class="col-sm-2 col-form-label">Active</label>
+                    <input type="radio" id="active" name="state" checked="@(EditedOrganization.Adherence.Status == "active")" @onchange="@(() => EditedOrganization.Adherence.Status = "active")" />
+                </div>
+                <div>
+                    <label for="inactive" class="col-sm-2 col-form-label">Inactive</label>
+                    <input type="radio" id="inactive" name="state" checked="@(EditedOrganization.Adherence.Status == "inactive")" @onchange="@(() => EditedOrganization.Adherence.Status = "inactive")" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="validFrom">Valid from:</label>
+            <input type="date" id="validFrom" name="validFrom" @bind-value=@EditedOrganization.Adherence.ValidFrom />
+        </div>
+        <div class="form-group row">
+            <label for="validUntil">Valid until:</label>
+            <input type="date" id="validUntil" name="validUntil" @bind-value=@EditedOrganization.Adherence.ValidUntil />
+        </div>
+
+        <br>
+        <h4>Roles</h4>
+        <TableMolecule TItem=OrganizationRole Items=EditedOrganization.Roles.ToList() Context="role">
+            <TableHeader>
+                <th>Role</th>
+                <th></th>
+            </TableHeader>
+            <RowTemplate>
+                <td>@role.Role</td>
+                <td><button type="button" @onclick=@(() => EditedOrganization.Roles.Remove(role))>Verwijder</button></td>
+            </RowTemplate>
+        </TableMolecule>
+
+        <CustomInputText id="role" class="form-control" placeholder="Role" @bind-Value=@_role.Role />
+        <button type="button" @onclick=AddRole disabled=@(string.IsNullOrWhiteSpace(_role.Role) || EditedOrganization.Roles.Any(r => r.Role.Equals(_role.Role, StringComparison.OrdinalIgnoreCase)))>Voeg rol toe</button>
+
+        <br>
+        <h4>Properties</h4>
+        <TableMolecule TItem=Property Items=EditedOrganization.Properties.ToList() Context="property">
+            <TableHeader>
+                <th>Key</th>
+                <th>Value</th>
+                <th>Identifier</th>
+                <th></th>
+            </TableHeader>
+            <RowTemplate>
+                <td>@property.Key</td>
+                <td>@property.Value</td>
+                <td>@property.IsIdentifier</td>
+                <td><button type="button" @onclick=@(() => EditedOrganization.Properties.Remove(property))>Verwijder</button></td>
+            </RowTemplate>
+        </TableMolecule>
+
+        <CustomInputText id="key" class="form-control" placeholder="Key" @bind-Value=@_property.Key />
+        <CustomInputText id="value" class="form-control" placeholder="Value" @bind-Value=@_property.Value />
+        <input type="checkbox" id="isIdentifier" name="isIdentifier" @bind=@_property.IsIdentifier />
+        <label for="isIdentifier">Identifier</label><br>
+        <button type="button" @onclick=AddProperty disabled=@(string.IsNullOrWhiteSpace(_property.Key) || string.IsNullOrWhiteSpace(_property.Value) || EditedOrganization.Properties.Any(p => p.Key.Equals(_property.Key, StringComparison.OrdinalIgnoreCase)))>Voeg property toe</button>
+    </EditForm>
+
+    <br>
+
+    if (EditedOrganization == _selectedOrganization)
+    {
+        <button type="button" @onclick=UpdateOrganization disabled=@DisableUpdate(EditedOrganization)>Update organization</button>
+    }
+    else
+    {
+        <button type="button" @onclick=CreateOrganization disabled=@DisableCreate(EditedOrganization)>Maak organization aan</button>
+    }
+}
