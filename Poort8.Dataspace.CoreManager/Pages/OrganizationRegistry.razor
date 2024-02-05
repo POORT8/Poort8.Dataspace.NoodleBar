@@ -54,11 +54,11 @@
             <div class="radio-button-group">
                 <div>
                     <label for="active" class="col-sm-2 col-form-label">Active</label>
-                    <input type="radio" id="active" name="state" checked="@(EditedOrganization.Adherence.Status == "active")" @onchange="@(() => EditedOrganization.Adherence.Status = "active")" />
+                    <input type="radio" id="active" name="state" checked="@(EditedOrganization.Adherence.Status == "Active")" @onchange="@(() => EditedOrganization.Adherence.Status = "Active")" />
                 </div>
                 <div>
-                    <label for="inactive" class="col-sm-2 col-form-label">Inactive</label>
-                    <input type="radio" id="inactive" name="state" checked="@(EditedOrganization.Adherence.Status == "inactive")" @onchange="@(() => EditedOrganization.Adherence.Status = "inactive")" />
+                    <label for="notactive" class="col-sm-2 col-form-label">Not Active</label>
+                    <input type="radio" id="notactive" name="state" checked="@(EditedOrganization.Adherence.Status == "Not Active")" @onchange="@(() => EditedOrganization.Adherence.Status = "Not Active")" />
                 </div>
             </div>
         </div>

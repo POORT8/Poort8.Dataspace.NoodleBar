@@ -23,7 +23,7 @@ public class OrganizationRegistryTests
 
     public static Organization CreateNewOrganization(string id, int index)
     {
-        var adherence = new Adherence("active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now.AddYears(1)));
+        var adherence = new Adherence("Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now.AddYears(1)));
         var roles = new List<OrganizationRole>() { new OrganizationRole("role") };
         var properties = new List<Property>() { new Property("key", "value"), new Property("otherIdentifier", $"{id}{index}-otherId", true) };
         return new Organization($"{id}-id", $"{id}{index}-name", adherence, roles, properties);
@@ -101,17 +101,33 @@ public class OrganizationRegistryTests
 
         Assert.NotNull(organizationEntity);
         Assert.Equal(organization.Identifier, organizationEntity.Identifier);
+        Assert.NotNull(organizationEntity.AuthorizationRegistries);
+        Assert.Equal(organization.AuthorizationRegistries.Count, organizationEntity.AuthorizationRegistries.Count);
+        Assert.NotNull(organizationEntity.Agreements);
+        Assert.Equal(organization.Agreements.Count, organizationEntity.Agreements.Count);
+        Assert.NotNull(organizationEntity.Certificates);
+        Assert.Equal(organization.Certificates.Count, organizationEntity.Certificates.Count);
+        Assert.NotNull(organizationEntity.Roles);
+        Assert.Equal(organization.Roles.Count, organizationEntity.Roles.Count);
         Assert.NotNull(organizationEntity.Properties);
         Assert.Equal(organization.Properties.Count, organizationEntity.Properties.Count);
 
-        organization.Adherence.Status = "inactive";
+        organization.Adherence.Status = "Not Active";
+        organization.AdditionalDetails.CompanyEmail = "hello@abctrucking.nl";
+        organization.AuthorizationRegistries.Add(new AuthorizationRegistry("arId", "www.ar.com"));
+        organization.Agreements.Add(new Agreement("Terms Of Use", "title", "Signed", DateOnly.MinValue, DateOnly.MaxValue, "framework", Array.Empty<byte>(), "hash", false));
+        organization.Certificates.Add(new Certificate(Array.Empty<byte>(), DateOnly.MinValue));
         organization.Roles.Add(new OrganizationRole("otherRole"));
         organization.Properties.Add(new Property("otherKey", "otherValue"));
         var updateEntity = await _organizationRegistry.UpdateOrganization(organization);
 
         Assert.NotNull(updateEntity);
         Assert.Equal(organization.Identifier, updateEntity.Identifier);
-        Assert.Equal("inactive", updateEntity.Adherence.Status);
+        Assert.Equal("Not Active", updateEntity.Adherence.Status);
+        Assert.Equal("hello@abctrucking.nl", updateEntity.AdditionalDetails.CompanyEmail);
+        Assert.Single(updateEntity.AuthorizationRegistries);
+        Assert.Single(updateEntity.Agreements);
+        Assert.Single(updateEntity.Certificates);
         Assert.Equal(2, updateEntity.Roles.Count);
         Assert.Equal(3, updateEntity.Properties.Count);
 
