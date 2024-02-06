@@ -31,6 +31,7 @@ public class OrganizationRegistry : IOrganizationRegistry
             .Include(o => o.Certificates)
             .Include(o => o.Roles)
             .Include(o => o.Properties)
+            .Include(o => o.Services)
             .FirstOrDefaultAsync(o => o.Identifier == identifier);
 
         if (organization is not null)
@@ -44,6 +45,7 @@ public class OrganizationRegistry : IOrganizationRegistry
             .Include(o => o.Certificates)
             .Include(o => o.Roles)
             .Include(o => o.Properties)
+            .Include(o => o.Services)
             .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == identifier));
     }
 
@@ -69,6 +71,7 @@ public class OrganizationRegistry : IOrganizationRegistry
             .Include(o => o.Certificates)
             .Include(o => o.Roles)
             .Include(o => o.Properties)
+            .Include(o => o.Services)
             .ToListAsync();
     }
 
@@ -82,6 +85,7 @@ public class OrganizationRegistry : IOrganizationRegistry
             .Include(o => o.Certificates)
             .Include(o => o.Roles)
             .Include(o => o.Properties)
+            .Include(o => o.Services)
             .SingleAsync(o => o.Identifier == organization.Identifier);
 
         context.Entry(organizationEntity).CurrentValues.SetValues(organization);
@@ -91,7 +95,7 @@ public class OrganizationRegistry : IOrganizationRegistry
         foreach (var authorizationRegistry in organization.AuthorizationRegistries)
         {
             var authorizationRegistryEntity = organizationEntity.AuthorizationRegistries
-                .FirstOrDefault(r => r.AuthorizationRegistryId == authorizationRegistry.AuthorizationRegistryId);
+                .FirstOrDefault(a => a.AuthorizationRegistryId == authorizationRegistry.AuthorizationRegistryId);
 
             if (authorizationRegistryEntity == null)
             {
@@ -105,7 +109,7 @@ public class OrganizationRegistry : IOrganizationRegistry
 
         foreach (var authorizationRegistry in organizationEntity.AuthorizationRegistries)
         {
-            if (!organization.AuthorizationRegistries.Any(r => r.AuthorizationRegistryId == authorizationRegistry.AuthorizationRegistryId))
+            if (!organization.AuthorizationRegistries.Any(a => a.AuthorizationRegistryId == authorizationRegistry.AuthorizationRegistryId))
             {
                 context.Remove(authorizationRegistry);
             }
@@ -114,7 +118,7 @@ public class OrganizationRegistry : IOrganizationRegistry
         foreach (var agreement in organization.Agreements)
         {
             var agreementEntity = organizationEntity.Agreements
-                .FirstOrDefault(r => r.AgreementId == agreement.AgreementId);
+                .FirstOrDefault(a => a.AgreementId == agreement.AgreementId);
 
             if (agreementEntity == null)
             {
@@ -128,7 +132,7 @@ public class OrganizationRegistry : IOrganizationRegistry
 
         foreach (var agreement in organizationEntity.Agreements)
         {
-            if (!organization.Agreements.Any(r => r.AgreementId == agreement.AgreementId))
+            if (!organization.Agreements.Any(a => a.AgreementId == agreement.AgreementId))
             {
                 context.Remove(agreement);
             }
@@ -137,7 +141,7 @@ public class OrganizationRegistry : IOrganizationRegistry
         foreach (var certificate in organization.Certificates)
         {
             var certificateEntity = organizationEntity.Certificates
-                .FirstOrDefault(r => r.CertificateId == certificate.CertificateId);
+                .FirstOrDefault(c => c.CertificateId == certificate.CertificateId);
 
             if (certificateEntity == null)
             {
@@ -151,7 +155,7 @@ public class OrganizationRegistry : IOrganizationRegistry
 
         foreach (var certificate in organizationEntity.Certificates)
         {
-            if (!organization.Certificates.Any(r => r.CertificateId == certificate.CertificateId))
+            if (!organization.Certificates.Any(c => c.CertificateId == certificate.CertificateId))
             {
                 context.Remove(certificate);
             }
@@ -200,6 +204,29 @@ public class OrganizationRegistry : IOrganizationRegistry
             if (!organization.Properties.Any(p => p.PropertyId == property.PropertyId))
             {
                 context.Remove(property);
+            }
+        }
+
+        foreach (var service in organization.Services)
+        {
+            var serviceEntity = organizationEntity.Services
+                .FirstOrDefault(s => s.ServiceId == service.ServiceId);
+
+            if (serviceEntity == null)
+            {
+                organizationEntity.Services.Add(service);
+            }
+            else
+            {
+                context.Entry(serviceEntity).CurrentValues.SetValues(service);
+            }
+        }
+
+        foreach (var service in organizationEntity.Services)
+        {
+            if (!organization.Services.Any(s => s.ServiceId == service.ServiceId))
+            {
+                context.Remove(service);
             }
         }
 

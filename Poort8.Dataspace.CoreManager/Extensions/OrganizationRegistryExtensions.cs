@@ -15,7 +15,8 @@ public static class OrganizationRegistryExtensions
             organization.Agreements.Select(a => a.DeepCopy()).ToList(),
             organization.Certificates.Select(c => c.DeepCopy()).ToList(),
             organization.Roles.Select(r => r.DeepCopy()).ToList(),
-            organization.Properties.Select(p => p.DeepCopy()).ToList());
+            organization.Properties.Select(p => p.DeepCopy()).ToList(),
+            organization.Services.Select(s => s.DeepCopy()).ToList());
     }
 
     private static Adherence DeepCopy(this Adherence adherence)
@@ -96,6 +97,19 @@ public static class OrganizationRegistryExtensions
             property.IsIdentifier)
         {
             PropertyId = property.PropertyId
+        };
+    }
+
+    private static Service DeepCopy(this Service service)
+    {
+        return new Service(
+            service.Name,
+            service.Description,
+            service.Url,
+            service.LogoUrl,
+            service.Color)
+        {
+            ServiceId = service.ServiceId
         };
     }
 }

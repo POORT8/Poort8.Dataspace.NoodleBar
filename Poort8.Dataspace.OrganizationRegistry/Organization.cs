@@ -13,6 +13,7 @@ public class Organization //https://schema.org/Organization
     public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
     public ICollection<OrganizationRole> Roles { get; set; } = new List<OrganizationRole>();
     public ICollection<Property> Properties { get; set; } = new List<Property>();
+    public ICollection<Service> Services { get; set; } = new List<Service>();
 
     public Organization(string identifier, string name)
     {
@@ -38,7 +39,8 @@ public class Organization //https://schema.org/Organization
         ICollection<Agreement> agreements,
         ICollection<Certificate> certificates,
         ICollection<OrganizationRole> roles,
-        ICollection<Property> properties)
+        ICollection<Property> properties,
+        ICollection<Service> services)
     {
         Identifier = identifier;
         Name = name;
@@ -49,6 +51,7 @@ public class Organization //https://schema.org/Organization
         Certificates = certificates;
         Roles = roles;
         Properties = properties;
+        Services = services;
     }
 }
 
@@ -226,5 +229,25 @@ public class Property
         Key = key;
         Value = value;
         IsIdentifier = isIdentifier;
+    }
+}
+
+public class Service
+{
+    [Key]
+    public string ServiceId { get; init; } = Guid.NewGuid().ToString();
+    public string Name { get; set; }
+    public string? Description { get; set; }
+    public string? Url { get; set; }
+    public string? LogoUrl { get; set; }
+    public string? Color { get; set; }
+
+    public Service(string name, string? description = null, string? url = null, string? logoUrl = null, string? color = null)
+    {
+        Name = name;
+        Description = description;
+        Url = url;
+        LogoUrl = logoUrl;
+        Color = color;
     }
 }

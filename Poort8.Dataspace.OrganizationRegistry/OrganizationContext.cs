@@ -55,6 +55,12 @@ public class OrganizationContext : DbContext
             .HasMany(o => o.Properties)
             .WithOne()
             .IsRequired();
+
+        modelBuilder.Entity<Organization>()
+            .ToTable("OrOrganization")
+            .HasMany(o => o.Services)
+            .WithOne()
+            .IsRequired();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

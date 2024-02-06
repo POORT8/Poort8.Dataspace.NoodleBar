@@ -12,7 +12,7 @@ using Poort8.Dataspace.OrganizationRegistry;
 namespace Poort8.Dataspace.CoreManager.Migrations
 {
     [DbContext(typeof(OrganizationContext))]
-    [Migration("20240206141742_iShareOrganisationModel")]
+    [Migration("20240206150536_iShareOrganisationModel")]
     partial class iShareOrganisationModel
     {
         /// <inheritdoc />
@@ -237,6 +237,38 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.ToTable("Property");
                 });
 
+            modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Service", b =>
+                {
+                    b.Property<string>("ServiceId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrganizationIdentifier")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ServiceId");
+
+                    b.HasIndex("OrganizationIdentifier");
+
+                    b.ToTable("Service");
+                });
+
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Agreement", b =>
                 {
                     b.HasOne("Poort8.Dataspace.OrganizationRegistry.Organization", null)
@@ -359,6 +391,15 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Service", b =>
+                {
+                    b.HasOne("Poort8.Dataspace.OrganizationRegistry.Organization", null)
+                        .WithMany("Services")
+                        .HasForeignKey("OrganizationIdentifier")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Poort8.Dataspace.OrganizationRegistry.Organization", b =>
                 {
                     b.Navigation("Agreements");
@@ -370,6 +411,8 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.Navigation("Properties");
 
                     b.Navigation("Roles");
+
+                    b.Navigation("Services");
                 });
 #pragma warning restore 612, 618
         }

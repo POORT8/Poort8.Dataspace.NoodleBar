@@ -111,6 +111,8 @@ public class OrganizationRegistryTests
         Assert.Equal(organization.Roles.Count, organizationEntity.Roles.Count);
         Assert.NotNull(organizationEntity.Properties);
         Assert.Equal(organization.Properties.Count, organizationEntity.Properties.Count);
+        Assert.NotNull(organizationEntity.Services);
+        Assert.Equal(organization.Services.Count, organizationEntity.Services.Count);
 
         organization.Adherence.Status = "Not Active";
         organization.AdditionalDetails.CompanyEmail = "hello@abctrucking.nl";
@@ -119,6 +121,7 @@ public class OrganizationRegistryTests
         organization.Certificates.Add(new Certificate(Array.Empty<byte>(), DateOnly.MinValue));
         organization.Roles.Add(new OrganizationRole("otherRole"));
         organization.Properties.Add(new Property("otherKey", "otherValue"));
+        organization.Services.Add(new Service("service"));
         var updateEntity = await _organizationRegistry.UpdateOrganization(organization);
 
         Assert.NotNull(updateEntity);
@@ -130,6 +133,7 @@ public class OrganizationRegistryTests
         Assert.Single(updateEntity.Certificates);
         Assert.Equal(2, updateEntity.Roles.Count);
         Assert.Equal(3, updateEntity.Properties.Count);
+        Assert.Single(updateEntity.Services);
 
         var success = await _organizationRegistry.DeleteOrganization(organization.Identifier);
         Assert.True(success);
