@@ -143,7 +143,7 @@ public class Agreement
         string status,
         DateOnly dateOfSigning,
         DateOnly dateOfExpiry,
-        string frameWork,
+        string framework,
         byte[] contractFile,
         string hashOfSignedContract,
         bool? compliancyVerified,
@@ -154,7 +154,7 @@ public class Agreement
         Status = status;
         DateOfSigning = dateOfSigning;
         DateOfExpiry = dateOfExpiry;
-        Framework = frameWork;
+        Framework = framework;
         ContractFile = contractFile;
         HashOfSignedContract = hashOfSignedContract;
         CompliancyVerified = compliancyVerified;
