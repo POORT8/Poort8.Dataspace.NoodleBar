@@ -260,7 +260,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 {
                     b.OwnsOne("Poort8.Dataspace.OrganizationRegistry.AdditionalDetails", "AdditionalDetails", b1 =>
                         {
-                            b1.Property<string>("AdditionalDetailsId")
+                            b1.Property<string>("OrganizationIdentifier")
                                 .HasColumnType("TEXT");
 
                             b1.Property<string>("CapabilitiesUrl")
@@ -295,12 +295,12 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                             b1.Property<string>("WebsiteUrl")
                                 .HasColumnType("TEXT");
 
-                            b1.HasKey("AdditionalDetailsId");
+                            b1.HasKey("OrganizationIdentifier");
 
                             b1.ToTable("OrOrganization");
 
                             b1.WithOwner()
-                                .HasForeignKey("AdditionalDetailsId");
+                                .HasForeignKey("OrganizationIdentifier");
                         });
 
                     b.OwnsOne("Poort8.Dataspace.OrganizationRegistry.Adherence", "Adherence", b1 =>

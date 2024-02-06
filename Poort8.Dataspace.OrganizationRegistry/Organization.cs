@@ -68,8 +68,6 @@ public class Adherence
 
 public class AdditionalDetails
 {
-    [Key]
-    public string AdditionalDetailsId { get; set; } = Guid.NewGuid().ToString();
     public string? Description { get; set; }
     public string? WebsiteUrl { get; set; }
     public string? CapabilitiesUrl { get; set; }

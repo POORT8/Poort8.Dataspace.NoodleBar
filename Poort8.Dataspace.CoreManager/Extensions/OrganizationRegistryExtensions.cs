@@ -38,10 +38,7 @@ public static class OrganizationRegistryExtensions
             additionalDetails.Tags,
             additionalDetails.PubliclyPublishable,
             additionalDetails.CountriesOfOperation.ToList(),
-            additionalDetails.Sectors.ToList())
-        {
-            AdditionalDetailsId = additionalDetails.AdditionalDetailsId
-        };
+            additionalDetails.Sectors.ToList());
     }
 
     private static OrganizationRegistry.AuthorizationRegistry DeepCopy(this OrganizationRegistry.AuthorizationRegistry authorizationRegistry)
