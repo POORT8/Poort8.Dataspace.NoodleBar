@@ -25,8 +25,13 @@ public class OrganizationRegistry : IOrganizationRegistry
 
         var organization = await context.Organizations
             .Include(o => o.Adherence)
+            .Include(o => o.AdditionalDetails)
+            .Include(o => o.AuthorizationRegistries)
+            .Include(o => o.Agreements)
+            .Include(o => o.Certificates)
             .Include(o => o.Roles)
             .Include(o => o.Properties)
+            .Include(o => o.Services)
             .FirstOrDefaultAsync(o => o.Identifier == identifier);
 
         if (organization is not null)
@@ -34,8 +39,13 @@ public class OrganizationRegistry : IOrganizationRegistry
 
         return await context.Organizations
             .Include(o => o.Adherence)
+            .Include(o => o.AdditionalDetails)
+            .Include(o => o.AuthorizationRegistries)
+            .Include(o => o.Agreements)
+            .Include(o => o.Certificates)
             .Include(o => o.Roles)
             .Include(o => o.Properties)
+            .Include(o => o.Services)
             .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == identifier));
     }
 
@@ -55,8 +65,13 @@ public class OrganizationRegistry : IOrganizationRegistry
             .Where(o => adherenceStatus == default || adherenceStatus == o.Adherence.Status)
             .Where(o => propertyKey == default || o.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
             .Include(o => o.Adherence)
+            .Include(o => o.AdditionalDetails)
+            .Include(o => o.AuthorizationRegistries)
+            .Include(o => o.Agreements)
+            .Include(o => o.Certificates)
             .Include(o => o.Roles)
             .Include(o => o.Properties)
+            .Include(o => o.Services)
             .ToListAsync();
     }
 
@@ -65,12 +80,86 @@ public class OrganizationRegistry : IOrganizationRegistry
         using var context = await _contextFactory.CreateDbContextAsync();
 
         var organizationEntity = await context.Organizations
+            .Include(o => o.AuthorizationRegistries)
+            .Include(o => o.Agreements)
+            .Include(o => o.Certificates)
             .Include(o => o.Roles)
             .Include(o => o.Properties)
+            .Include(o => o.Services)
             .SingleAsync(o => o.Identifier == organization.Identifier);
 
         context.Entry(organizationEntity).CurrentValues.SetValues(organization);
-        context.Entry(organizationEntity.Adherence!).CurrentValues.SetValues(organization.Adherence);
+        context.Entry(organizationEntity.Adherence).CurrentValues.SetValues(organization.Adherence);
+        context.Entry(organizationEntity.AdditionalDetails).CurrentValues.SetValues(organization.AdditionalDetails);
+
+        foreach (var authorizationRegistry in organization.AuthorizationRegistries)
+        {
+            var authorizationRegistryEntity = organizationEntity.AuthorizationRegistries
+                .FirstOrDefault(a => a.AuthorizationRegistryId == authorizationRegistry.AuthorizationRegistryId);
+
+            if (authorizationRegistryEntity == null)
+            {
+                organizationEntity.AuthorizationRegistries.Add(authorizationRegistry);
+            }
+            else
+            {
+                context.Entry(authorizationRegistryEntity).CurrentValues.SetValues(authorizationRegistry);
+            }
+        }
+
+        foreach (var authorizationRegistry in organizationEntity.AuthorizationRegistries)
+        {
+            if (!organization.AuthorizationRegistries.Any(a => a.AuthorizationRegistryId == authorizationRegistry.AuthorizationRegistryId))
+            {
+                context.Remove(authorizationRegistry);
+            }
+        }
+
+        foreach (var agreement in organization.Agreements)
+        {
+            var agreementEntity = organizationEntity.Agreements
+                .FirstOrDefault(a => a.AgreementId == agreement.AgreementId);
+
+            if (agreementEntity == null)
+            {
+                organizationEntity.Agreements.Add(agreement);
+            }
+            else
+            {
+                context.Entry(agreementEntity).CurrentValues.SetValues(agreement);
+            }
+        }
+
+        foreach (var agreement in organizationEntity.Agreements)
+        {
+            if (!organization.Agreements.Any(a => a.AgreementId == agreement.AgreementId))
+            {
+                context.Remove(agreement);
+            }
+        }
+
+        foreach (var certificate in organization.Certificates)
+        {
+            var certificateEntity = organizationEntity.Certificates
+                .FirstOrDefault(c => c.CertificateId == certificate.CertificateId);
+
+            if (certificateEntity == null)
+            {
+                organizationEntity.Certificates.Add(certificate);
+            }
+            else
+            {
+                context.Entry(certificateEntity).CurrentValues.SetValues(certificate);
+            }
+        }
+
+        foreach (var certificate in organizationEntity.Certificates)
+        {
+            if (!organization.Certificates.Any(c => c.CertificateId == certificate.CertificateId))
+            {
+                context.Remove(certificate);
+            }
+        }
 
         foreach (var role in organization.Roles)
         {
@@ -115,6 +204,29 @@ public class OrganizationRegistry : IOrganizationRegistry
             if (!organization.Properties.Any(p => p.PropertyId == property.PropertyId))
             {
                 context.Remove(property);
+            }
+        }
+
+        foreach (var service in organization.Services)
+        {
+            var serviceEntity = organizationEntity.Services
+                .FirstOrDefault(s => s.ServiceId == service.ServiceId);
+
+            if (serviceEntity == null)
+            {
+                organizationEntity.Services.Add(service);
+            }
+            else
+            {
+                context.Entry(serviceEntity).CurrentValues.SetValues(service);
+            }
+        }
+
+        foreach (var service in organizationEntity.Services)
+        {
+            if (!organization.Services.Any(s => s.ServiceId == service.ServiceId))
+            {
+                context.Remove(service);
             }
         }
 

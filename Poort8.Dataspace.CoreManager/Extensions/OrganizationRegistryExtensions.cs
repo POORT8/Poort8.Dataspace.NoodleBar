@@ -10,8 +10,13 @@ public static class OrganizationRegistryExtensions
             organization.Identifier,
             organization.Name,
             organization.Adherence.DeepCopy(),
+            organization.AdditionalDetails.DeepCopy(),
+            organization.AuthorizationRegistries.Select(a => a.DeepCopy()).ToList(),
+            organization.Agreements.Select(a => a.DeepCopy()).ToList(),
+            organization.Certificates.Select(c => c.DeepCopy()).ToList(),
             organization.Roles.Select(r => r.DeepCopy()).ToList(),
-            organization.Properties.Select(p => p.DeepCopy()).ToList());
+            organization.Properties.Select(p => p.DeepCopy()).ToList(),
+            organization.Services.Select(s => s.DeepCopy()).ToList());
     }
 
     private static Adherence DeepCopy(this Adherence adherence)
@@ -22,9 +27,63 @@ public static class OrganizationRegistryExtensions
             adherence.ValidUntil);
     }
 
+    private static AdditionalDetails DeepCopy(this AdditionalDetails additionalDetails)
+    {
+        return new AdditionalDetails(
+            additionalDetails.Description,
+            additionalDetails.WebsiteUrl,
+            additionalDetails.CapabilitiesUrl,
+            additionalDetails.LogoUrl,
+            additionalDetails.CompanyEmail,
+            additionalDetails.CompanyPhone,
+            additionalDetails.Tags,
+            additionalDetails.PubliclyPublishable,
+            additionalDetails.CountriesOfOperation.ToList(),
+            additionalDetails.Sectors.ToList());
+    }
+
+    private static OrganizationRegistry.AuthorizationRegistry DeepCopy(this OrganizationRegistry.AuthorizationRegistry authorizationRegistry)
+    {
+        return new OrganizationRegistry.AuthorizationRegistry(
+            authorizationRegistry.AuthorizationRegistryOrganizationId,
+            authorizationRegistry.AuthorizationRegistryUrl,
+            authorizationRegistry.DataspaceId)
+        {
+            AuthorizationRegistryId = authorizationRegistry.AuthorizationRegistryId
+        };
+    }
+
+    private static Agreement DeepCopy(this Agreement agreement)
+    {
+        return new Agreement(
+            agreement.Type,
+            agreement.Title,
+            agreement.Status,
+            agreement.DateOfSigning,
+            agreement.DateOfExpiry,
+            agreement.Framework,
+            agreement.ContractFile.ToArray(),
+            agreement.HashOfSignedContract,
+            agreement.CompliancyVerified,
+            agreement.DataspaceId)
+        {
+            AgreementId = agreement.AgreementId
+        };
+    }
+
+    private static Certificate DeepCopy(this Certificate certificate)
+    {
+        return new Certificate(
+            certificate.CertificateFile.ToArray(),
+            certificate.EnabledFrom)
+        {
+            CertificateId = certificate.CertificateId
+        };
+    }
+
     private static OrganizationRole DeepCopy(this OrganizationRole organizationRole)
     {
-        return new OrganizationRole(organizationRole.Role)
+        return new OrganizationRole(organizationRole.Role, organizationRole.StartDate, organizationRole.EndDate, organizationRole.LoA, organizationRole.LegalAdherence, organizationRole.CompliancyVerified)
         {
             RoleId = organizationRole.RoleId
         };
@@ -38,6 +97,19 @@ public static class OrganizationRegistryExtensions
             property.IsIdentifier)
         {
             PropertyId = property.PropertyId
+        };
+    }
+
+    private static Service DeepCopy(this Service service)
+    {
+        return new Service(
+            service.Name,
+            service.Description,
+            service.Url,
+            service.LogoUrl,
+            service.Color)
+        {
+            ServiceId = service.ServiceId
         };
     }
 }

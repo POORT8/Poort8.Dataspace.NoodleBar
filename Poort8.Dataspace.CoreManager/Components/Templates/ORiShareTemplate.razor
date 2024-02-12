@@ -1,0 +1,22 @@
+﻿@using Poort8.Dataspace.OrganizationRegistry;
+
+<TableMolecule TItem=Organization Items=Organizations Context="organization">
+    <TableHeader>
+        <th>PARTY ID</th>
+        <th>PARTY NAME</th>
+        <th>STATUS</th>
+        <th>ADHERENCE START DATE</th>
+        <th>ADHERENCE END DATE</th>
+        <th>CAPABILITIES URL</th>
+        <th>REGISTRAR SATELLITE ID</th>
+</TableHeader>
+    <RowTemplate>
+        <td>@organization.Identifier</td>
+        <td>@organization.Name</td>
+        <td>@organization.Adherence.Status</td>
+        <td>@organization.Adherence.ValidFrom.ToString("dd-MM-yyyy")</td>
+        <td>@organization.Adherence.ValidUntil.ToString("dd-MM-yyyy")</td>
+        <td>@organization.AdditionalDetails.CapabilitiesUrl</td>
+        <td>Noodle Bar Organization Registry</td>
+    </RowTemplate>
+</TableMolecule>
