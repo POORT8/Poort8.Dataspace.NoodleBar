@@ -1,5 +1,5 @@
-﻿using Poort8.Dataspace.AuthorizationRegistry.Entities;
-using Poort8.Dataspace.AuthorizationRegistry;
+﻿using Poort8.Dataspace.AuthorizationRegistry;
+using Poort8.Dataspace.AuthorizationRegistry.Entities;
 
 namespace Poort8.Dataspace.CoreManager.API;
 

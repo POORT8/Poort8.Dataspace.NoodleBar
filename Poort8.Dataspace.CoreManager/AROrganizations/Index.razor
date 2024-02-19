@@ -1,0 +1,23 @@
+﻿@page "/ar/organizations"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<PageTitle>AR Organizations</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
+    <FluentLabel Typo="Typography.H1">Authorization Registry Organizations</FluentLabel>
+
+    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Organization</FluentButton>
+
+    <FluentDataGrid Items="@Organizations">
+        <PropertyColumn Property="@(o => o.Identifier)" Sortable="true" />
+        <PropertyColumn Property="@(o => o.Name)" Sortable="true" />
+        <PropertyColumn Property="@(o => o.Url)" Sortable="false" />
+        <PropertyColumn Property="@(o => o.Representative)" Sortable="false" />
+        <PropertyColumn Title="Invoicing Contact" Property="@(o => o.InvoicingContact)" Sortable="false" />
+        <TemplateColumn Title="Actions" Align="@Align.End">
+            <FluentButton Title="Details" IconEnd="@(new Icons.Regular.Size16.Info())" OnClick="@(() => DetailsClicked(@context))" />
+            <FluentButton Title="Properties" IconEnd="@(new Icons.Regular.Size16.TagMultiple())" OnClick="@(() => PropertiesClicked(@context))" />
+            <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteClicked(@context))" />
+        </TemplateColumn>
+    </FluentDataGrid>
+</FluentStack>

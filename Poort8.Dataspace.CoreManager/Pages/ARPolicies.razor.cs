@@ -5,7 +5,7 @@ using Poort8.Dataspace.CoreManager.Extensions;
 
 namespace Poort8.Dataspace.CoreManager.Pages;
 
-public partial class ARPolicies
+public partial class ARPolicies //TODO: Refactor and move
 {
     [Inject] private IAuthorizationRegistry? AuthorizationRegistryService { get; set; }
     [Inject] private ILogger<ARPolicies>? Logger { get; set; }

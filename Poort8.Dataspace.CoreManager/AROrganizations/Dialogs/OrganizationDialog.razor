@@ -1,0 +1,25 @@
+﻿@implements IDialogContentComponent<Organization>
+
+<FluentTextField Label="Identifier" @bind-Value="Content.Identifier" Disabled=@(!string.IsNullOrEmpty(Content.Identifier))/>
+<FluentTextField Label="Name" @bind-Value="Content.Name" />
+<FluentTextField Label="Url" @bind-Value="Content.Url" />
+<FluentTextField Label="Representative" @bind-Value="Content.Representative" />
+<FluentTextField Label="Invoicing Contact" @bind-Value="Content.InvoicingContact" />
+
+@code {
+    [Parameter]
+    public required Organization Content { get; set; }
+
+    [CascadingParameter]
+    public required FluentDialog Dialog { get; set; }
+
+    private async Task SaveClicked()
+    {
+        await Dialog.CloseAsync(Content);
+    }
+
+    private async Task CancelClicked()
+    {
+        await Dialog.CancelAsync();
+    }
+}
