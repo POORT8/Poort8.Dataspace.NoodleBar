@@ -20,12 +20,12 @@ public partial class Index : IDisposable
     public required IDialogService DialogService { get; set; }
     public EventCallback<DialogResult> OnAddNewClicked { get; private set; }
 
-    public IQueryable<Organization>? Organizations; 
+    public IQueryable<Organization>? Organizations;
 
     protected override async Task OnInitializedAsync()
     {
         StateContainer.OnChange += StateHasChanged;
-        
+
         Organizations = (await AuthorizationRegistry!.ReadOrganizations()).AsQueryable();
     }
 
