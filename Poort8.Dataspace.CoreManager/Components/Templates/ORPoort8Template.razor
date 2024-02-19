@@ -2,7 +2,7 @@
 
 <button type="button" @onclick=AddNewOrganization disabled=@(_newOrganization is not null)>Nieuw</button>
 
-<TableMolecule TItem=Organization Items=Organizations Context="organization" RowClick="OnOrganizationRowClick">
+<TableMolecule TItem=Poort8.Dataspace.OrganizationRegistry.Organization Items=Organizations Context="organization" RowClick="OnOrganizationRowClick">
     <TableHeader>
         <th>Identifier</th>
         <th>Name</th>

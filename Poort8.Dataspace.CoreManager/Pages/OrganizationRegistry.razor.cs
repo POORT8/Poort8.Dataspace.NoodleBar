@@ -3,7 +3,7 @@ using Poort8.Dataspace.OrganizationRegistry;
 
 namespace Poort8.Dataspace.CoreManager.Pages;
 
-public partial class OrganizationRegistry
+public partial class OrganizationRegistry //TODO: Refactor and move
 {
     [Inject] private IConfiguration? Config { get; set; }
     [Inject] private IOrganizationRegistry? OrganizationRegistryService { get; set; }

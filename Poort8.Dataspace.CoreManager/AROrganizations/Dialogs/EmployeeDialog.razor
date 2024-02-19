@@ -1,0 +1,25 @@
+﻿@implements IDialogContentComponent<Employee>
+
+<FluentTextField Label="Identifier" @bind-Value="Content.EmployeeId" Disabled=@(!string.IsNullOrEmpty(Content.EmployeeId))/>
+<FluentTextField Label="Given Name" @bind-Value="Content.GivenName" />
+<FluentTextField Label="Family Name" @bind-Value="Content.FamilyName" />
+<FluentTextField Label="Telephone" @bind-Value="Content.Telephone" />
+<FluentTextField Label="Email" @bind-Value="Content.Email" />
+
+@code {
+    [Parameter]
+    public required Employee Content { get; set; }
+
+    [CascadingParameter]
+    public required FluentDialog Dialog { get; set; }
+
+    private async Task SaveClicked()
+    {
+        await Dialog.CloseAsync(Content);
+    }
+
+    private async Task CancelClicked()
+    {
+        await Dialog.CancelAsync();
+    }
+}
