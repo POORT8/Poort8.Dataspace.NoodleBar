@@ -18,7 +18,6 @@ public partial class Index : IDisposable
     public required IAuthorizationRegistry AuthorizationRegistry { get; set; }
     [Inject]
     public required IDialogService DialogService { get; set; }
-    public EventCallback<DialogResult> OnAddNewClicked { get; private set; }
 
     public IQueryable<Organization>? Organizations;
 

@@ -20,7 +20,6 @@ public partial class Details : IDisposable
     public required IAuthorizationRegistry AuthorizationRegistry { get; set; }
     [Inject]
     public required IDialogService DialogService { get; set; }
-    public EventCallback<DialogResult> OnEditClicked { get; private set; }
     public Organization Organization { get; private set; } = default!;
 
     protected override void OnInitialized()
