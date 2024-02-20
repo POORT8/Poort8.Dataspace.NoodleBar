@@ -1,0 +1,25 @@
+﻿@implements IDialogContentComponent<Poort8.Dataspace.OrganizationRegistry.Organization>
+
+<FluentTextField Label="Identifier" @bind-Value="Content.Identifier" Disabled=@(!string.IsNullOrEmpty(Content.Identifier))/>
+<FluentTextField Label="Name" @bind-Value="Content.Name" />
+<FluentRadioGroup Name="status" @bind-Value="Content.Adherence.Status" Label="Status">
+    <FluentRadio Value=@("Active")>Active</FluentRadio>
+    <FluentRadio Value=@("Not Active")>Not Active</FluentRadio>
+</FluentRadioGroup>
+<FluentDatePicker AriaLabel="ADHERENCE START DATE" Value="@Content.Adherence.ValidFrom.ToDateTime()" ValueChanged=AdherenceStartDateChanged/>
+<FluentDatePicker AriaLabel="ADHERENCE END DATE" Value="@Content.Adherence.ValidUntil.ToDateTime()" ValueChanged=AdherenceEndDateChanged/>
+
+@code {
+    [Parameter]
+    public required Poort8.Dataspace.OrganizationRegistry.Organization Content { get; set; }
+
+    private void AdherenceStartDateChanged(DateTime? newDate)
+    {
+        if (newDate is not null) Content.Adherence.ValidFrom = DateOnly.FromDateTime((DateTime)newDate);
+    }
+
+    private void AdherenceEndDateChanged(DateTime? newDate)
+    {
+        if (newDate is not null) Content.Adherence.ValidUntil = DateOnly.FromDateTime((DateTime)newDate);
+    }
+}

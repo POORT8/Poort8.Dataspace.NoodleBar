@@ -10,6 +10,7 @@ public class OrganizationRegistry : IOrganizationRegistry
         _contextFactory = dbContextFactory;
     }
 
+    #region Organization
     public async Task<Organization> CreateOrganization(Organization organization)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
@@ -92,144 +93,6 @@ public class OrganizationRegistry : IOrganizationRegistry
         context.Entry(organizationEntity.Adherence).CurrentValues.SetValues(organization.Adherence);
         context.Entry(organizationEntity.AdditionalDetails).CurrentValues.SetValues(organization.AdditionalDetails);
 
-        foreach (var authorizationRegistry in organization.AuthorizationRegistries)
-        {
-            var authorizationRegistryEntity = organizationEntity.AuthorizationRegistries
-                .FirstOrDefault(a => a.AuthorizationRegistryId == authorizationRegistry.AuthorizationRegistryId);
-
-            if (authorizationRegistryEntity == null)
-            {
-                organizationEntity.AuthorizationRegistries.Add(authorizationRegistry);
-            }
-            else
-            {
-                context.Entry(authorizationRegistryEntity).CurrentValues.SetValues(authorizationRegistry);
-            }
-        }
-
-        foreach (var authorizationRegistry in organizationEntity.AuthorizationRegistries)
-        {
-            if (!organization.AuthorizationRegistries.Any(a => a.AuthorizationRegistryId == authorizationRegistry.AuthorizationRegistryId))
-            {
-                context.Remove(authorizationRegistry);
-            }
-        }
-
-        foreach (var agreement in organization.Agreements)
-        {
-            var agreementEntity = organizationEntity.Agreements
-                .FirstOrDefault(a => a.AgreementId == agreement.AgreementId);
-
-            if (agreementEntity == null)
-            {
-                organizationEntity.Agreements.Add(agreement);
-            }
-            else
-            {
-                context.Entry(agreementEntity).CurrentValues.SetValues(agreement);
-            }
-        }
-
-        foreach (var agreement in organizationEntity.Agreements)
-        {
-            if (!organization.Agreements.Any(a => a.AgreementId == agreement.AgreementId))
-            {
-                context.Remove(agreement);
-            }
-        }
-
-        foreach (var certificate in organization.Certificates)
-        {
-            var certificateEntity = organizationEntity.Certificates
-                .FirstOrDefault(c => c.CertificateId == certificate.CertificateId);
-
-            if (certificateEntity == null)
-            {
-                organizationEntity.Certificates.Add(certificate);
-            }
-            else
-            {
-                context.Entry(certificateEntity).CurrentValues.SetValues(certificate);
-            }
-        }
-
-        foreach (var certificate in organizationEntity.Certificates)
-        {
-            if (!organization.Certificates.Any(c => c.CertificateId == certificate.CertificateId))
-            {
-                context.Remove(certificate);
-            }
-        }
-
-        foreach (var role in organization.Roles)
-        {
-            var roleEntity = organizationEntity.Roles
-                .FirstOrDefault(r => r.RoleId == role.RoleId);
-
-            if (roleEntity == null)
-            {
-                organizationEntity.Roles.Add(role);
-            }
-            else
-            {
-                context.Entry(roleEntity).CurrentValues.SetValues(role);
-            }
-        }
-
-        foreach (var role in organizationEntity.Roles)
-        {
-            if (!organization.Roles.Any(r => r.RoleId == role.RoleId))
-            {
-                context.Remove(role);
-            }
-        }
-
-        foreach (var property in organization.Properties)
-        {
-            var propertyEntity = organizationEntity.Properties
-                .FirstOrDefault(p => p.PropertyId == property.PropertyId);
-
-            if (propertyEntity == null)
-            {
-                organizationEntity.Properties.Add(property);
-            }
-            else
-            {
-                context.Entry(propertyEntity).CurrentValues.SetValues(property);
-            }
-        }
-
-        foreach (var property in organizationEntity.Properties)
-        {
-            if (!organization.Properties.Any(p => p.PropertyId == property.PropertyId))
-            {
-                context.Remove(property);
-            }
-        }
-
-        foreach (var service in organization.Services)
-        {
-            var serviceEntity = organizationEntity.Services
-                .FirstOrDefault(s => s.ServiceId == service.ServiceId);
-
-            if (serviceEntity == null)
-            {
-                organizationEntity.Services.Add(service);
-            }
-            else
-            {
-                context.Entry(serviceEntity).CurrentValues.SetValues(service);
-            }
-        }
-
-        foreach (var service in organizationEntity.Services)
-        {
-            if (!organization.Services.Any(s => s.ServiceId == service.ServiceId))
-            {
-                context.Remove(service);
-            }
-        }
-
         await context.SaveChangesAsync();
         return organizationEntity;
     }
@@ -247,11 +110,344 @@ public class OrganizationRegistry : IOrganizationRegistry
         await context.SaveChangesAsync();
         return true;
     }
+    #endregion
 
+    #region Agreement
+    public async Task<Agreement> AddNewAgreementToOrganization(string organizationId, Agreement agreement)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organizationEntity = await context.Organizations
+            .FirstAsync(o => o.Identifier == organizationId);
+        organizationEntity.Agreements.Add(agreement);
+
+        context.Update(organizationEntity);
+        await context.SaveChangesAsync();
+        return agreement;
+    }
+
+    public async Task<Agreement?> ReadAgreement(string agreementId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        return await context.Organizations
+            .Include(e => e.Agreements)
+            .SelectMany(o => o.Agreements)
+            .SingleOrDefaultAsync(a => a.AgreementId == agreementId);
+    }
+
+    public async Task<Agreement> UpdateAgreement(Agreement agreement)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var agreementEntity = await context.Organizations
+            .Include(e => e.Agreements)
+            .SelectMany(o => o.Agreements)
+            .SingleAsync(a => a.AgreementId == agreement.AgreementId);
+
+        context.Entry(agreementEntity).CurrentValues.SetValues(agreement);
+        await context.SaveChangesAsync();
+        return agreementEntity;
+    }
+
+    public async Task<bool> DeleteAgreement(string agreementId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var agreementEntity = await context.Organizations
+            .Include(e => e.Agreements)
+            .SelectMany(o => o.Agreements)
+            .SingleOrDefaultAsync(a => a.AgreementId == agreementId);
+
+        if (agreementEntity is null) return false;
+
+        context.Remove(agreementEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+    #endregion
+
+    #region AuthorizationRegistry
+    public async Task<AuthorizationRegistry> AddNewAuthorizationRegistryToOrganization(string organizationId, AuthorizationRegistry authorizationRegistry)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organizationEntity = await context.Organizations
+            .FirstAsync(o => o.Identifier == organizationId);
+        organizationEntity.AuthorizationRegistries.Add(authorizationRegistry);
+
+        context.Update(organizationEntity);
+        await context.SaveChangesAsync();
+        return authorizationRegistry;
+    }
+
+    public async Task<AuthorizationRegistry?> ReadAuthorizationRegistry(string authorizationRegistryId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        return await context.Organizations
+            .Include(e => e.AuthorizationRegistries)
+            .SelectMany(o => o.AuthorizationRegistries)
+            .SingleOrDefaultAsync(a => a.AuthorizationRegistryId == authorizationRegistryId);
+    }
+
+    public async Task<AuthorizationRegistry> UpdateAuthorizationRegistry(AuthorizationRegistry authorizationRegistry)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var authorizationRegistryEntity = await context.Organizations
+            .Include(e => e.AuthorizationRegistries)
+            .SelectMany(o => o.AuthorizationRegistries)
+            .SingleAsync(a => a.AuthorizationRegistryId == authorizationRegistry.AuthorizationRegistryId);
+
+        context.Entry(authorizationRegistryEntity).CurrentValues.SetValues(authorizationRegistry);
+        await context.SaveChangesAsync();
+        return authorizationRegistryEntity;
+    }
+
+    public async Task<bool> DeleteAuthorizationRegistry(string authorizationRegistryId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var authorizationRegistryEntity = await context.Organizations
+            .Include(e => e.AuthorizationRegistries)
+            .SelectMany(o => o.AuthorizationRegistries)
+            .SingleOrDefaultAsync(a => a.AuthorizationRegistryId == authorizationRegistryId);
+
+        if (authorizationRegistryEntity is null) return false;
+
+        context.Remove(authorizationRegistryEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+    #endregion
+
+    #region Certificate
+    public async Task<Certificate> AddNewCertificateToOrganization(string organizationId, Certificate certificate)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organizationEntity = await context.Organizations
+            .FirstAsync(o => o.Identifier == organizationId);
+        organizationEntity.Certificates.Add(certificate);
+
+        context.Update(organizationEntity);
+        await context.SaveChangesAsync();
+        return certificate;
+    }
+
+    public async Task<Certificate?> ReadCertificate(string certificateId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        return await context.Organizations
+            .Include(e => e.Certificates)
+            .SelectMany(o => o.Certificates)
+            .SingleOrDefaultAsync(c => c.CertificateId == certificateId);
+    }
+
+    public async Task<Certificate> UpdateCertificate(Certificate certificate)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var certificateEntity = await context.Organizations
+            .Include(e => e.Certificates)
+            .SelectMany(o => o.Certificates)
+            .SingleAsync(c => c.CertificateId == certificate.CertificateId);
+
+        context.Entry(certificateEntity).CurrentValues.SetValues(certificate);
+        await context.SaveChangesAsync();
+        return certificateEntity;
+    }
+
+    public async Task<bool> DeleteCertificate(string certificateId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var certificateEntity = await context.Organizations
+            .Include(e => e.Certificates)
+            .SelectMany(o => o.Certificates)
+            .SingleOrDefaultAsync(c => c.CertificateId == certificateId);
+
+        if (certificateEntity is null) return false;
+
+        context.Remove(certificateEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+    #endregion
+
+    #region Role
+    public async Task<OrganizationRole> AddNewRoleToOrganization(string organizationId, OrganizationRole role)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organizationEntity = await context.Organizations
+            .FirstAsync(o => o.Identifier == organizationId);
+        organizationEntity.Roles.Add(role);
+
+        context.Update(organizationEntity);
+        await context.SaveChangesAsync();
+        return role;
+    }
+
+    public async Task<OrganizationRole?> ReadRole(string roleId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        return await context.Organizations
+            .Include(e => e.Roles)
+            .SelectMany(o => o.Roles)
+            .SingleOrDefaultAsync(r => r.RoleId == roleId);
+    }
+
+    public async Task<OrganizationRole> UpdateRole(OrganizationRole role)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var roleEntity = await context.Organizations
+            .Include(e => e.Roles)
+            .SelectMany(o => o.Roles)
+            .SingleAsync(r => r.RoleId == role.RoleId);
+
+        context.Entry(roleEntity).CurrentValues.SetValues(role);
+        await context.SaveChangesAsync();
+        return roleEntity;
+    }
+
+    public async Task<bool> DeleteRole(string roleId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var roleEntity = await context.Organizations
+            .Include(e => e.Roles)
+            .SelectMany(o => o.Roles)
+            .SingleOrDefaultAsync(r => r.RoleId == roleId);
+
+        if (roleEntity is null) return false;
+
+        context.Remove(roleEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+    #endregion
+
+    #region Property
+    public async Task<Property> AddNewPropertyToOrganization(string organizationId, Property property)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organizationEntity = await context.Organizations
+            .FirstAsync(o => o.Identifier == organizationId);
+        organizationEntity.Properties.Add(property);
+
+        context.Update(organizationEntity);
+        await context.SaveChangesAsync();
+        return property;
+    }
+
+    public async Task<Property?> ReadProperty(string propertyId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        return await context.Organizations
+            .Include(e => e.Properties)
+            .SelectMany(o => o.Properties)
+            .SingleOrDefaultAsync(p => p.PropertyId == propertyId);
+    }
+
+    public async Task<Property> UpdateProperty(Property property)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var propertyEntity = await context.Organizations
+            .Include(e => e.Properties)
+            .SelectMany(o => o.Properties)
+            .SingleAsync(p => p.PropertyId == property.PropertyId);
+
+        context.Entry(propertyEntity).CurrentValues.SetValues(property);
+        await context.SaveChangesAsync();
+        return propertyEntity;
+    }
+
+    public async Task<bool> DeleteProperty(string propertyId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var propertyEntity = await context.Organizations
+            .Include(e => e.Properties)
+            .SelectMany(o => o.Properties)
+            .SingleOrDefaultAsync(p => p.PropertyId == propertyId);
+
+        if (propertyEntity is null) return false;
+
+        context.Remove(propertyEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+    #endregion
+
+    #region Service
+    public async Task<Service> AddNewServiceToOrganization(string organizationId, Service service)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var organizationEntity = await context.Organizations
+            .FirstAsync(o => o.Identifier == organizationId);
+        organizationEntity.Services.Add(service);
+
+        context.Update(organizationEntity);
+        await context.SaveChangesAsync();
+        return service;
+    }
+
+    public async Task<Service?> ReadService(string serviceId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        return await context.Organizations
+            .Include(e => e.Services)
+            .SelectMany(o => o.Services)
+            .SingleOrDefaultAsync(s => s.ServiceId == serviceId);
+    }
+
+    public async Task<Service> UpdateService(Service service)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var serviceEntity = await context.Organizations
+            .Include(e => e.Services)
+            .SelectMany(o => o.Services)
+            .SingleAsync(s => s.ServiceId == service.ServiceId);
+
+        context.Entry(serviceEntity).CurrentValues.SetValues(service);
+        await context.SaveChangesAsync();
+        return serviceEntity;
+    }
+
+    public async Task<bool> DeleteService(string serviceId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var serviceEntity = await context.Organizations
+            .Include(e => e.Services)
+            .SelectMany(o => o.Services)
+            .SingleOrDefaultAsync(s => s.ServiceId == serviceId);
+
+        if (serviceEntity is null) return false;
+
+        context.Remove(serviceEntity);
+        await context.SaveChangesAsync();
+        return true;
+    }
+    #endregion
+
+    #region Audit
     public async Task<IReadOnlyList<AuditRecord>> GetAuditRecords()
     {
         using var context = _contextFactory.CreateDbContext();
 
         return await context.AuditRecords.ToListAsync();
     }
+    #endregion
 }

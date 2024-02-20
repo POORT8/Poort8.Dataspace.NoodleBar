@@ -1,17 +1,27 @@
-﻿using Poort8.Dataspace.AuthorizationRegistry.Entities;
-
-namespace Poort8.Dataspace.CoreManager.Services;
+﻿namespace Poort8.Dataspace.CoreManager.Services;
 
 public class StateContainer
 {
-    private Organization? currentOrganization;
+    private AuthorizationRegistry.Entities.Organization? currentAROrganization;
 
-    public Organization? CurrentOrganization
+    public AuthorizationRegistry.Entities.Organization? CurrentAROrganization
     {
-        get => currentOrganization;
+        get => currentAROrganization;
         set
         {
-            currentOrganization = value;
+            currentAROrganization = value;
+            NotifyStateChanged();
+        }
+    }
+
+    private OrganizationRegistry.Organization? currentOROrganization;
+
+    public OrganizationRegistry.Organization? CurrentOROrganization
+    {
+        get => currentOROrganization;
+        set
+        {
+            currentOROrganization = value;
             NotifyStateChanged();
         }
     }

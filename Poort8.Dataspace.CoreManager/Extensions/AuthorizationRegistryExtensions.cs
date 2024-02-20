@@ -4,53 +4,6 @@ namespace Poort8.Dataspace.CoreManager.Extensions;
 
 public static class AuthorizationRegistryExtensions
 {
-    public static Organization DeepCopy(this Organization organization)
-    {
-        return new Organization(
-            organization.Identifier,
-            organization.Name,
-            organization.Url,
-            organization.Representative,
-            organization.InvoicingContact,
-            organization.Properties.Select(p => p.DeepCopy()).ToList())
-        {
-            Employees = organization.Employees.Select(e => e.DeepCopy()).ToList()
-        };
-    }
-
-    private static Organization.OrganizationProperty DeepCopy(this Organization.OrganizationProperty property)
-    {
-        return new Organization.OrganizationProperty(
-            property.Key,
-            property.Value,
-            property.IsIdentifier)
-        {
-            PropertyId = property.PropertyId
-        };
-    }
-
-    public static Employee DeepCopy(this Employee employee)
-    {
-        return new Employee(
-            employee.EmployeeId,
-            employee.GivenName,
-            employee.FamilyName,
-            employee.Telephone,
-            employee.Email,
-            employee.Properties.Select(p => p.DeepCopy()).ToList());
-    }
-
-    private static Employee.EmployeeProperty DeepCopy(this Employee.EmployeeProperty property)
-    {
-        return new Employee.EmployeeProperty(
-            property.Key,
-            property.Value,
-            property.IsIdentifier)
-        {
-            PropertyId = property.PropertyId
-        };
-    }
-
     public static Policy DeepCopy(this Policy policy)
     {
         return new Policy(

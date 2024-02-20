@@ -8,8 +8,8 @@ public class Organization //https://schema.org/Organization
     public string Name { get; set; }
     public Adherence Adherence { get; set; } = new Adherence("Active", DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now.AddYears(1)));
     public AdditionalDetails AdditionalDetails { get; set; } = new AdditionalDetails();
-    public ICollection<AuthorizationRegistry> AuthorizationRegistries { get; set; } = new List<AuthorizationRegistry>();
     public ICollection<Agreement> Agreements { get; set; } = new List<Agreement>();
+    public ICollection<AuthorizationRegistry> AuthorizationRegistries { get; set; } = new List<AuthorizationRegistry>();
     public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
     public ICollection<OrganizationRole> Roles { get; set; } = new List<OrganizationRole>();
     public ICollection<Property> Properties { get; set; } = new List<Property>();
@@ -28,30 +28,6 @@ public class Organization //https://schema.org/Organization
         Adherence = adherence;
         Roles = roles;
         Properties = properties;
-    }
-
-    public Organization(
-        string identifier,
-        string name,
-        Adherence adherence,
-        AdditionalDetails additionalDetails,
-        ICollection<AuthorizationRegistry> authorizationRegistries,
-        ICollection<Agreement> agreements,
-        ICollection<Certificate> certificates,
-        ICollection<OrganizationRole> roles,
-        ICollection<Property> properties,
-        ICollection<Service> services)
-    {
-        Identifier = identifier;
-        Name = name;
-        Adherence = adherence;
-        AdditionalDetails = additionalDetails;
-        AuthorizationRegistries = authorizationRegistries;
-        Agreements = agreements;
-        Certificates = certificates;
-        Roles = roles;
-        Properties = properties;
-        Services = services;
     }
 }
 
@@ -107,22 +83,6 @@ public class AdditionalDetails
     }
 }
 
-public class AuthorizationRegistry
-{
-    [Key]
-    public string AuthorizationRegistryId { get; set; } = Guid.NewGuid().ToString();
-    public string AuthorizationRegistryOrganizationId { get; set; }
-    public string AuthorizationRegistryUrl { get; set; }
-    public string? DataspaceId { get; set; }
-
-    public AuthorizationRegistry(string authorizationRegistryOrganizationId, string authorizationRegistryUrl, string? dataspaceId = null)
-    {
-        AuthorizationRegistryOrganizationId = authorizationRegistryOrganizationId;
-        AuthorizationRegistryUrl = authorizationRegistryUrl;
-        DataspaceId = dataspaceId;
-    }
-}
-
 public class Agreement
 {
     [Key]
@@ -163,6 +123,22 @@ public class Agreement
     }
 }
 
+public class AuthorizationRegistry
+{
+    [Key]
+    public string AuthorizationRegistryId { get; set; } = Guid.NewGuid().ToString();
+    public string AuthorizationRegistryOrganizationId { get; set; }
+    public string AuthorizationRegistryUrl { get; set; }
+    public string? DataspaceId { get; set; }
+
+    public AuthorizationRegistry(string authorizationRegistryOrganizationId, string authorizationRegistryUrl, string? dataspaceId = null)
+    {
+        AuthorizationRegistryOrganizationId = authorizationRegistryOrganizationId;
+        AuthorizationRegistryUrl = authorizationRegistryUrl;
+        DataspaceId = dataspaceId;
+    }
+}
+
 public class Certificate
 {
     [Key]
@@ -191,22 +167,6 @@ public class OrganizationRole
     public OrganizationRole(string role)
     {
         Role = role;
-    }
-
-    public OrganizationRole(
-        string role,
-        DateOnly startDate,
-        DateOnly endDate,
-        string loA,
-        bool legalAdherence,
-        bool compliancyVerified)
-    {
-        Role = role;
-        StartDate = startDate;
-        EndDate = endDate;
-        LoA = loA;
-        LegalAdherence = legalAdherence;
-        CompliancyVerified = compliancyVerified;
     }
 }
 
