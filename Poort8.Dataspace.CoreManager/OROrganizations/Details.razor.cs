@@ -93,75 +93,25 @@ public partial class Details : IDisposable
         NavigationManager!.NavigateTo($"/or/organizations");
     }
 
-    private async Task AddNewAgreementClicked() //TODO: To Agreement component?
+    private async Task AddNewAgreementCallback(Agreement agreement)
     {
-        var parameters = new DialogParameters()
-        {
-            Title = $"New Agreement",
-            PrimaryAction = "Add New Agreement",
-            PrimaryActionEnabled = true,
-            SecondaryAction = "Cancel",
-            Width = "400px",
-            TrapFocus = true,
-            Modal = true,
-            ShowDismiss = false,
-            OnDialogResult = DialogService.CreateDialogCallback(this, HandleAddNewAgreementClicked)
-        };
-
-        var agreement = new Agreement(string.Empty, string.Empty, string.Empty, DateOnly.FromDateTime(DateTime.Now), DateOnly.MaxValue, string.Empty, Array.Empty<byte>(), string.Empty, null);
-        await DialogService.ShowDialogAsync<AgreementDialog>(agreement, parameters);
+        await OrganizationRegistry.AddNewAgreementToOrganization(Organization.Identifier, agreement);
+        Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
     }
 
-    private async Task HandleAddNewAgreementClicked(DialogResult result)
+    private async Task EditAgreementCallback(Agreement? agreement)
     {
-        if (!result.Cancelled && result.Data is not null)
+        if (agreement is not null)
         {
-            await OrganizationRegistry.AddNewAgreementToOrganization(Organization.Identifier, (Agreement)result.Data);
-            Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
-        }
-    }
-
-    private async Task AgreementEditClicked(Agreement agreement)
-    {
-        var parameters = new DialogParameters()
-        {
-            Title = $"Edit Agreement",
-            PrimaryAction = "Save Changes",
-            PrimaryActionEnabled = true,
-            SecondaryAction = "Cancel",
-            Width = "400px",
-            TrapFocus = true,
-            Modal = true,
-            ShowDismiss = false,
-            OnDialogResult = DialogService.CreateDialogCallback(this, HandleEditAgreementClicked)
-        };
-
-        await DialogService.ShowDialogAsync<AgreementDialog>(agreement, parameters);
-    }
-
-    private async Task HandleEditAgreementClicked(DialogResult result)
-    {
-        if (!result.Cancelled && result.Data is not null)
-        {
-            await OrganizationRegistry.UpdateAgreement((Agreement)result.Data);
+            await OrganizationRegistry.UpdateAgreement(agreement);
         }
         Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
     }
 
-    private async Task AgreementDeleteClicked(Agreement agreement)
+    private async Task DeleteAgreementCallback(string agreementId)
     {
-        var dialog = await DialogService.ShowConfirmationAsync(
-            $"Are you sure you want to delete {agreement.Type} {agreement.Title}?",
-            "Delete",
-            "Cancel",
-            "Delete Agreement");
-
-        var result = await dialog.Result;
-        if (!result.Cancelled)
-        {
-            await OrganizationRegistry.DeleteAgreement(agreement.AgreementId);
-            Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
-        }
+        await OrganizationRegistry.DeleteAgreement(agreementId);
+        Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
     }
 
     private async Task AddNewAuthorizationRegistryClicked() //TODO: To AuthorizationRegistry component?

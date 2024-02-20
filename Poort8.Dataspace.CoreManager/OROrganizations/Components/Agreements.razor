@@ -1,0 +1,17 @@
+﻿<FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+
+<FluentLabel Typo="Typography.H1">Agreements</FluentLabel>
+
+<FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewAgreementClicked)">New Agreement</FluentButton>
+
+<FluentDataGrid Items="@AgreementsCollection?.AsQueryable()">
+    <PropertyColumn Property="@(a => a.Type)" Sortable="true" />
+    <PropertyColumn Property="@(a => a.Title)" Sortable="true" />
+    <PropertyColumn Property="@(a => a.Status)" Sortable="true" />
+    <PropertyColumn Title="Date of Signing" Property="@(a => a.DateOfSigning)" Sortable="false" />
+    <PropertyColumn Title="Date of Expiry" Property="@(a => a.DateOfExpiry)" Sortable="false" />
+    <TemplateColumn Title="Actions" Align="@Align.End">
+        <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => AgreementEditClicked(@context))" />
+        <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => AgreementDeleteClicked(@context))" />
+    </TemplateColumn>
+</FluentDataGrid>
