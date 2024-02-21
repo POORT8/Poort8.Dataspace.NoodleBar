@@ -13,16 +13,15 @@
             <FluentNavLink Href="/ar/policies" Icon="@(new Icons.Regular.Size20.LockShield())" IconColor="Color.Accent">AR Policies</FluentNavLink>
             <AuthorizeView>
                 <Authorized>
-                    <FluentNavLink Href="Account/Manage">@context.User.Identity?.Name</FluentNavLink>
+                    <FluentNavLink Href="account/manage" Icon="@(new Icons.Regular.Size20.LockShield())">@context.User.Identity?.Name</FluentNavLink>
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
                         <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                        <FluentButton Type="ButtonType.Submit" Style="width: 100%;">Logout</FluentButton>
+                        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.PersonArrowBack())" Style="width: 100%; text-align: left;">Logout</FluentButton>
                     </form>
                 </Authorized>
                 <NotAuthorized>
-                    <FluentNavLink Href="Account/Register">Register</FluentNavLink>
-                    <FluentNavLink Href="Account/Login">Login</FluentNavLink>
+                    <FluentNavLink Href="account/login" Icon="@(new Icons.Regular.Size20.Person())">Login</FluentNavLink>
                 </NotAuthorized>
             </AuthorizeView>
         </FluentNavMenu>
