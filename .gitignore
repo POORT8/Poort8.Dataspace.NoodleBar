@@ -368,6 +368,6 @@ FodyWeavers.xsd
 **/OrganizationRegistry.db
 **/OrganizationRegistry.db-shm
 **/OrganizationRegistry.db-wal
-/Poort8.Dataspace.CoreManager/Identity.db
-/Poort8.Dataspace.CoreManager/Identity.db-shm
-/Poort8.Dataspace.CoreManager/Identity.db-wal
+**/Identity.db
+**/Identity.db-shm
+**/Identity.db-wal
