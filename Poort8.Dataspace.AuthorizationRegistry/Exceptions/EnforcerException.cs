@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Poort8.Dataspace.AuthorizationRegistry.Exceptions;
+﻿namespace Poort8.Dataspace.AuthorizationRegistry.Exceptions;
 [Serializable]
 internal class EnforcerException : Exception
 {
@@ -13,10 +11,6 @@ internal class EnforcerException : Exception
     }
 
     public EnforcerException(string? message, Exception? innerException) : base(message, innerException)
-    {
-    }
-
-    protected EnforcerException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 }

@@ -1,6 +1,7 @@
 ﻿@page "/or/organizations/details/{Identifier}"
 @using Poort8.Dataspace.CoreManager.OROrganizations.Components;
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [Authorize]
 
 <PageTitle>OR Organizations</PageTitle>
 
