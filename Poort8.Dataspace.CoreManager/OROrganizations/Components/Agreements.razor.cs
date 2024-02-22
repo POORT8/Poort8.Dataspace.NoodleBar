@@ -9,7 +9,7 @@ namespace Poort8.Dataspace.CoreManager.OROrganizations.Components;
 public partial class Agreements
 {
     [Parameter]
-    public ICollection<Agreement>? AgreementsCollection { get; set; }
+    public ICollection<Agreement>? Content { get; set; }
     [Inject]
     public required IDialogService DialogService { get; set; }
     [Inject]
@@ -17,7 +17,7 @@ public partial class Agreements
     [Inject]
     public required StateContainer StateContainer { get; set; }
 
-    private async Task AddNewAgreementClicked()
+    private async Task AddNewClicked()
     {
         var parameters = new DialogParameters()
         {
@@ -29,14 +29,14 @@ public partial class Agreements
             TrapFocus = true,
             Modal = true,
             ShowDismiss = false,
-            OnDialogResult = DialogService.CreateDialogCallback(this, HandleAddNewAgreementClicked)
+            OnDialogResult = DialogService.CreateDialogCallback(this, HandleAddNewClicked)
         };
 
         var agreement = new Agreement(string.Empty, string.Empty, string.Empty, DateOnly.FromDateTime(DateTime.Now), DateOnly.MaxValue, string.Empty, Array.Empty<byte>(), string.Empty, null);
         await DialogService.ShowDialogAsync<AgreementDialog>(agreement, parameters);
     }
 
-    private async Task HandleAddNewAgreementClicked(DialogResult result)
+    private async Task HandleAddNewClicked(DialogResult result)
     {
         if (!result.Cancelled && result.Data is not null)
         {
@@ -45,7 +45,7 @@ public partial class Agreements
         }
     }
 
-    private async Task AgreementEditClicked(Agreement agreement)
+    private async Task EditClicked(Agreement agreement)
     {
         var parameters = new DialogParameters()
         {
@@ -57,13 +57,13 @@ public partial class Agreements
             TrapFocus = true,
             Modal = true,
             ShowDismiss = false,
-            OnDialogResult = DialogService.CreateDialogCallback(this, HandleEditAgreementClicked)
+            OnDialogResult = DialogService.CreateDialogCallback(this, HandleEditClicked)
         };
 
         await DialogService.ShowDialogAsync<AgreementDialog>(agreement, parameters);
     }
 
-    private async Task HandleEditAgreementClicked(DialogResult result)
+    private async Task HandleEditClicked(DialogResult result)
     {
         if (!result.Cancelled && result.Data is not null)
         {
@@ -72,7 +72,7 @@ public partial class Agreements
         StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
     }
 
-    private async Task AgreementDeleteClicked(Agreement agreement)
+    private async Task DeleteClicked(Agreement agreement)
     {
         var dialog = await DialogService.ShowConfirmationAsync(
             $"Are you sure you want to delete {agreement.Type} {agreement.Title}?",
