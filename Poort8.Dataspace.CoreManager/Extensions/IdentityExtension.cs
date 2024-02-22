@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Poort8.Dataspace.CoreManager.Identity.Account;
-using Poort8.Dataspace.CoreManager.Identity;
 using Microsoft.EntityFrameworkCore;
+using Poort8.Dataspace.CoreManager.Identity;
+using Poort8.Dataspace.CoreManager.Identity.Account;
 
 namespace Poort8.Dataspace.CoreManager.Extensions;
 
@@ -33,5 +33,12 @@ public static class IdentityExtension
         services.AddSingleton<IEmailSender<User>, IdentityNoOpEmailSender>();
 
         return services;
+    }
+
+    public static void RunIdentityMigrations(this IApplicationBuilder app)
+    {
+        using var scope = app.ApplicationServices.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+        context.Database.Migrate();
     }
 }

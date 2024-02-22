@@ -38,6 +38,7 @@ if (!app.Environment.IsDevelopment())
 
 app.RunOrganizationRegistryMigrations();
 app.RunAuthorizationRegistryMigrations();
+app.RunIdentityMigrations();
 
 if (app.Environment.IsDevelopment())
 {
