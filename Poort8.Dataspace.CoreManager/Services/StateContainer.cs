@@ -5,6 +5,7 @@ namespace Poort8.Dataspace.CoreManager.Services;
 public class StateContainer
 {
     private Organization? currentOrganization;
+    private Product? currentProduct;
 
     public Organization? CurrentOrganization
     {
@@ -12,6 +13,16 @@ public class StateContainer
         set
         {
             currentOrganization = value;
+            NotifyStateChanged();
+        }
+    }
+
+    public Product? CurrentProduct
+    {
+        get => currentProduct;
+        set
+        {
+            currentProduct = value;
             NotifyStateChanged();
         }
     }
