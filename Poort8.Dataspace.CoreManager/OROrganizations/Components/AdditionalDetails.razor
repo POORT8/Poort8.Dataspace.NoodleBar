@@ -1,0 +1,16 @@
+﻿<FluentLabel Typo="Typography.H1">Organization additional details</FluentLabel>
+
+<FluentButton IconStart="@(new Icons.Regular.Size20.Edit())" Appearance="Appearance.Accent" OnClick="@(EditClicked)">Edit additional details</FluentButton>
+
+<div>
+    <p>DESCRIPTION: <b>@StateContainer.CurrentOROrganization!.AdditionalDetails.Description</b></p>
+    <p>WEBSITE URL: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.WebsiteUrl</b></p>
+    <p>CAPABILITIES URL: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.CapabilitiesUrl</b></p>
+    <p>LOGO URL: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.LogoUrl</b></p>
+    <p>COMPANY EMAIL: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.CompanyEmail</b></p>
+    <p>COMPANY PHONE: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.CompanyPhone</b></p>
+    <p>TAGS: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.Tags</b></p>
+    <p>PUBLICLY PUBLISHABLE: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.PubliclyPublishable</b></p>
+    <p>COUNTRIES OF OPERATION: <b>@string.Join(", ", StateContainer.CurrentOROrganization.AdditionalDetails.CountriesOfOperation)</b></p>
+    <p>INDUSTRIES/SECTORS: <b>@string.Join(", ", StateContainer.CurrentOROrganization.AdditionalDetails.Sectors)</b></p>
+</div>

@@ -6,7 +6,7 @@ using Poort8.Dataspace.OrganizationRegistry;
 
 namespace Poort8.Dataspace.CoreManager.OROrganizations.Components;
 
-public partial class Agreements
+public partial class Certificates
 {
     [Inject]
     public required IDialogService DialogService { get; set; }
@@ -19,8 +19,8 @@ public partial class Agreements
     {
         var parameters = new DialogParameters()
         {
-            Title = $"New Agreement",
-            PrimaryAction = "Add New Agreement",
+            Title = $"New Certificate",
+            PrimaryAction = "Add New Certificate",
             PrimaryActionEnabled = true,
             SecondaryAction = "Cancel",
             Width = "400px",
@@ -30,24 +30,24 @@ public partial class Agreements
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleAddNewClicked)
         };
 
-        var agreement = new Agreement(string.Empty, string.Empty, string.Empty, DateOnly.FromDateTime(DateTime.Now), DateOnly.MaxValue, string.Empty, Array.Empty<byte>(), string.Empty, null);
-        await DialogService.ShowDialogAsync<AgreementDialog>(agreement, parameters);
+        var certificate = new Certificate(Array.Empty<byte>(), DateOnly.FromDateTime(DateTime.Now));
+        await DialogService.ShowDialogAsync<CertificateDialog>(certificate, parameters);
     }
 
     private async Task HandleAddNewClicked(DialogResult result)
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            await OrganizationRegistry.AddNewAgreementToOrganization(StateContainer.CurrentOROrganization!.Identifier, (Agreement)result.Data);
+            await OrganizationRegistry.AddNewCertificateToOrganization(StateContainer.CurrentOROrganization!.Identifier, (Certificate)result.Data);
             StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
-    private async Task EditClicked(Agreement agreement)
+    private async Task EditClicked(Certificate certificate)
     {
         var parameters = new DialogParameters()
         {
-            Title = $"Edit Agreement",
+            Title = $"Edit Certificate",
             PrimaryAction = "Save Changes",
             PrimaryActionEnabled = true,
             SecondaryAction = "Cancel",
@@ -58,30 +58,30 @@ public partial class Agreements
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleEditClicked)
         };
 
-        await DialogService.ShowDialogAsync<AgreementDialog>(agreement, parameters);
+        await DialogService.ShowDialogAsync<CertificateDialog>(certificate, parameters);
     }
 
     private async Task HandleEditClicked(DialogResult result)
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            await OrganizationRegistry.UpdateAgreement((Agreement)result.Data);
+            await OrganizationRegistry.UpdateCertificate((Certificate)result.Data);
         }
         StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
     }
 
-    private async Task DeleteClicked(Agreement agreement)
+    private async Task DeleteClicked(Certificate certificate)
     {
         var dialog = await DialogService.ShowConfirmationAsync(
-            $"Are you sure you want to delete {agreement.Type} {agreement.Title}?",
+            $"Are you sure you want to delete {certificate.CertificateId}?",
             "Delete",
             "Cancel",
-            "Delete Agreement");
+            "Delete Certificate");
 
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            await OrganizationRegistry.DeleteAgreement(agreement.AgreementId);
+            await OrganizationRegistry.DeleteCertificate(certificate.CertificateId);
             StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }

@@ -22,87 +22,15 @@
     </div>
 
     <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
-
-    <FluentLabel Typo="Typography.H1">Organization additional details</FluentLabel>
-
-    <FluentButton IconStart="@(new Icons.Regular.Size20.Edit())" Appearance="Appearance.Accent" OnClick="@(EditAdditionalDetailsClicked)">Edit additional details</FluentButton>
-
-    <div>
-        <p>DESCRIPTION: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.Description</b></p>
-        <p>WEBSITE URL: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.WebsiteUrl</b></p>
-        <p>CAPABILITIES URL: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.CapabilitiesUrl</b></p>
-        <p>LOGO URL: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.LogoUrl</b></p>
-        <p>COMPANY EMAIL: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.CompanyEmail</b></p>
-        <p>COMPANY PHONE: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.CompanyPhone</b></p>
-        <p>TAGS: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.Tags</b></p>
-        <p>PUBLICLY PUBLISHABLE: <b>@StateContainer.CurrentOROrganization.AdditionalDetails.PubliclyPublishable</b></p>
-        <p>COUNTRIES OF OPERATION: <b>@string.Join(", ", StateContainer.CurrentOROrganization.AdditionalDetails.CountriesOfOperation)</b></p>
-        <p>INDUSTRIES/SECTORS: <b>@string.Join(", ", StateContainer.CurrentOROrganization.AdditionalDetails.Sectors)</b></p>
-    </div>
-
+    <AdditionalDetails/>
     <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
-
-    <Agreements AgreementsCollection=StateContainer.CurrentOROrganization.Agreements></Agreements>
-
+    <Agreements/>
     <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
-
-    <FluentLabel Typo="Typography.H1">Authorization Registries</FluentLabel>
-
-    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewAuthorizationRegistryClicked)">New Authorization Registry</FluentButton>
-
-    <FluentDataGrid Items="@StateContainer.CurrentOROrganization.AuthorizationRegistries.AsQueryable()">
-        <PropertyColumn Title="Authorization Registry Organization" Property="@(a => a.AuthorizationRegistryOrganizationId)" Sortable="true" />
-        <PropertyColumn Title="URL" Property="@(a => a.AuthorizationRegistryUrl)" Sortable="true" />
-        <TemplateColumn Title="Actions" Align="@Align.End">
-            <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => AuthorizationRegistryEditClicked(@context))" />
-            <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => AuthorizationRegistryDeleteClicked(@context))" />
-        </TemplateColumn>
-    </FluentDataGrid>
-
+    <AuthorizationRegistries/>
     <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
-
-    <FluentLabel Typo="Typography.H1">Certificates</FluentLabel>
-
-    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewCertificateClicked)">New Certificate</FluentButton>
-
-    <FluentDataGrid Items="@StateContainer.CurrentOROrganization.Certificates.AsQueryable()">
-        <PropertyColumn Title="Enabled From" Property="@(c => c.EnabledFrom)" Sortable="true" />
-        <TemplateColumn Title="Actions" Align="@Align.End">
-            <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => CertificateEditClicked(@context))" />
-            <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => CertificateDeleteClicked(@context))" />
-        </TemplateColumn>
-    </FluentDataGrid>
-
+    <Certificates/>
     <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
-
-    <FluentLabel Typo="Typography.H1">Roles</FluentLabel>
-
-    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewRoleClicked)">New Role</FluentButton>
-
-    <FluentDataGrid Items="@StateContainer.CurrentOROrganization.Roles.AsQueryable()">
-        <PropertyColumn Property="@(r => r.Role)" Sortable="true" />
-        <PropertyColumn Title="Start Date" Property="@(r => r.StartDate)" Sortable="false" />
-        <PropertyColumn Title="End Date" Property="@(r => r.EndDate)" Sortable="false" />
-        <PropertyColumn Property="@(r => r.LoA)" Sortable="true" />
-        <TemplateColumn Title="Actions" Align="@Align.End">
-            <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => RoleEditClicked(@context))" />
-            <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => RoleDeleteClicked(@context))" />
-        </TemplateColumn>
-    </FluentDataGrid>
-
+    <Roles/>
     <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
-
-    <FluentLabel Typo="Typography.H1">Services</FluentLabel>
-
-    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewServiceClicked)">New Service</FluentButton>
-
-    <FluentDataGrid Items="@StateContainer.CurrentOROrganization.Services.AsQueryable()">
-        <PropertyColumn Property="@(s => s.Name)" Sortable="true" />
-        <PropertyColumn Property="@(s => s.Description)" Sortable="false" />
-        <PropertyColumn Property="@(s => s.Color)" Sortable="false" />
-        <TemplateColumn Title="Actions" Align="@Align.End">
-            <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => ServiceEditClicked(@context))" />
-            <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => ServiceDeleteClicked(@context))" />
-        </TemplateColumn>
-    </FluentDataGrid>
+    <Services/>
 </FluentStack>
