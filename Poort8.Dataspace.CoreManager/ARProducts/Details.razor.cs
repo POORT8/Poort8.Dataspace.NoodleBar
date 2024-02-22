@@ -180,6 +180,12 @@ public partial class Details : IDisposable
         }
     }
 
+    private async Task FeatureRemoveClicked(Feature feature)
+    {
+        await AuthorizationRegistry.RemoveFeatureFromProduct(Product.ProductId, feature.FeatureId);
+        Product = await AuthorizationRegistry.ReadProduct(Product.ProductId) ?? Product;
+    }
+
     private async Task FeatureDeleteClicked(Feature feature)
     {
         var dialog = await DialogService.ShowConfirmationAsync(
