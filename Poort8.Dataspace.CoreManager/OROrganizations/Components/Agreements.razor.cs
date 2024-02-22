@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Poort8.Dataspace.CoreManager.OROrganizations.Dialogs;
+using Poort8.Dataspace.CoreManager.Services;
 using Poort8.Dataspace.OrganizationRegistry;
 
 namespace Poort8.Dataspace.CoreManager.OROrganizations.Components;
@@ -9,14 +10,12 @@ public partial class Agreements
 {
     [Parameter]
     public ICollection<Agreement>? AgreementsCollection { get; set; }
-    [Parameter]
-    public EventCallback<Agreement> AgreementAdded { get; set; }
-    [Parameter]
-    public EventCallback<Agreement?> AgreementEdited { get; set; }
-    [Parameter]
-    public EventCallback<string> AgreementDeleted { get; set; }
     [Inject]
     public required IDialogService DialogService { get; set; }
+    [Inject]
+    public required IOrganizationRegistry OrganizationRegistry { get; set; }
+    [Inject]
+    public required StateContainer StateContainer { get; set; }
 
     private async Task AddNewAgreementClicked()
     {
@@ -37,13 +36,13 @@ public partial class Agreements
         await DialogService.ShowDialogAsync<AgreementDialog>(agreement, parameters);
     }
 
-    private Task HandleAddNewAgreementClicked(DialogResult result)
+    private async Task HandleAddNewAgreementClicked(DialogResult result)
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            _ = AgreementAdded.InvokeAsync((Agreement)result.Data);
+            await OrganizationRegistry.AddNewAgreementToOrganization(StateContainer.CurrentOROrganization!.Identifier, (Agreement)result.Data);
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
-        return Task.CompletedTask;
     }
 
     private async Task AgreementEditClicked(Agreement agreement)
@@ -64,10 +63,13 @@ public partial class Agreements
         await DialogService.ShowDialogAsync<AgreementDialog>(agreement, parameters);
     }
 
-    private Task HandleEditAgreementClicked(DialogResult result)
+    private async Task HandleEditAgreementClicked(DialogResult result)
     {
-        _ = AgreementEdited.InvokeAsync(result.Cancelled ? null : (Agreement?)result.Data);
-        return Task.CompletedTask;
+        if (!result.Cancelled && result.Data is not null)
+        {
+            await OrganizationRegistry.UpdateAgreement((Agreement)result.Data);
+        }
+        StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
     }
 
     private async Task AgreementDeleteClicked(Agreement agreement)
@@ -81,7 +83,8 @@ public partial class Agreements
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            _ = AgreementDeleted.InvokeAsync(agreement.AgreementId);
+            await OrganizationRegistry.DeleteAgreement(agreement.AgreementId);
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 }

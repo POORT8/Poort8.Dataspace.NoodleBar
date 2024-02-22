@@ -19,12 +19,10 @@ public partial class Details : IDisposable
     public required IOrganizationRegistry OrganizationRegistry { get; set; }
     [Inject]
     public required IDialogService DialogService { get; set; }
-    public Organization Organization { get; private set; } = default!;
 
     protected override void OnInitialized()
     {
         StateContainer.OnChange += StateHasChanged;
-        Organization = StateContainer.CurrentOROrganization!;
     }
 
     private async Task EditOrganizationClicked()
@@ -42,18 +40,18 @@ public partial class Details : IDisposable
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleEditOrganizationClicked)
         };
 
-        await DialogService.ShowDialogAsync<OrganizationDialog>(Organization, parameters);
+        await DialogService.ShowDialogAsync<OrganizationDialog>(StateContainer.CurrentOROrganization!, parameters);
     }
 
     private async Task HandleEditOrganizationClicked(DialogResult result)
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            Organization = await OrganizationRegistry.UpdateOrganization((Organization)result.Data);
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.UpdateOrganization((Organization)result.Data);
         }
         else
         {
-            Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
@@ -72,46 +70,24 @@ public partial class Details : IDisposable
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleEditAdditionalDetailsClicked)
         };
 
-        await DialogService.ShowDialogAsync<OrganizationAdditionalDetailsDialog>(Organization, parameters);
+        await DialogService.ShowDialogAsync<OrganizationAdditionalDetailsDialog>(StateContainer.CurrentOROrganization!, parameters);
     }
 
     private async Task HandleEditAdditionalDetailsClicked(DialogResult result)
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            Organization = await OrganizationRegistry.UpdateOrganization((Organization)result.Data);
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.UpdateOrganization((Organization)result.Data);
         }
         else
         {
-            Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
     private void BackClicked()
     {
-        StateContainer.CurrentOROrganization = Organization;
         NavigationManager!.NavigateTo($"/or/organizations");
-    }
-
-    private async Task AddNewAgreementCallback(Agreement agreement)
-    {
-        await OrganizationRegistry.AddNewAgreementToOrganization(Organization.Identifier, agreement);
-        Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
-    }
-
-    private async Task EditAgreementCallback(Agreement? agreement)
-    {
-        if (agreement is not null)
-        {
-            await OrganizationRegistry.UpdateAgreement(agreement);
-        }
-        Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
-    }
-
-    private async Task DeleteAgreementCallback(string agreementId)
-    {
-        await OrganizationRegistry.DeleteAgreement(agreementId);
-        Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
     }
 
     private async Task AddNewAuthorizationRegistryClicked() //TODO: To AuthorizationRegistry component?
@@ -137,8 +113,8 @@ public partial class Details : IDisposable
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            await OrganizationRegistry.AddNewAuthorizationRegistryToOrganization(Organization.Identifier, (OrganizationRegistry.AuthorizationRegistry)result.Data);
-            Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+            await OrganizationRegistry.AddNewAuthorizationRegistryToOrganization(StateContainer.CurrentOROrganization!.Identifier, (OrganizationRegistry.AuthorizationRegistry)result.Data);
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
@@ -166,7 +142,7 @@ public partial class Details : IDisposable
         {
             await OrganizationRegistry.UpdateAuthorizationRegistry((OrganizationRegistry.AuthorizationRegistry)result.Data);
         }
-        Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+        StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
     }
 
     private async Task AuthorizationRegistryDeleteClicked(OrganizationRegistry.AuthorizationRegistry authorizationRegistry)
@@ -181,7 +157,7 @@ public partial class Details : IDisposable
         if (!result.Cancelled)
         {
             await OrganizationRegistry.DeleteAuthorizationRegistry(authorizationRegistry.AuthorizationRegistryId);
-            Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
@@ -208,8 +184,8 @@ public partial class Details : IDisposable
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            await OrganizationRegistry.AddNewCertificateToOrganization(Organization.Identifier, (Certificate)result.Data);
-            Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+            await OrganizationRegistry.AddNewCertificateToOrganization(StateContainer.CurrentOROrganization!.Identifier, (Certificate)result.Data);
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
@@ -237,7 +213,7 @@ public partial class Details : IDisposable
         {
             await OrganizationRegistry.UpdateCertificate((Certificate)result.Data);
         }
-        Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+        StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
     }
 
     private async Task CertificateDeleteClicked(Certificate certificate)
@@ -252,7 +228,7 @@ public partial class Details : IDisposable
         if (!result.Cancelled)
         {
             await OrganizationRegistry.DeleteCertificate(certificate.CertificateId);
-            Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
@@ -279,8 +255,8 @@ public partial class Details : IDisposable
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            await OrganizationRegistry.AddNewRoleToOrganization(Organization.Identifier, (OrganizationRole)result.Data);
-            Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+            await OrganizationRegistry.AddNewRoleToOrganization(StateContainer.CurrentOROrganization!.Identifier, (OrganizationRole)result.Data);
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
@@ -308,7 +284,7 @@ public partial class Details : IDisposable
         {
             await OrganizationRegistry.UpdateRole((OrganizationRole)result.Data);
         }
-        Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+        StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
     }
 
     private async Task RoleDeleteClicked(OrganizationRole role)
@@ -323,7 +299,7 @@ public partial class Details : IDisposable
         if (!result.Cancelled)
         {
             await OrganizationRegistry.DeleteRole(role.RoleId);
-            Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
@@ -350,8 +326,8 @@ public partial class Details : IDisposable
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            await OrganizationRegistry.AddNewServiceToOrganization(Organization.Identifier, (Service)result.Data);
-            Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+            await OrganizationRegistry.AddNewServiceToOrganization(StateContainer.CurrentOROrganization!.Identifier, (Service)result.Data);
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
@@ -379,7 +355,7 @@ public partial class Details : IDisposable
         {
             await OrganizationRegistry.UpdateService((Service)result.Data);
         }
-        Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+        StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
     }
 
     private async Task ServiceDeleteClicked(Service service)
@@ -394,7 +370,7 @@ public partial class Details : IDisposable
         if (!result.Cancelled)
         {
             await OrganizationRegistry.DeleteService(service.ServiceId);
-            Organization = await OrganizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
