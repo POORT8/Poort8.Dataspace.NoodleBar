@@ -1,0 +1,92 @@
+﻿@implements IDialogContentComponent<Poort8.Dataspace.OrganizationRegistry.Agreement>
+
+<FluentTextField Label="Type" @bind-Value="Content.Type" />
+<FluentTextField Label="Title" @bind-Value="Content.Title" />
+<FluentTextField Label="Status" @bind-Value="Content.Status" />
+<FluentDatePicker AriaLabel="Date of Signing" Value="@Content.DateOfSigning.ToDateTime(TimeOnly.MinValue)" ValueChanged=DateOfSigningChanged />
+<FluentDatePicker AriaLabel="Date of Expiry" Value="@Content.DateOfExpiry.ToDateTime(TimeOnly.MinValue)" ValueChanged=DateOfExpiryChanged />
+<FluentTextField Label="Framework" @bind-Value="Content.Framework" />
+<FluentRadioGroup Name="compliancyVerified" @bind-Value=Content.CompliancyVerified Label="Compliancy Verified">
+    <FluentRadio Value=true>Yes</FluentRadio>
+    <FluentRadio Value=false>No</FluentRadio>
+</FluentRadioGroup>
+<FluentTextField Label="Dataspace ID" @bind-Value="Content.DataspaceId" />
+<FluentInputFile @ref="@myFileUploader" 
+                 DragDropZoneVisible="false"
+                 Mode="InputFileMode.SaveToTemporaryFolder"
+                 Multiple="false"
+                 AnchorId="MyUploadButton"
+                 MaximumFileSize="@(100 * 1024 * 1024)"
+                 Accept=".pdf"
+                 OnProgressChange="@(e =>
+                     {
+                         progressPercent = e.ProgressPercent; 
+                         progressTitle = e.ProgressTitle;
+                     })"
+                 OnCompleted="@OnCompleted" />
+
+<FluentProgress Min="0" Max="100" Visible="@(progressPercent > 0)" Value="@progressPercent" />
+<FluentLabel Alignment="HorizontalAlignment.Center">
+    @progressTitle
+</FluentLabel>
+
+<FluentButton Id="MyUploadButton" Appearance="Appearance.Accent">
+    Upload contract
+</FluentButton>
+
+@if (File is not null)
+{
+    <h4>File uploaded:</h4>
+    <ul>
+        <li>
+            <b>@File.Name</b> 🔹
+            @($"{Decimal.Divide(File.Size, 1024):N} KB") 🔹
+            @File.ContentType 🔹
+            @File.ErrorMessage
+        </li>
+    </ul>
+}
+
+@code {
+    [Parameter]
+    public required Poort8.Dataspace.OrganizationRegistry.Agreement Content { get; set; }
+    FluentInputFile? myFileUploader = default!;
+    int? progressPercent;
+    string? progressTitle;
+    FluentInputFileEventArgs? File;
+
+    private void DateOfSigningChanged(DateTime? newDate)
+    {
+        if (newDate is not null) Content.DateOfSigning = DateOnly.FromDateTime((DateTime)newDate);
+    }
+
+    private void DateOfExpiryChanged(DateTime? newDate)
+    {
+        if (newDate is not null) Content.DateOfExpiry = DateOnly.FromDateTime((DateTime)newDate);
+    }
+
+    void OnCompleted(IEnumerable<FluentInputFileEventArgs> files)
+    {
+        File = files.FirstOrDefault();
+        progressPercent = myFileUploader!.ProgressPercent;
+        progressTitle = myFileUploader!.ProgressTitle;
+
+        using (FileStream? fileStream = File?.LocalFile?.OpenRead())
+        {
+            if (fileStream is not null)
+            {
+                byte[] fileBytes = new byte[fileStream.Length];
+
+                fileStream.Read(fileBytes, 0, fileBytes.Length);
+
+                Content.ContractFile = fileBytes;
+
+                using (System.Security.Cryptography.SHA256 sha256 = System.Security.Cryptography.SHA256.Create())
+                {
+                    var hashBytes = sha256.ComputeHash(Content.ContractFile);
+                    Content.HashOfSignedContract = BitConverter.ToString(hashBytes).Replace("-", "");
+                }
+            }
+        }
+    }
+}

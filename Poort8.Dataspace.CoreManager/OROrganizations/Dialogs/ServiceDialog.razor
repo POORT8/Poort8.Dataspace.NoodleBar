@@ -1,0 +1,12 @@
+﻿@implements IDialogContentComponent<Poort8.Dataspace.OrganizationRegistry.Service>
+
+<FluentTextField Label="Name" @bind-Value="Content.Name" />
+<FluentTextField Label="Description" @bind-Value="Content.Description"/>
+<FluentTextField Label="URL" @bind-Value="Content.Url"/>
+<FluentTextField Label="Logo URL" @bind-Value="Content.LogoUrl"/>
+<FluentTextField Label="Color" @bind-Value="Content.Color"/>
+
+@code {
+    [Parameter]
+    public required Poort8.Dataspace.OrganizationRegistry.Service Content { get; set; }
+}
