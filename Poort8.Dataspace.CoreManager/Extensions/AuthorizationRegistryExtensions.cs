@@ -31,49 +31,4 @@ public static class AuthorizationRegistryExtensions
             PropertyId = property.PropertyId
         };
     }
-
-    public static Product DeepCopy(this Product product)
-    {
-        return new Product(
-            product.ProductId,
-            product.Name,
-            product.Description,
-            product.Provider,
-            product.Url,
-            product.Properties.Select(p => p.DeepCopy()).ToList())
-        {
-            Features = product.Features.Select(f => f.DeepCopy()).ToList()
-        };
-    }
-
-    private static Product.ProductProperty DeepCopy(this Product.ProductProperty property)
-    {
-        return new Product.ProductProperty(
-            property.Key,
-            property.Value,
-            property.IsIdentifier)
-        {
-            PropertyId = property.PropertyId
-        };
-    }
-
-    public static Feature DeepCopy(this Feature feature)
-    {
-        return new Feature(
-            feature.FeatureId,
-            feature.Name,
-            feature.Description,
-            feature.Properties.Select(p => p.DeepCopy()).ToList());
-    }
-
-    private static Feature.FeatureProperty DeepCopy(this Feature.FeatureProperty property)
-    {
-        return new Feature.FeatureProperty(
-            property.Key,
-            property.Value,
-            property.IsIdentifier)
-        {
-            PropertyId = property.PropertyId
-        };
-    }
 }
