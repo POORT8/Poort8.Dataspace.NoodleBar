@@ -30,13 +30,14 @@ The wiki describes the following [Customer Journeys](/Poort8.Dataspace.Wiki/cust
 - Onboarding Data Owners and Consumers
 - Data Sources Becoming Independent
 - Adding providers and apps
-  The first 3 journeys comprise the launch of a first (prototype) of a data space. Journeys 4 and 5 allow data sources and Service Providers to become independent contributors to the data space.
+  
+The first 3 journeys comprise the launch of a first (prototype) of a dataspace. Journeys 4 and 5 allow data sources and Service Providers to become independent contributors to the dataspace.
 
 ### Functionalities
 
-The Dataspace Core provides services for the organization registry, the organization onboarding process, the data space manager and (optionally) an authorization registry. With the dataspace manager the data space standards can be managed, such as the requirements for authentication and onboarding, and the definition of a dataspace data model.
-Secondly (and optionally), the Dataspace initiator can provide Dataspace Adapters to Data Providers, with services to support them with mapping to the dataspace data model, and Identification, Authentication and Authorisation (IAA) according to the Dataspace standards. Dataspace Adapters are expected to be made redundant as Data Providers create independent solutions for this.
-Thirdly (and optionally), the Dataspace initiator may choose to launch the dataspace with a prototype app, using the Dataspace Prototype services for logic, IAA, and multiple front-end channels for the end user. Such a Dataspace prototype app can be removed when additional apps are added to the dataspace.
+The Dataspace Core provides services for the organization registry, the organization onboarding process, the dataspace manager and (optionally) an authorization registry. With the dataspace manager the dataspace standards can be managed, such as the requirements for authentication and onboarding, and the definition of a dataspace data model.
+Secondly (and optionally), the dataspace initiator can provide Dataspace Adapters to Data Providers, with services to support them with mapping to the dataspace data model, and Identification, Authentication and Authorisation (IAA) according to the Dataspace standards. Dataspace Adapters are expected to be made redundant as Data Providers create independent solutions for this.
+Thirdly (and optionally), the dataspace initiator may choose to launch the dataspace with a prototype app, using the Dataspace Prototype services for logic, IAA, and multiple front-end channels for the end user. Such a Dataspace Prototype app can be removed when additional apps are added to the dataspace.
 See the [architectural](/Poort8.Dataspace.Wiki/architecture.md) outline of these functions for more detail.
 
 ### Challenges
@@ -54,7 +55,7 @@ New apps can utilize the dataspace data model, authorization registry, and organ
 
 ### Disambiguation
 
-In the developing realm of federated dataspace schemes, different - sometimes ambiguous - terminologie is used. If possible, the Poort8 Dataspace follows [schema.org](https://schema.org) for terminologie and data models. For authorizations, Poort8 uses terminologie in line with [casbin.org](https://casbin.org). In the table below we provide a non-exhaustive overview of how typical terminologie is mapped to our Dataspace software.
+In the developing realm of federated dataspace schemes, different - sometimes ambiguous - terminology is used. If possible, the Poort8 dataspace follows [schema.org](https://schema.org) for terminologie and data models. For authorizations, Poort8 uses terminologie in line with [casbin.org](https://casbin.org). In the table below we provide a non-exhaustive overview of how typical terminologie is mapped to our Dataspace software.
 
 | Poort8.Dataspace | equivalent to ...                                   |
 | ---------------- | --------------------------------------------------- |
