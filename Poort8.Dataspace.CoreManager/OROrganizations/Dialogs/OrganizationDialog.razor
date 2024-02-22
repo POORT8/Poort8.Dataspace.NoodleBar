@@ -6,8 +6,8 @@
     <FluentRadio Value=@("Active")>Active</FluentRadio>
     <FluentRadio Value=@("Not Active")>Not Active</FluentRadio>
 </FluentRadioGroup>
-<FluentDatePicker AriaLabel="ADHERENCE START DATE" Value="@Content.Adherence.ValidFrom.ToDateTime()" ValueChanged=AdherenceStartDateChanged/>
-<FluentDatePicker AriaLabel="ADHERENCE END DATE" Value="@Content.Adherence.ValidUntil.ToDateTime()" ValueChanged=AdherenceEndDateChanged/>
+<FluentDatePicker AriaLabel="ADHERENCE START DATE" Value="@Content.Adherence.ValidFrom.ToDateTime(TimeOnly.MinValue)" ValueChanged=AdherenceStartDateChanged/>
+<FluentDatePicker AriaLabel="ADHERENCE END DATE" Value="@Content.Adherence.ValidUntil.ToDateTime(TimeOnly.MinValue)" ValueChanged=AdherenceEndDateChanged/>
 
 @code {
     [Parameter]

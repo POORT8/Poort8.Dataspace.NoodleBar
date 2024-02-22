@@ -1,6 +1,6 @@
 ﻿@implements IDialogContentComponent<Poort8.Dataspace.OrganizationRegistry.Certificate>
 
-<FluentDatePicker AriaLabel="Enabled From" Value="@Content.EnabledFrom.ToDateTime()" ValueChanged=EnabledFromChanged />
+<FluentDatePicker AriaLabel="Enabled From" Value="@Content.EnabledFrom.ToDateTime(TimeOnly.MinValue)" ValueChanged=EnabledFromChanged />
 <FluentInputFile @ref="@myFileUploader" 
                  DragDropZoneVisible="false"
                  Mode="InputFileMode.SaveToTemporaryFolder"
