@@ -13,8 +13,8 @@
         <PropertyColumn Property="@(o => o.Identifier)" Sortable="true" />
         <PropertyColumn Property="@(o => o.Name)" Sortable="true" />
         <PropertyColumn Property="@(o => o.Adherence.Status)" Sortable="false" />
-        <PropertyColumn Property="@(o => o.Adherence.ValidFrom)" Sortable="false" />
-        <PropertyColumn Property="@(o => o.Adherence.ValidUntil)" Sortable="false" />
+        <PropertyColumn Title="Valid From" Property="@(o => o.Adherence.ValidFrom)" Sortable="false" />
+        <PropertyColumn Title="Valid Until" Property="@(o => o.Adherence.ValidUntil)" Sortable="false" />
         <TemplateColumn Title="Actions" Align="@Align.End">
             <FluentButton Title="Details" IconEnd="@(new Icons.Regular.Size16.Info())" OnClick="@(() => DetailsClicked(@context))" />
             <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteClicked(@context))" />
