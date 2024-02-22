@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Poort8.Dataspace.AuthorizationRegistry;
 
@@ -10,9 +11,11 @@ using Poort8.Dataspace.AuthorizationRegistry;
 namespace Poort8.Dataspace.CoreManager.Migrations
 {
     [DbContext(typeof(AuthorizationContext))]
-    partial class AuthorizationContextModelSnapshot : ModelSnapshot
+    [Migration("20240222173412_IsharePolicies")]
+    partial class IsharePolicies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
