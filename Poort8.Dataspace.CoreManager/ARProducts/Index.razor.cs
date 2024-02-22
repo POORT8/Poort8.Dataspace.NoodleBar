@@ -21,11 +21,14 @@ public partial class Index : IDisposable
 
     public IQueryable<Product>? Products;
 
+    public IQueryable<Feature>? Features;
+
     protected override async Task OnInitializedAsync()
     {
         StateContainer.OnChange += StateHasChanged;
 
         Products = (await AuthorizationRegistry!.ReadProducts()).AsQueryable();
+        Features = (await AuthorizationRegistry!.ReadFeatures()).AsQueryable();
     }
 
     private async Task AddNewClicked()
@@ -78,6 +81,16 @@ public partial class Index : IDisposable
         };
 
         await DialogService.ShowDialogAsync<ProductPropertiesDialog>(product, parameters);
+    }
+
+    private async Task ProductFeatureClicked(string productId, string featureId, bool add)
+    {
+        if (add)
+            await AuthorizationRegistry.AddExistingFeatureToProduct(productId, featureId);
+        else
+            await AuthorizationRegistry.RemoveFeatureFromProduct(productId, featureId);
+
+        Products = (await AuthorizationRegistry.ReadProducts()).AsQueryable();
     }
 
     private async Task HandleSavePropertiesClicked(DialogResult result)

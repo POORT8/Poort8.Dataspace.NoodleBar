@@ -20,4 +20,16 @@
             <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteClicked(@context))" />
         </TemplateColumn>
     </FluentDataGrid>
+
+    <FluentLabel Typo="Typography.H2">Product Features</FluentLabel>
+
+    <FluentDataGrid Items="@Features">
+        <PropertyColumn Title="" Property="@(o => o.Name)" Sortable="true" />
+            @foreach (var product in Products!)
+        {
+            <TemplateColumn Title="@product.Name" Align="@Align.Center">
+                <FluentCheckbox Value="@(product.Features.Any(o => o.FeatureId == context.FeatureId))" ValueChanged="@((v) => ProductFeatureClicked(product.ProductId, context.FeatureId, v))" />
+            </TemplateColumn>
+        }
+    </FluentDataGrid>
 </FluentStack>
