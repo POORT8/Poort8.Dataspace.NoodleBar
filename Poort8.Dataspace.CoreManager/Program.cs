@@ -1,6 +1,7 @@
 using Microsoft.FluentUI.AspNetCore.Components;
 using Poort8.Dataspace.AuthorizationRegistry.Extensions;
 using Poort8.Dataspace.CoreManager.API;
+using Poort8.Dataspace.CoreManager.Extensions;
 using Poort8.Dataspace.CoreManager.Layout;
 using Poort8.Dataspace.CoreManager.Services;
 using Poort8.Dataspace.OrganizationRegistry.Extensions;
@@ -16,6 +17,7 @@ builder.Services.AddFluentUIComponents();
 //Choose between Sqlite or SqlServer
 builder.Services.AddOrganizationRegistrySqlite(options => options.ConnectionString = "Data Source=OrganizationRegistry.db");
 builder.Services.AddAuthorizationRegistrySqlite(options => options.ConnectionString = "Data Source=AuthorizationRegistry.db");
+builder.Services.AddIdentitySqlite();
 
 //builder.Services.AddOrganizationRegistrySqlServer(options => options.ConnectionString = builder.Configuration["OrganizationRegistry:ConnectionString"]);
 //builder.Services.AddAuthorizationRegistrySqlServer(options => options.ConnectionString = builder.Configuration["AuthorizationRegistry:ConnectionString"]);
@@ -36,6 +38,7 @@ if (!app.Environment.IsDevelopment())
 
 app.RunOrganizationRegistryMigrations();
 app.RunAuthorizationRegistryMigrations();
+app.RunIdentityMigrations();
 
 if (app.Environment.IsDevelopment())
 {
@@ -54,5 +57,7 @@ app.MapRazorComponents<App>()
 app.MapFeatureEndpoints();
 app.MapAuthorizationEndpoints();
 app.MapHealthChecks("/health");
+
+app.MapAdditionalIdentityEndpoints();
 
 app.Run();

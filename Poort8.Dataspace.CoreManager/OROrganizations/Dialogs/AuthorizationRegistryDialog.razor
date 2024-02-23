@@ -1,0 +1,10 @@
+﻿@implements IDialogContentComponent<Poort8.Dataspace.OrganizationRegistry.AuthorizationRegistry>
+
+<FluentTextField Label="Authorization Registry Organization ID" @bind-Value="Content.AuthorizationRegistryOrganizationId" />
+<FluentTextField Label="URL" @bind-Value="Content.AuthorizationRegistryUrl" />
+<FluentTextField Label="Dataspace ID" @bind-Value="Content.DataspaceId" />
+
+@code {
+    [Parameter]
+    public required Poort8.Dataspace.OrganizationRegistry.AuthorizationRegistry Content { get; set; }
+}

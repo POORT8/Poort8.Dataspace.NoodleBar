@@ -11,6 +11,7 @@ public class EnforceTests
 {
     private readonly ServiceProvider _serviceProvider;
     private readonly IAuthorizationRegistry _authorizationRegistry;
+    private static readonly string[] expected = ["emp", "org"];
 
     public EnforceTests()
     {
@@ -48,7 +49,7 @@ public class EnforceTests
 
         var enforcerGroup = enforcer.GetNamedGroupingPolicy("subjectGroup");
         Assert.Single(enforcerGroup);
-        Assert.Equal(new string[] { "emp", "org" }, enforcerGroup.First());
+        Assert.Equal(expected, enforcerGroup.First());
 
         var now = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
         var allowed = await enforcer.EnforceAsync(policy.UseCase, now, "org", policy.ResourceId, policy.Action);

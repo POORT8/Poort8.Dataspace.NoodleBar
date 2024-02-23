@@ -351,7 +351,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         var organizationEntities = await ReadOrganizations();
         var newGroups = GetAllSubjectGroups(organizationEntities);
-        if (newGroups.Any())
+        if (newGroups.Count > 0)
         {
             var success = await _enforcer.AddNamedGroupingPoliciesAsync("subjectGroup", newGroups);
             if (!success) throw new EnforcerException("Could not add new subject groups to enforcer.");
@@ -401,7 +401,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         var productEntities = await ReadProducts();
         var newGroups = GetAllResourceGroups(productEntities);
-        if (newGroups.Any())
+        if (newGroups.Count > 0)
         {
             var success = await _enforcer.AddNamedGroupingPoliciesAsync("resourceGroup", newGroups);
             if (!success) throw new EnforcerException("Could not add new resource groups to enforcer.");

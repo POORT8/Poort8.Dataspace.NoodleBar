@@ -25,7 +25,7 @@ public partial class Details : IDisposable
     protected override void OnInitialized()
     {
         StateContainer.OnChange += StateHasChanged;
-        Organization = StateContainer.CurrentOrganization!;
+        Organization = StateContainer.CurrentAROrganization!;
     }
 
     private async Task EditClicked()
@@ -56,7 +56,7 @@ public partial class Details : IDisposable
 
     private void BackClicked()
     {
-        StateContainer.CurrentOrganization = Organization;
+        StateContainer.CurrentAROrganization = Organization;
         NavigationManager!.NavigateTo($"/ar/organizations");
     }
 

@@ -1,4 +1,6 @@
 ﻿@rendermode InteractiveServer
+@implements IDisposable
+@inject NavigationManager NavigationManager
 
 <div class="navmenu">
     <input type="checkbox" title="Menu expand/collapse toggle" id="navmenu-toggle" class="navmenu-icon" />
@@ -9,10 +11,41 @@
             <FluentNavLink Href="/ar/organizations" Icon="@(new Icons.Regular.Size20.BuildingBankLink())" IconColor="Color.Accent">AR Organizations</FluentNavLink>
             <FluentNavLink Href="/ar/products" Icon="@(new Icons.Regular.Size20.PuzzlePieceShield())" IconColor="Color.Accent">AR Products</FluentNavLink>
             <FluentNavLink Href="/ar/policies" Icon="@(new Icons.Regular.Size20.LockShield())" IconColor="Color.Accent">AR Policies</FluentNavLink>
+            <AuthorizeView>
+                <Authorized>
+                    <FluentNavLink Href="account/manage" Icon="@(new Icons.Regular.Size20.LockShield())">@context.User.Identity?.Name</FluentNavLink>
+                    <form action="Account/Logout" method="post">
+                        <AntiforgeryToken />
+                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.PersonArrowBack())" Style="width: 100%; text-align: left;">Logout</FluentButton>
+                    </form>
+                </Authorized>
+                <NotAuthorized>
+                    <FluentNavLink Href="account/login" Icon="@(new Icons.Regular.Size20.Person())">Login</FluentNavLink>
+                </NotAuthorized>
+            </AuthorizeView>
         </FluentNavMenu>
     </nav>
 </div>
 
 @code {
     private bool expanded = true;
+    private string? currentUrl;
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
 }

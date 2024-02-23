@@ -1,0 +1,29 @@
+﻿@implements IDialogContentComponent<Poort8.Dataspace.OrganizationRegistry.OrganizationRole>
+
+<FluentTextField Label="Role" @bind-Value="Content.Role" />
+<FluentDatePicker AriaLabel="Start Date" Value="@Content.StartDate.ToDateTime(TimeOnly.MinValue)" ValueChanged=StartDateChanged/>
+<FluentDatePicker AriaLabel="End Date" Value="@Content.EndDate.ToDateTime(TimeOnly.MinValue)" ValueChanged=EndDateChanged/>
+<FluentTextField Label="LoA" @bind-Value="Content.LoA" />
+<FluentRadioGroup Name="legalAdherence" @bind-Value="Content.LegalAdherence" Label="Legal Adherence">
+    <FluentRadio Value=true>Yes</FluentRadio>
+    <FluentRadio Value=false>No</FluentRadio>
+</FluentRadioGroup>
+<FluentRadioGroup Name="compliancyVerified" @bind-Value="Content.CompliancyVerified" Label="Compliancy Verified">
+    <FluentRadio Value=true>Yes</FluentRadio>
+    <FluentRadio Value=false>No</FluentRadio>
+</FluentRadioGroup>
+
+@code {
+    [Parameter]
+    public required Poort8.Dataspace.OrganizationRegistry.OrganizationRole Content { get; set; }
+
+    private void StartDateChanged(DateTime? newDate)
+    {
+        if (newDate is not null) Content.StartDate = DateOnly.FromDateTime((DateTime)newDate);
+    }
+
+    private void EndDateChanged(DateTime? newDate)
+    {
+        if (newDate is not null) Content.EndDate = DateOnly.FromDateTime((DateTime)newDate);
+    }
+}

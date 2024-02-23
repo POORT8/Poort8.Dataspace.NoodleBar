@@ -58,7 +58,7 @@ public partial class Index : IDisposable
 
     private void DetailsClicked(Organization organization)
     {
-        StateContainer.CurrentOrganization = organization;
+        StateContainer.CurrentAROrganization = organization;
         NavigationManager.NavigateTo($"/ar/organizations/details/{organization.Identifier}");
     }
 
