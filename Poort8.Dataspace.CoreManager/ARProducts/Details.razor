@@ -5,7 +5,7 @@
 <PageTitle>AR Products</PageTitle>
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
-    <FluentLabel Typo="Typography.H1">@(Product.Name) Product Details</FluentLabel>
+    <FluentLabel Typo="Typography.H1">@(StateContainer.CurrentProduct!.Name) Product Details</FluentLabel>
 
     <FluentStack Orientation="Orientation.Horizontal" Gap="10">
         <FluentButton IconStart="@(new Icons.Regular.Size20.ArrowStepBack())" Appearance="Appearance.Accent" OnClick="@(BackClicked)">Back</FluentButton>
@@ -13,11 +13,11 @@
     </FluentStack>
 
     <div>
-        <p>Identifier: <b>@Product.ProductId</b></p>
-        <p>Name: <b>@Product.Name</b></p>
-        <p>Description: <b>@Product.Description</b></p>
-        <p>Provider: <b>@Product.Provider</b></p>
-        <p>URL: <b>@Product.Url</b></p>
+        <p>Identifier: <b>@StateContainer.CurrentProduct!.ProductId</b></p>
+        <p>Name: <b>@StateContainer.CurrentProduct.Name</b></p>
+        <p>Description: <b>@StateContainer.CurrentProduct.Description</b></p>
+        <p>Provider: <b>@StateContainer.CurrentProduct.Provider</b></p>
+        <p>URL: <b>@StateContainer.CurrentProduct.Url</b></p>
     </div>
 
     <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
@@ -25,10 +25,10 @@
     <FluentLabel Typo="Typography.H2">Features</FluentLabel>
     <FluentStack Orientation="Orientation.Horizontal">
         <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewFeatureClicked)">New Feature</FluentButton>
-        <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddExistingFeatureClicked)">Add Existing Feature</FluentButton>
+        <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddExistingFeaturesClicked)">Add Existing Feature(s)</FluentButton>
     </FluentStack>
-    
-    <FluentDataGrid Items="@Product.Features.AsQueryable()">
+
+    <FluentDataGrid Items="@StateContainer.CurrentProduct.Features.AsQueryable()">
         <PropertyColumn Title="Identifier" Property="@(e => e.FeatureId)" Sortable="true" />
         <PropertyColumn Title="Name" Property="@(e => e.Name)" Sortable="true" />
         <PropertyColumn Title="Description" Property="@(e => e.Description)" Sortable="false" />
