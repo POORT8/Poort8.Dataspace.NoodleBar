@@ -17,13 +17,13 @@ public partial class Index : IDisposable
     public required IOrganizationRegistry OrganizationRegistry { get; set; }
     [Inject]
     public required IDialogService DialogService { get; set; }
-    public IQueryable<Organization>? Organizations;
+    public IReadOnlyList<Organization>? Organizations;
 
     protected override async Task OnInitializedAsync()
     {
         StateContainer.OnChange += StateHasChanged;
 
-        Organizations = (await OrganizationRegistry!.ReadOrganizations()).AsQueryable();
+        Organizations = await OrganizationRegistry!.ReadOrganizations();
     }
 
     private async Task AddNewClicked()
@@ -50,7 +50,7 @@ public partial class Index : IDisposable
         if (!result.Cancelled && result.Data is not null)
         {
             await OrganizationRegistry.CreateOrganization((Organization)result.Data);
-            Organizations = (await OrganizationRegistry.ReadOrganizations()).AsQueryable();
+            Organizations = await OrganizationRegistry.ReadOrganizations();
         }
     }
 
@@ -72,7 +72,7 @@ public partial class Index : IDisposable
         if (!result.Cancelled)
         {
             await OrganizationRegistry.DeleteOrganization(organization.Identifier);
-            Organizations = (await OrganizationRegistry.ReadOrganizations()).AsQueryable();
+            Organizations = await OrganizationRegistry.ReadOrganizations();
         }
     }
 
