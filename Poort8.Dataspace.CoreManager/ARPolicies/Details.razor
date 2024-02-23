@@ -1,0 +1,29 @@
+﻿@page "/ar/policies/details/{Identifier}"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [Authorize]
+
+<PageTitle>AR Policies</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
+    <FluentLabel Typo="Typography.H1">@(StateContainer.CurrentPolicy!.PolicyId) Policy Details</FluentLabel>
+
+    <FluentStack Orientation="Orientation.Horizontal" Gap="10">
+        <FluentButton IconStart="@(new Icons.Regular.Size20.ArrowStepBack())" Appearance="Appearance.Accent" OnClick="@(BackClicked)">Back</FluentButton>
+        <FluentButton IconStart="@(new Icons.Regular.Size20.Edit())" Appearance="Appearance.Accent" OnClick="@(EditClicked)">Edit Policy</FluentButton>
+    </FluentStack>
+
+    <div>
+        <p>Identifier: <b>@StateContainer.CurrentPolicy!.PolicyId</b></p>
+        <p>Use Case: <b>@StateContainer.CurrentPolicy.UseCase</b></p>
+        <p>Issuer: <b>@StateContainer.CurrentPolicy.IssuerId</b></p>
+        <p>Actor: <b>@StateContainer.CurrentPolicy.SubjectId</b></p>
+        <p>Service Provider: <b>@StateContainer.CurrentPolicy.ServiceProvider</b></p>
+        <p>Type: <b>@StateContainer.CurrentPolicy.Type</b></p>
+        <p>Not Before: <b>@DateTimeOffset.FromUnixTimeSeconds(StateContainer.CurrentPolicy.NotBefore).ToLocalTime()</b></p>
+        <p>Not On Or After: <b>@DateTimeOffset.FromUnixTimeSeconds(StateContainer.CurrentPolicy.Expiration).ToLocalTime()</b></p>
+        <p>Issued At: <b>@DateTimeOffset.FromUnixTimeSeconds(StateContainer.CurrentPolicy.IssuedAt).ToLocalTime()</b></p>
+        <p>Action: <b>@StateContainer.CurrentPolicy.Action</b></p>
+        <p>Resource Identifier: <b>@StateContainer.CurrentPolicy.ResourceId</b></p>
+        <p>Resource Attribute: <b>@StateContainer.CurrentPolicy.Attribute</b></p>
+    </div>
+</FluentStack>

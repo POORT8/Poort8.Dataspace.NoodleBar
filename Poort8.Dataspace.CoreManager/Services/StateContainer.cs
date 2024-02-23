@@ -4,6 +4,7 @@ public class StateContainer
 {
     private AuthorizationRegistry.Entities.Organization? currentAROrganization;
     private AuthorizationRegistry.Entities.Product? currentProduct;
+    private AuthorizationRegistry.Entities.Policy? currentPolicy;
     private OrganizationRegistry.Organization? currentOROrganization;
 
     public AuthorizationRegistry.Entities.Organization? CurrentAROrganization
@@ -22,6 +23,16 @@ public class StateContainer
         set
         {
             currentProduct = value;
+            NotifyStateChanged();
+        }
+    }
+
+    public AuthorizationRegistry.Entities.Policy? CurrentPolicy
+    {
+        get => currentPolicy;
+        set
+        {
+            currentPolicy = value;
             NotifyStateChanged();
         }
     }
