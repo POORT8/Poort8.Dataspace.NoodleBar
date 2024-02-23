@@ -1,10 +1,10 @@
-﻿@implements IDialogContentComponent<List<Tuple<Feature, bool>>>
+﻿@implements IDialogContentComponent<List<(Feature Feature, bool Added)>>
 
 <FluentStack Orientation="Orientation.Vertical">
     @if(Content.Any())
         foreach (var entry in Content)
         {
-            <FluentCheckbox Value="@entry.Item2" ValueChanged="@((v) => ChangeFeatureState(@entry, v))">@entry.Item1.Name</FluentCheckbox>
+            <FluentCheckbox Value="@entry.Added" ValueChanged="@((v) => ChangeFeatureState(@entry, v))">@entry.Feature.Name</FluentCheckbox>
         }
     else
     {
@@ -14,14 +14,14 @@
 
 @code {
     [Parameter]
-    public required List<Tuple<Feature, bool>> Content { get; set; }
+    public required List<(Feature Feature, bool Added)> Content { get; set; }
 
     [CascadingParameter]
     public required FluentDialog Dialog { get; set; }
 
-    private void ChangeFeatureState(Tuple<Feature, bool> entry, bool add)
+    private void ChangeFeatureState((Feature Feature, bool Added) entry, bool add)
     {
-        Content[Content.IndexOf(entry)] = new(entry.Item1, add);
+        Content[Content.IndexOf(entry)] = (entry.Feature, add);
     }
 
     private async Task SaveClicked()

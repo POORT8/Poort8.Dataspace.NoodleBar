@@ -21,14 +21,14 @@ public partial class Details : IDisposable
     [Inject]
     public required IDialogService DialogService { get; set; }
     public Product Product { get; private set; } = default!;
-    public IQueryable<Feature>? Features;
+    public IReadOnlyList<Feature>? Features;
 
     protected async override void OnInitialized()
     {
         StateContainer.OnChange += StateHasChanged;
         Product = StateContainer.CurrentProduct!;
 
-        Features = (await AuthorizationRegistry!.ReadFeatures()).AsQueryable();
+        Features = await AuthorizationRegistry!.ReadFeatures();
     }
 
     private async Task EditClicked()
@@ -93,11 +93,16 @@ public partial class Details : IDisposable
 
     private async Task AddExistingFeatureClicked()
     {
+        var featureEntryList = Features?
+            .Where(f => !Product.Features.Any(pf => pf.FeatureId == f.FeatureId))
+            .Select(f => (Feature: f, Added: false))
+            .OrderBy(t => t.Feature.Name).ToList() ?? new List<(Feature, bool)>();
+
         var parameters = new DialogParameters()
         {
             Title = $"Existing Feature",
             PrimaryAction = "Add Existing Feature",
-            PrimaryActionEnabled = true,
+            PrimaryActionEnabled = featureEntryList.Count > 0,
             SecondaryAction = "Cancel",
             Width = "400px",
             TrapFocus = true,
@@ -105,12 +110,6 @@ public partial class Details : IDisposable
             ShowDismiss = false,
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleAddExistingFeatureClicked)
         };
-
-        var existingFeatureList = Features?.Where(o => !Product.Features.Any(f => f.FeatureId == o.FeatureId)) ?? Enumerable.Empty<Feature>();
-        List<Tuple<Feature, bool>> featureEntryList = [];
-
-        if (existingFeatureList.Any())
-            featureEntryList = existingFeatureList.Select(f => Tuple.Create(f, false)).OrderBy(e => e.Item1.Name).ToList();
         
         await DialogService.ShowDialogAsync<ExistingFeatureDialog>(featureEntryList, parameters);
     }
@@ -119,8 +118,8 @@ public partial class Details : IDisposable
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            foreach (var feature in ((List<Tuple<Feature, bool>>)result.Data).Where(o => o.Item2).Select(o => o.Item1))
-                await AuthorizationRegistry.AddExistingFeatureToProduct(Product.ProductId, feature.FeatureId);
+            foreach (var featureId in ((List<(Feature Feature, bool Added)>)result.Data).Where(o => o.Added).Select(o => o.Feature.FeatureId))
+                await AuthorizationRegistry.AddExistingFeatureToProduct(Product.ProductId, featureId);
 
             Product = await AuthorizationRegistry.ReadProduct(Product.ProductId) ?? Product;
         }
