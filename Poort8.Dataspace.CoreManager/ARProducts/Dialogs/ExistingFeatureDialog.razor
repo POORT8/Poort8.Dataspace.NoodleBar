@@ -1,7 +1,8 @@
-﻿@implements IDialogContentComponent<List<(Feature Feature, bool Added)>>
+﻿@using Poort8.Dataspace.AuthorizationRegistry.Entities;
+@implements IDialogContentComponent<List<(Feature Feature, bool Added)>>
 
 <FluentStack Orientation="Orientation.Vertical">
-    @if(Content.Any())
+    @if (Content.Any())
         foreach (var entry in Content)
         {
             <FluentCheckbox Value="@entry.Added" ValueChanged="@((v) => ChangeFeatureState(@entry, v))">@entry.Feature.Name</FluentCheckbox>
