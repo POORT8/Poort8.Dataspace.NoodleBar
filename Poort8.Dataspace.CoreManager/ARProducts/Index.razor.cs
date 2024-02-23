@@ -24,7 +24,6 @@ public partial class Index : IDisposable
     protected override async Task OnInitializedAsync()
     {
         StateContainer.OnChange += StateHasChanged;
-
         Products = (await AuthorizationRegistry!.ReadProducts()).AsQueryable();
     }
 

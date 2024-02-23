@@ -22,9 +22,11 @@
 
     <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
 
-    <FluentLabel Typo="Typography.H1">Features</FluentLabel>
-
-    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewFeatureClicked)">New Feature</FluentButton>
+    <FluentLabel Typo="Typography.H2">Features</FluentLabel>
+    <FluentStack Orientation="Orientation.Horizontal">
+        <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewFeatureClicked)">New Feature</FluentButton>
+        <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddExistingFeatureClicked)">Add Existing Feature</FluentButton>
+    </FluentStack>
     
     <FluentDataGrid Items="@Product.Features.AsQueryable()">
         <PropertyColumn Title="Identifier" Property="@(e => e.FeatureId)" Sortable="true" />
@@ -33,6 +35,7 @@
         <TemplateColumn Title="Actions" Align="@Align.End">
             <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => FeatureEditClicked(@context))" />
             <FluentButton Title="Properties" IconEnd="@(new Icons.Regular.Size16.TagMultiple())" OnClick="@(() => FeaturePropertiesClicked(@context))" />
+            <FluentButton Title="Remove" IconEnd="@(new Icons.Regular.Size16.PinOff())" OnClick="@(() => FeatureRemoveClicked(@context))" />
             <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => FeatureDeleteClicked(@context))" />
         </TemplateColumn>
     </FluentDataGrid>

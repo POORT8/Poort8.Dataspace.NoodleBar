@@ -21,11 +21,14 @@ public partial class Details : IDisposable
     [Inject]
     public required IDialogService DialogService { get; set; }
     public Product Product { get; private set; } = default!;
+    public IReadOnlyList<Feature>? Features;
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
         StateContainer.OnChange += StateHasChanged;
         Product = StateContainer.CurrentProduct!;
+
+        Features = await AuthorizationRegistry!.ReadFeatures();
     }
 
     private async Task EditClicked()
@@ -76,7 +79,7 @@ public partial class Details : IDisposable
         };
 
         var feature = new Feature("", "", "");
-        await DialogService.ShowDialogAsync<FeatureDialog>(feature, parameters);
+        await DialogService.ShowDialogAsync<NewFeatureDialog>(feature, parameters);
     }
 
     private async Task HandleAddNewFeatureClicked(DialogResult result)
@@ -84,6 +87,40 @@ public partial class Details : IDisposable
         if (!result.Cancelled && result.Data is not null)
         {
             await AuthorizationRegistry.AddNewFeatureToProduct(Product.ProductId, (Feature)result.Data);
+            Product = await AuthorizationRegistry.ReadProduct(Product.ProductId) ?? Product;
+        }
+    }
+
+    private async Task AddExistingFeatureClicked()
+    {
+        var featureEntryList = Features?
+            .Where(f => !Product.Features.Any(pf => pf.FeatureId == f.FeatureId))
+            .Select(f => (Feature: f, Added: false))
+            .OrderBy(t => t.Feature.Name).ToList() ?? new List<(Feature, bool)>();
+
+        var parameters = new DialogParameters()
+        {
+            Title = $"Existing Feature",
+            PrimaryAction = "Add Existing Feature",
+            PrimaryActionEnabled = featureEntryList.Count > 0,
+            SecondaryAction = "Cancel",
+            Width = "400px",
+            TrapFocus = true,
+            Modal = true,
+            ShowDismiss = false,
+            OnDialogResult = DialogService.CreateDialogCallback(this, HandleAddExistingFeatureClicked)
+        };
+        
+        await DialogService.ShowDialogAsync<ExistingFeatureDialog>(featureEntryList, parameters);
+    }
+
+    private async Task HandleAddExistingFeatureClicked(DialogResult result)
+    {
+        if (!result.Cancelled && result.Data is not null)
+        {
+            foreach (var featureId in ((List<(Feature Feature, bool Added)>)result.Data).Where(o => o.Added).Select(o => o.Feature.FeatureId))
+                await AuthorizationRegistry.AddExistingFeatureToProduct(Product.ProductId, featureId);
+
             Product = await AuthorizationRegistry.ReadProduct(Product.ProductId) ?? Product;
         }
     }
@@ -103,7 +140,7 @@ public partial class Details : IDisposable
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleEditFeatureClicked)
         };
 
-        await DialogService.ShowDialogAsync<FeatureDialog>(feature, parameters);
+        await DialogService.ShowDialogAsync<NewFeatureDialog>(feature, parameters);
     }
 
     private async Task HandleEditFeatureClicked(DialogResult result)
@@ -140,6 +177,12 @@ public partial class Details : IDisposable
             await AuthorizationRegistry.UpdateFeature((Feature)result.Data);
             Product = await AuthorizationRegistry.ReadProduct(Product.ProductId) ?? Product;
         }
+    }
+
+    private async Task FeatureRemoveClicked(Feature feature)
+    {
+        await AuthorizationRegistry.RemoveFeatureFromProduct(Product.ProductId, feature.FeatureId);
+        Product = await AuthorizationRegistry.ReadProduct(Product.ProductId) ?? Product;
     }
 
     private async Task FeatureDeleteClicked(Feature feature)
