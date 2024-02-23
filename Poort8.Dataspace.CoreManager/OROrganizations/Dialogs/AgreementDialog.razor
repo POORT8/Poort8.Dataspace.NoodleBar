@@ -1,4 +1,5 @@
-﻿@implements IDialogContentComponent<Poort8.Dataspace.OrganizationRegistry.Agreement>
+﻿@using Poort8.Dataspace.OrganizationRegistry;
+@implements IDialogContentComponent<Agreement>
 
 <FluentTextField Label="Type" @bind-Value="Content.Type" />
 <FluentTextField Label="Title" @bind-Value="Content.Title" />
@@ -11,7 +12,7 @@
     <FluentRadio Value=false>No</FluentRadio>
 </FluentRadioGroup>
 <FluentTextField Label="Dataspace ID" @bind-Value="Content.DataspaceId" />
-<FluentInputFile @ref="@myFileUploader" 
+<FluentInputFile @ref="@myFileUploader"
                  DragDropZoneVisible="false"
                  Mode="InputFileMode.SaveToTemporaryFolder"
                  Multiple="false"
@@ -20,7 +21,7 @@
                  Accept=".pdf"
                  OnProgressChange="@(e =>
                      {
-                         progressPercent = e.ProgressPercent; 
+                         progressPercent = e.ProgressPercent;
                          progressTitle = e.ProgressTitle;
                      })"
                  OnCompleted="@OnCompleted" />
@@ -49,7 +50,7 @@
 
 @code {
     [Parameter]
-    public required Poort8.Dataspace.OrganizationRegistry.Agreement Content { get; set; }
+    public required Agreement Content { get; set; }
     FluentInputFile? myFileUploader = default!;
     int? progressPercent;
     string? progressTitle;

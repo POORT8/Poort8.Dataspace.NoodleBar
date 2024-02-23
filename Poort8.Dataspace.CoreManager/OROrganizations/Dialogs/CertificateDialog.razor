@@ -1,7 +1,8 @@
-﻿@implements IDialogContentComponent<Poort8.Dataspace.OrganizationRegistry.Certificate>
+﻿@using Poort8.Dataspace.OrganizationRegistry;
+@implements IDialogContentComponent<Certificate>
 
 <FluentDatePicker AriaLabel="Enabled From" Value="@Content.EnabledFrom.ToDateTime(TimeOnly.MinValue)" ValueChanged=EnabledFromChanged />
-<FluentInputFile @ref="@myFileUploader" 
+<FluentInputFile @ref="@myFileUploader"
                  DragDropZoneVisible="false"
                  Mode="InputFileMode.SaveToTemporaryFolder"
                  Multiple="false"
@@ -10,7 +11,7 @@
                  Accept=".pem"
                  OnProgressChange="@(e =>
                      {
-                         progressPercent = e.ProgressPercent; 
+                         progressPercent = e.ProgressPercent;
                          progressTitle = e.ProgressTitle;
                      })"
                  OnCompleted="@OnCompleted" />
@@ -39,7 +40,7 @@
 
 @code {
     [Parameter]
-    public required Poort8.Dataspace.OrganizationRegistry.Certificate Content { get; set; }
+    public required Certificate Content { get; set; }
     FluentInputFile? myFileUploader = default!;
     int? progressPercent;
     string? progressTitle;

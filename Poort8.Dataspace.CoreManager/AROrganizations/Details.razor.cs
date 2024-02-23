@@ -20,12 +20,10 @@ public partial class Details : IDisposable
     public required IAuthorizationRegistry AuthorizationRegistry { get; set; }
     [Inject]
     public required IDialogService DialogService { get; set; }
-    public Organization Organization { get; private set; } = default!;
 
     protected override void OnInitialized()
     {
         StateContainer.OnChange += StateHasChanged;
-        Organization = StateContainer.CurrentAROrganization!;
     }
 
     private async Task EditClicked()
@@ -43,24 +41,27 @@ public partial class Details : IDisposable
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleEditClicked)
         };
 
-        await DialogService.ShowDialogAsync<OrganizationDialog>(Organization, parameters);
+        await DialogService.ShowDialogAsync<OrganizationDialog>(StateContainer.CurrentAROrganization!, parameters);
     }
 
     private async Task HandleEditClicked(DialogResult result)
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            Organization = await AuthorizationRegistry.UpdateOrganization((Organization)result.Data);
+            StateContainer.CurrentAROrganization = await AuthorizationRegistry.UpdateOrganization((Organization)result.Data);
+        }
+        else
+        {
+            StateContainer.CurrentAROrganization = await AuthorizationRegistry.ReadOrganization(StateContainer.CurrentAROrganization!.Identifier);
         }
     }
 
     private void BackClicked()
     {
-        StateContainer.CurrentAROrganization = Organization;
         NavigationManager!.NavigateTo($"/ar/organizations");
     }
 
-    private async Task AddNewEmployeeClicked() //TODO: To Employee component?
+    private async Task AddNewEmployeeClicked()
     {
         var parameters = new DialogParameters()
         {
@@ -83,8 +84,8 @@ public partial class Details : IDisposable
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            await AuthorizationRegistry.AddNewEmployeeToOrganization(Organization.Identifier, (Employee)result.Data);
-            Organization = await AuthorizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+            await AuthorizationRegistry.AddNewEmployeeToOrganization(StateContainer.CurrentAROrganization!.Identifier, (Employee)result.Data);
+            StateContainer.CurrentAROrganization = await AuthorizationRegistry.ReadOrganization(StateContainer.CurrentAROrganization!.Identifier);
         }
     }
 
@@ -111,8 +112,8 @@ public partial class Details : IDisposable
         if (!result.Cancelled && result.Data is not null)
         {
             await AuthorizationRegistry.UpdateEmployee((Employee)result.Data);
-            Organization = await AuthorizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
         }
+        StateContainer.CurrentAROrganization = await AuthorizationRegistry.ReadOrganization(StateContainer.CurrentAROrganization!.Identifier);
     }
 
     private async Task EmployeePropertiesClicked(Employee employee)
@@ -138,8 +139,8 @@ public partial class Details : IDisposable
         if (!result.Cancelled && result.Data is not null)
         {
             await AuthorizationRegistry.UpdateEmployee((Employee)result.Data);
-            Organization = await AuthorizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
         }
+        StateContainer.CurrentAROrganization = await AuthorizationRegistry.ReadOrganization(StateContainer.CurrentAROrganization!.Identifier);
     }
 
     private async Task EmployeeDeleteClicked(Employee employee)
@@ -154,7 +155,7 @@ public partial class Details : IDisposable
         if (!result.Cancelled)
         {
             await AuthorizationRegistry.DeleteEmployee(employee.EmployeeId);
-            Organization = await AuthorizationRegistry.ReadOrganization(Organization.Identifier) ?? Organization;
+            StateContainer.CurrentAROrganization = await AuthorizationRegistry.ReadOrganization(StateContainer.CurrentAROrganization!.Identifier);
         }
     }
 

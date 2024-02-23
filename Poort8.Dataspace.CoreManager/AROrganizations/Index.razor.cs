@@ -19,13 +19,13 @@ public partial class Index : IDisposable
     [Inject]
     public required IDialogService DialogService { get; set; }
 
-    public IQueryable<Organization>? Organizations;
+    public IReadOnlyList<Organization>? Organizations;
 
     protected override async Task OnInitializedAsync()
     {
         StateContainer.OnChange += StateHasChanged;
 
-        Organizations = (await AuthorizationRegistry!.ReadOrganizations()).AsQueryable();
+        Organizations = await AuthorizationRegistry!.ReadOrganizations();
     }
 
     private async Task AddNewClicked()
@@ -52,7 +52,7 @@ public partial class Index : IDisposable
         if (!result.Cancelled && result.Data is not null)
         {
             await AuthorizationRegistry.CreateOrganization((Organization)result.Data);
-            Organizations = (await AuthorizationRegistry.ReadOrganizations()).AsQueryable();
+            Organizations = await AuthorizationRegistry.ReadOrganizations();
         }
     }
 
@@ -85,8 +85,8 @@ public partial class Index : IDisposable
         if (!result.Cancelled && result.Data is not null)
         {
             await AuthorizationRegistry.UpdateOrganization((Organization)result.Data);
-            Organizations = (await AuthorizationRegistry.ReadOrganizations()).AsQueryable();
         }
+        Organizations = await AuthorizationRegistry.ReadOrganizations();
     }
 
     private async Task DeleteClicked(Organization organization)
@@ -101,7 +101,7 @@ public partial class Index : IDisposable
         if (!result.Cancelled)
         {
             await AuthorizationRegistry.DeleteOrganization(organization.Identifier);
-            Organizations = (await AuthorizationRegistry.ReadOrganizations()).AsQueryable();
+            Organizations = await AuthorizationRegistry.ReadOrganizations();
         }
     }
 

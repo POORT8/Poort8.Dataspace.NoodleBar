@@ -1,22 +1,23 @@
-﻿@implements IDialogContentComponent<Poort8.Dataspace.OrganizationRegistry.Organization>
+﻿@using Poort8.Dataspace.OrganizationRegistry;
+@implements IDialogContentComponent<Organization>
 
 <FluentTextField Label="Description" @bind-Value="Content.AdditionalDetails.Description" />
-<FluentTextField Label="Website URL" @bind-Value="Content.AdditionalDetails.WebsiteUrl"/>
-<FluentTextField Label="Capabilities URL" @bind-Value="Content.AdditionalDetails.CapabilitiesUrl"/>
-<FluentTextField Label="Logo URL" @bind-Value="Content.AdditionalDetails.LogoUrl"/>
-<FluentTextField Label="Company Email" @bind-Value="Content.AdditionalDetails.CompanyEmail"/>
-<FluentTextField Label="Company Phone" @bind-Value="Content.AdditionalDetails.CompanyPhone"/>
+<FluentTextField Label="Website URL" @bind-Value="Content.AdditionalDetails.WebsiteUrl" />
+<FluentTextField Label="Capabilities URL" @bind-Value="Content.AdditionalDetails.CapabilitiesUrl" />
+<FluentTextField Label="Logo URL" @bind-Value="Content.AdditionalDetails.LogoUrl" />
+<FluentTextField Label="Company Email" @bind-Value="Content.AdditionalDetails.CompanyEmail" />
+<FluentTextField Label="Company Phone" @bind-Value="Content.AdditionalDetails.CompanyPhone" />
 <FluentTextField Label="Tags" @bind-Value="Content.AdditionalDetails.Tags" />
 <FluentRadioGroup Name="publiclyPublishable" @bind-Value=Content.AdditionalDetails.PubliclyPublishable Label="Publicly Publishable">
     <FluentRadio Value=true>Yes</FluentRadio>
     <FluentRadio Value=false>No</FluentRadio>
 </FluentRadioGroup>
-<FluentTextField Label="Countries of Operation" Value=@string.Join(';', Content.AdditionalDetails.CountriesOfOperation) ValueChanged=CountriesOfOperationChanged/>
-<FluentTextField Label="Industries/Sectors" Value=@string.Join(';', Content.AdditionalDetails.Sectors) ValueChanged=SectorsChanged/>
+<FluentTextField Label="Countries of Operation" Value=@string.Join(';', Content.AdditionalDetails.CountriesOfOperation) ValueChanged=CountriesOfOperationChanged />
+<FluentTextField Label="Industries/Sectors" Value=@string.Join(';', Content.AdditionalDetails.Sectors) ValueChanged=SectorsChanged />
 
 @code {
     [Parameter]
-    public required Poort8.Dataspace.OrganizationRegistry.Organization Content { get; set; }
+    public required Organization Content { get; set; }
 
     private void CountriesOfOperationChanged(string? countries)
     {
