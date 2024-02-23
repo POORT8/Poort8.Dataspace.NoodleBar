@@ -5,10 +5,10 @@
 <FluentTextField Label="Issuer" @bind-Value="Content.IssuerId" />
 <FluentTextField Label="Actor" @bind-Value="Content.SubjectId" />
 <FluentTextField Label="Service Provider" @bind-Value="Content.ServiceProvider" />
-<FluentTextField Label="Type" @bind-Value="Content.Type" />
 <FluentDatePicker Label="Not Before" Value="@DateTimeOffset.FromUnixTimeSeconds(Content.NotBefore).LocalDateTime.Date" ValueChanged=NotBeforeChanged />
 <FluentDatePicker Label="Not On Or After" Value="@DateTimeOffset.FromUnixTimeSeconds(Content.Expiration).LocalDateTime.Date" ValueChanged=ExpirationChanged />
 <FluentTextField Label="Action" @bind-Value="Content.Action" />
+<FluentTextField Label="Resource Type" @bind-Value="Content.Type" />
 <FluentTextField Label="Resource Identifier" @bind-Value="Content.ResourceId" />
 <FluentTextField Label="Resource Attribute" @bind-Value="Content.Attribute" />
 

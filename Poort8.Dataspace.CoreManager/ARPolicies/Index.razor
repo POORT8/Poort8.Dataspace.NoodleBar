@@ -13,9 +13,11 @@
         <PropertyColumn Title="Issuer" Property="@(p => p.IssuerId)" Sortable="true" />
         <PropertyColumn Title="Actor" Property="@(p => p.SubjectId)" Sortable="true" />
         <PropertyColumn Title="Service Provider" Property="@(p => p.ServiceProvider)" Sortable="true" />
-        <PropertyColumn Property="@(p => p.Type)" Sortable="true" />
         <PropertyColumn Title="Not Before" Property="@(p => DateTimeOffset.FromUnixTimeSeconds(p.NotBefore).LocalDateTime)" Sortable="true" />
         <PropertyColumn Title="Not On Or After" Property="@(p => DateTimeOffset.FromUnixTimeSeconds(p.Expiration).LocalDateTime)" Sortable="true" />
+        <PropertyColumn Title="Resource Type" Property="@(p => p.Type)" Sortable="true" />
+        <PropertyColumn Title="Resource Identifier" Property="@(p => p.ResourceId)" Sortable="true" />
+        <PropertyColumn Title="Resource Attribute" Property="@(p => p.Attribute)" Sortable="true" />
         <TemplateColumn Title="Actions" Align="@Align.End">
             <FluentButton Title="Details" IconEnd="@(new Icons.Regular.Size16.Info())" OnClick="@(() => DetailsClicked(@context))" />
             <FluentButton Title="Properties" IconEnd="@(new Icons.Regular.Size16.TagMultiple())" OnClick="@(() => PropertiesClicked(@context))" />
