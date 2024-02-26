@@ -1,6 +1,9 @@
-﻿@rendermode InteractiveServer
+﻿@using Microsoft.FeatureManagement
+
+@rendermode InteractiveServer
 @implements IDisposable
 @inject NavigationManager NavigationManager
+@inject IFeatureManager FeatureManager
 
 <div class="navmenu">
     <input type="checkbox" title="Menu expand/collapse toggle" id="navmenu-toggle" class="navmenu-icon" />
@@ -9,8 +12,11 @@
         <FluentNavMenu Id="main-menu" Collapsible="true" Width="260" Title="Navigation menu" @bind-Expanded="expanded">
             <FluentNavLink Href="/or/organizations" Icon="@(new Icons.Regular.Size20.BuildingGovernmentSearch())" IconColor="Color.Accent">Organization register</FluentNavLink>
             <FluentNavGroup Title="Authorization register" Icon="@(new Icons.Regular.Size20.BuildingBankLink())">
-                <FluentNavLink Href="/ar/organizations" Icon="@(new Icons.Regular.Size20.Organization())" IconColor="Color.Accent">Organization mandates</FluentNavLink>
-                <FluentNavLink Href="/ar/products" Icon="@(new Icons.Regular.Size20.PuzzlePieceShield())" IconColor="Color.Accent">Products</FluentNavLink>
+                @if (!AROrgAndProdPagesDisabled)
+                {
+                    <FluentNavLink Href="/ar/organizations" Icon="@(new Icons.Regular.Size20.Organization())" IconColor="Color.Accent">Organization mandates</FluentNavLink>
+                    <FluentNavLink Href="/ar/products" Icon="@(new Icons.Regular.Size20.PuzzlePieceShield())" IconColor="Color.Accent">Products</FluentNavLink>
+                }
                 <FluentNavLink Href="/ar/policies" Icon="@(new Icons.Regular.Size20.LockShield())" IconColor="Color.Accent">Policies</FluentNavLink>
             </FluentNavGroup>
             <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
@@ -34,9 +40,12 @@
 @code {
     private bool expanded = true;
     private string? currentUrl;
+    private bool AROrgAndProdPagesDisabled;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        AROrgAndProdPagesDisabled = await FeatureManager.IsEnabledAsync(FeatureManagement.AROrgAndProdPagesDisabled);
+
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         NavigationManager.LocationChanged += OnLocationChanged;
     }
