@@ -4,8 +4,8 @@
 
 <FluentDataGrid Items="@StateContainer.CurrentOROrganization?.Roles.AsQueryable()">
     <PropertyColumn Property="@(r => r.Role)" Sortable="true" />
-    <PropertyColumn Title="Start Date" Property="@(r => r.StartDate)" Sortable="false" />
-    <PropertyColumn Title="End Date" Property="@(r => r.EndDate)" Sortable="false" />
+    <PropertyColumn Title="Start Date" Format="dd-MM-yyyy" Property="@(r => r.StartDate)" Sortable="false" />
+    <PropertyColumn Title="End Date" Format="dd-MM-yyyy" Property="@(r => r.EndDate)" Sortable="false" />
     <PropertyColumn Property="@(r => r.LoA)" Sortable="true" />
     <TemplateColumn Title="Actions" Align="@Align.End">
         <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => EditClicked(@context))" />

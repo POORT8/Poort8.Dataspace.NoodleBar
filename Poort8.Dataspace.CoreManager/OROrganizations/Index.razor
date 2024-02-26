@@ -2,10 +2,10 @@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [Authorize]
 
-<PageTitle>OR Organizations</PageTitle>
+<PageTitle>Organization register</PageTitle>
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
-    <FluentLabel Typo="Typography.H1">Organization Registry Organizations</FluentLabel>
+    <FluentLabel Typo="Typography.H1">Organization register</FluentLabel>
 
     <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Organization</FluentButton>
 
@@ -13,8 +13,8 @@
         <PropertyColumn Property="@(o => o.Identifier)" Sortable="true" />
         <PropertyColumn Property="@(o => o.Name)" Sortable="true" />
         <PropertyColumn Property="@(o => o.Adherence.Status)" Sortable="false" />
-        <PropertyColumn Title="Valid From" Property="@(o => o.Adherence.ValidFrom)" Sortable="false" />
-        <PropertyColumn Title="Valid Until" Property="@(o => o.Adherence.ValidUntil)" Sortable="false" />
+        <PropertyColumn Title="Valid From" Format="dd-MM-yyyy" Property="@(o => o.Adherence.ValidFrom)" Sortable="false" />
+        <PropertyColumn Title="Valid Until" Format="dd-MM-yyyy" Property="@(o => o.Adherence.ValidUntil)" Sortable="false" />
         <TemplateColumn Title="Actions" Align="@Align.End">
             <FluentButton Title="Details" IconEnd="@(new Icons.Regular.Size16.Info())" OnClick="@(() => DetailsClicked(@context))" />
             <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteClicked(@context))" />

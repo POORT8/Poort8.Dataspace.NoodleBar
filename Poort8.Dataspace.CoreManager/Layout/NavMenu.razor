@@ -9,15 +9,18 @@
     <input type="checkbox" title="Menu expand/collapse toggle" id="navmenu-toggle" class="navmenu-icon" />
     <label for="navmenu-toggle" class="navmenu-icon"><FluentIcon Value="@(new Icons.Regular.Size20.Navigation())" Color="Color.Fill" /></label>
     <nav class="sitenav" aria-labelledby="main-menu" onclick="document.getElementById('navmenu-toggle').click();">
-        <FluentNavMenu Id="main-menu" Collapsible="true" Width="250" Title="Navigation menu" @bind-Expanded="expanded">
-            <FluentNavLink Href="/or/organizations" Icon="@(new Icons.Regular.Size20.BuildingGovernmentSearch())" IconColor="Color.Accent">OR Organizations</FluentNavLink>
-            @if (!AROrgAndProdPagesDisabled)
-            {
-                <FluentNavLink Href="/ar/organizations" Icon="@(new Icons.Regular.Size20.BuildingBankLink())" IconColor="Color.Accent">AR Organizations</FluentNavLink>
-                <FluentNavLink Href="/ar/products" Icon="@(new Icons.Regular.Size20.PuzzlePieceShield())" IconColor="Color.Accent">AR Products</FluentNavLink>
-            }
-            <FluentNavLink Href="/ar/policies" Icon="@(new Icons.Regular.Size20.LockShield())" IconColor="Color.Accent">AR Policies</FluentNavLink>
-            <FluentNavLink Href="/auditlogs" Icon="@(new Icons.Regular.Size20.TextboxSettings())" IconColor="Color.Accent">Audit logs</FluentNavLink>
+        <FluentNavMenu Id="main-menu" Collapsible="true" Width="260" Title="Navigation menu" @bind-Expanded="expanded">
+            <FluentNavLink Href="/or/organizations" Icon="@(new Icons.Regular.Size20.BuildingGovernmentSearch())" IconColor="Color.Accent">Organization register</FluentNavLink>
+            <FluentNavGroup Title="Authorization register" Icon="@(new Icons.Regular.Size20.BuildingBankLink())">
+                @if (!AROrgAndProdPagesDisabled)
+                {
+                    <FluentNavLink Href="/ar/organizations" Icon="@(new Icons.Regular.Size20.Organization())" IconColor="Color.Accent">Organization mandates</FluentNavLink>
+                    <FluentNavLink Href="/ar/products" Icon="@(new Icons.Regular.Size20.PuzzlePieceShield())" IconColor="Color.Accent">Products</FluentNavLink>
+                }
+                <FluentNavLink Href="/ar/policies" Icon="@(new Icons.Regular.Size20.LockShield())" IconColor="Color.Accent">Policies</FluentNavLink>
+                <FluentNavLink Href="/ar/auditlogs" Icon="@(new Icons.Regular.Size20.TextboxSettings())" IconColor="Color.Accent">Audit logs</FluentNavLink>
+            </FluentNavGroup>
+            <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
             <AuthorizeView>
                 <Authorized>
                     <FluentNavLink Href="account/manage" Icon="@(new Icons.Regular.Size20.LockShield())">@context.User.Identity?.Name</FluentNavLink>
