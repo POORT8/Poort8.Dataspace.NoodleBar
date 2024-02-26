@@ -1,0 +1,41 @@
+﻿@page "/ar/organizations/details/{Identifier}"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [Authorize]
+
+<PageTitle>AR Organizations</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
+    <FluentLabel Typo="Typography.H1">@(StateContainer.CurrentAROrganization!.Name) Organization Details</FluentLabel>
+
+    <FluentStack Orientation="Orientation.Horizontal" Gap="10">
+        <FluentButton IconStart="@(new Icons.Regular.Size20.ArrowStepBack())" Appearance="Appearance.Accent" OnClick="@(BackClicked)">Back</FluentButton>
+        <FluentButton IconStart="@(new Icons.Regular.Size20.Edit())" Appearance="Appearance.Accent" OnClick="@(EditClicked)">Edit Organization</FluentButton>
+    </FluentStack>
+
+    <div>
+        <p>Identifier: <b>@StateContainer.CurrentAROrganization!.Identifier</b></p>
+        <p>Name: <b>@StateContainer.CurrentAROrganization.Name</b></p>
+        <p>URL: <b>@StateContainer.CurrentAROrganization.Url</b></p>
+        <p>Representative: <b>@StateContainer.CurrentAROrganization.Representative</b></p>
+        <p>Invoicing Contact: <b>@StateContainer.CurrentAROrganization.InvoicingContact</b></p>
+    </div>
+
+    <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+
+    <FluentLabel Typo="Typography.H1">Employees</FluentLabel>
+
+    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewEmployeeClicked)">New Employee</FluentButton>
+
+    <FluentDataGrid Items="@StateContainer.CurrentAROrganization.Employees.AsQueryable()">
+        <PropertyColumn Title="Identifier" Property="@(e => e.EmployeeId)" Sortable="true" />
+        <PropertyColumn Title="Given Name" Property="@(e => e.GivenName)" Sortable="true" />
+        <PropertyColumn Title="Familiy Name" Property="@(e => e.FamilyName)" Sortable="false" />
+        <PropertyColumn Property="@(e => e.Telephone)" Sortable="false" />
+        <PropertyColumn Property="@(e => e.Email)" Sortable="false" />
+        <TemplateColumn Title="Actions" Align="@Align.End">
+            <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => EmployeeEditClicked(@context))" />
+            <FluentButton Title="Properties" IconEnd="@(new Icons.Regular.Size16.TagMultiple())" OnClick="@(() => EmployeePropertiesClicked(@context))" />
+            <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => EmployeeDeleteClicked(@context))" />
+        </TemplateColumn>
+    </FluentDataGrid>
+</FluentStack>

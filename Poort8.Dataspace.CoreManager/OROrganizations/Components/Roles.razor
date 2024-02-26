@@ -1,0 +1,14 @@
+﻿<FluentLabel Typo="Typography.H1">Roles</FluentLabel>
+
+<FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Role</FluentButton>
+
+<FluentDataGrid Items="@StateContainer.CurrentOROrganization?.Roles.AsQueryable()">
+    <PropertyColumn Property="@(r => r.Role)" Sortable="true" />
+    <PropertyColumn Title="Start Date" Format="dd-MM-yyyy" Property="@(r => r.StartDate)" Sortable="false" />
+    <PropertyColumn Title="End Date" Format="dd-MM-yyyy" Property="@(r => r.EndDate)" Sortable="false" />
+    <PropertyColumn Property="@(r => r.LoA)" Sortable="true" />
+    <TemplateColumn Title="Actions" Align="@Align.End">
+        <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => EditClicked(@context))" />
+        <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteClicked(@context))" />
+    </TemplateColumn>
+</FluentDataGrid>

@@ -15,7 +15,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
 
             modelBuilder.Entity("FeatureProduct", b =>
                 {
@@ -271,6 +271,9 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Attribute")
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("Expiration")
                         .HasColumnType("INTEGER");
 
@@ -288,8 +291,14 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ServiceProvider")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("SubjectId")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Type")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UseCase")

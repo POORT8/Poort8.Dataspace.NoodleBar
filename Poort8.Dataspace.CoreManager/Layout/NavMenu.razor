@@ -1,0 +1,63 @@
+﻿@using Microsoft.FeatureManagement
+
+@rendermode InteractiveServer
+@implements IDisposable
+@inject NavigationManager NavigationManager
+@inject IFeatureManager FeatureManager
+
+<div class="navmenu">
+    <input type="checkbox" title="Menu expand/collapse toggle" id="navmenu-toggle" class="navmenu-icon" />
+    <label for="navmenu-toggle" class="navmenu-icon"><FluentIcon Value="@(new Icons.Regular.Size20.Navigation())" Color="Color.Fill" /></label>
+    <nav class="sitenav" aria-labelledby="main-menu" onclick="document.getElementById('navmenu-toggle').click();">
+        <FluentNavMenu Id="main-menu" Collapsible="true" Width="260" Title="Navigation menu" @bind-Expanded="expanded">
+            <FluentNavLink Href="/or/organizations" Icon="@(new Icons.Regular.Size20.BuildingGovernmentSearch())" IconColor="Color.Accent">Organization register</FluentNavLink>
+            <FluentNavGroup Title="Authorization register" Icon="@(new Icons.Regular.Size20.BuildingBankLink())">
+                @if (!AROrgAndProdPagesDisabled)
+                {
+                    <FluentNavLink Href="/ar/organizations" Icon="@(new Icons.Regular.Size20.Organization())" IconColor="Color.Accent">Organization mandates</FluentNavLink>
+                    <FluentNavLink Href="/ar/products" Icon="@(new Icons.Regular.Size20.PuzzlePieceShield())" IconColor="Color.Accent">Products</FluentNavLink>
+                }
+                <FluentNavLink Href="/ar/policies" Icon="@(new Icons.Regular.Size20.LockShield())" IconColor="Color.Accent">Policies</FluentNavLink>
+            </FluentNavGroup>
+            <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+            <AuthorizeView>
+                <Authorized>
+                    <FluentNavLink Href="account/manage" Icon="@(new Icons.Regular.Size20.LockShield())">@context.User.Identity?.Name</FluentNavLink>
+                    <form action="Account/Logout" method="post">
+                        <AntiforgeryToken />
+                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.PersonArrowBack())" Style="width: 100%; text-align: left;">Logout</FluentButton>
+                    </form>
+                </Authorized>
+                <NotAuthorized>
+                    <FluentNavLink Href="account/login" Icon="@(new Icons.Regular.Size20.Person())">Login</FluentNavLink>
+                </NotAuthorized>
+            </AuthorizeView>
+        </FluentNavMenu>
+    </nav>
+</div>
+
+@code {
+    private bool expanded = true;
+    private string? currentUrl;
+    private bool AROrgAndProdPagesDisabled;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AROrgAndProdPagesDisabled = await FeatureManager.IsEnabledAsync(FeatureManagement.AROrgAndProdPagesDisabled);
+
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

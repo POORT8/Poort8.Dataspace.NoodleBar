@@ -24,6 +24,28 @@ public class OrganizationContext : DbContext
 
         modelBuilder.Entity<Organization>()
             .ToTable("OrOrganization")
+            .OwnsOne(o => o.AdditionalDetails);
+
+        modelBuilder.Entity<Organization>()
+            .ToTable("OrOrganization")
+            .HasMany(o => o.AuthorizationRegistries)
+            .WithOne()
+            .IsRequired();
+
+        modelBuilder.Entity<Organization>()
+            .ToTable("OrOrganization")
+            .HasMany(o => o.Agreements)
+            .WithOne()
+            .IsRequired();
+
+        modelBuilder.Entity<Organization>()
+            .ToTable("OrOrganization")
+            .HasMany(o => o.Certificates)
+            .WithOne()
+            .IsRequired();
+
+        modelBuilder.Entity<Organization>()
+            .ToTable("OrOrganization")
             .HasMany(o => o.Roles)
             .WithOne()
             .IsRequired();
@@ -31,6 +53,12 @@ public class OrganizationContext : DbContext
         modelBuilder.Entity<Organization>()
             .ToTable("OrOrganization")
             .HasMany(o => o.Properties)
+            .WithOne()
+            .IsRequired();
+
+        modelBuilder.Entity<Organization>()
+            .ToTable("OrOrganization")
+            .HasMany(o => o.Services)
             .WithOne()
             .IsRequired();
     }

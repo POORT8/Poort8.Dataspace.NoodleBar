@@ -368,3 +368,6 @@ FodyWeavers.xsd
 **/OrganizationRegistry.db
 **/OrganizationRegistry.db-shm
 **/OrganizationRegistry.db-wal
+**/Identity.db
+**/Identity.db-shm
+**/Identity.db-wal

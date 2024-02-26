@@ -1,0 +1,12 @@
+﻿<FluentLabel Typo="Typography.H1">Authorization Registers</FluentLabel>
+
+<FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Authorization Register</FluentButton>
+
+<FluentDataGrid Items="@StateContainer.CurrentOROrganization?.AuthorizationRegistries.AsQueryable()">
+    <PropertyColumn Title="Authorization Register Organization" Property="@(a => a.AuthorizationRegistryOrganizationId)" Sortable="true" />
+    <PropertyColumn Title="URL" Property="@(a => a.AuthorizationRegistryUrl)" Sortable="true" />
+    <TemplateColumn Title="Actions" Align="@Align.End">
+        <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => EditClicked(@context))" />
+        <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteClicked(@context))" />
+    </TemplateColumn>
+</FluentDataGrid>
