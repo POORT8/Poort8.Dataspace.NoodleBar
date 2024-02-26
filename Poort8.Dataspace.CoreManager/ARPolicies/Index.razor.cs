@@ -43,7 +43,7 @@ public partial class Index : IDisposable
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleAddNewClicked)
         };
 
-        var policy = new Policy(string.Empty, string.Empty, string.Empty, string.Empty)
+        var policy = new Policy("iSHARE" ,string.Empty, string.Empty, string.Empty, string.Empty)
         {
             NotBefore = ((DateTimeOffset)DateTimeOffset.Now.Date).ToUnixTimeSeconds(),
             Expiration = ((DateTimeOffset)DateTimeOffset.Now.AddYears(1).Date).ToUnixTimeSeconds()

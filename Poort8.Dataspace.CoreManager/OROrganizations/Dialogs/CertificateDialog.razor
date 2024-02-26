@@ -1,7 +1,7 @@
 ﻿@using Poort8.Dataspace.OrganizationRegistry;
 @implements IDialogContentComponent<Certificate>
 
-<FluentDatePicker AriaLabel="Enabled From" Value="@Content.EnabledFrom.ToDateTime(TimeOnly.MinValue)" ValueChanged=EnabledFromChanged />
+<FluentDatePicker Label="Enabled From" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@Content.EnabledFrom.ToDateTime(TimeOnly.MinValue)" ValueChanged=EnabledFromChanged />
 <FluentInputFile @ref="@myFileUploader"
                  DragDropZoneVisible="false"
                  Mode="InputFileMode.SaveToTemporaryFolder"

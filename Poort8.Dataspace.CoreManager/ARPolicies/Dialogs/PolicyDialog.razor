@@ -5,8 +5,8 @@
 <FluentTextField Label="Issuer" @bind-Value="Content.IssuerId" />
 <FluentTextField Label="Actor" @bind-Value="Content.SubjectId" />
 <FluentTextField Label="Service Provider" @bind-Value="Content.ServiceProvider" />
-<FluentDatePicker Label="Not Before" Value="@DateTimeOffset.FromUnixTimeSeconds(Content.NotBefore).LocalDateTime.Date" ValueChanged=NotBeforeChanged />
-<FluentDatePicker Label="Not On Or After" Value="@DateTimeOffset.FromUnixTimeSeconds(Content.Expiration).LocalDateTime.Date" ValueChanged=ExpirationChanged />
+<FluentDatePicker Label="Not Before" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@DateTimeOffset.FromUnixTimeSeconds(Content.NotBefore).LocalDateTime.Date" ValueChanged=NotBeforeChanged />
+<FluentDatePicker Label="Not On Or After" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@DateTimeOffset.FromUnixTimeSeconds(Content.Expiration).LocalDateTime.Date" ValueChanged=ExpirationChanged />
 <FluentTextField Label="Action" @bind-Value="Content.Action" />
 <FluentTextField Label="Resource Type" @bind-Value="Content.Type" />
 <FluentTextField Label="Resource Identifier" @bind-Value="Content.ResourceId" />

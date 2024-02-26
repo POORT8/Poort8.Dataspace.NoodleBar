@@ -2,8 +2,8 @@
 @implements IDialogContentComponent<OrganizationRole>
 
 <FluentTextField Label="Role" @bind-Value="Content.Role" />
-<FluentDatePicker AriaLabel="Start Date" Value="@Content.StartDate.ToDateTime(TimeOnly.MinValue)" ValueChanged=StartDateChanged />
-<FluentDatePicker AriaLabel="End Date" Value="@Content.EndDate.ToDateTime(TimeOnly.MinValue)" ValueChanged=EndDateChanged />
+<FluentDatePicker Label="Start Date" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@Content.StartDate.ToDateTime(TimeOnly.MinValue)" ValueChanged=StartDateChanged />
+<FluentDatePicker Label="End Date" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@Content.EndDate.ToDateTime(TimeOnly.MinValue)" ValueChanged=EndDateChanged />
 <FluentTextField Label="LoA" @bind-Value="Content.LoA" />
 <FluentRadioGroup Name="legalAdherence" @bind-Value="Content.LegalAdherence" Label="Legal Adherence">
     <FluentRadio Value=true>Yes</FluentRadio>
