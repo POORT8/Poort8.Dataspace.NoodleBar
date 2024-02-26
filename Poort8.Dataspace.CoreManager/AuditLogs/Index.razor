@@ -1,0 +1,18 @@
+﻿@page "/auditlogs"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [Authorize]
+
+<PageTitle>Audit logs</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
+    <FluentLabel Typo="Typography.H1">Audit logs</FluentLabel>
+    <FluentDataGrid Items="@EntityAuditRecords?.AsQueryable()">
+        <PropertyColumn Title="Identifier" Property="@(o => o.Id)" Sortable="true" />
+        <PropertyColumn Property="@(o => o.Timestamp)" Sortable="true" />
+        <PropertyColumn Property="@(o => o.User)" Sortable="true" />
+        <PropertyColumn Property="@(o => o.EntityType)" Sortable="true" />
+        <PropertyColumn Property="@(o => o.EntityId)" Sortable="true" />
+        <PropertyColumn Property="@(o => o.Action)" Sortable="true" />
+        <PropertyColumn Property="@(o => o.Entity)" Sortable="true" />
+    </FluentDataGrid>
+</FluentStack>

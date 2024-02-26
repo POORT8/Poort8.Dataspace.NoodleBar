@@ -17,6 +17,7 @@
                 <FluentNavLink Href="/ar/products" Icon="@(new Icons.Regular.Size20.PuzzlePieceShield())" IconColor="Color.Accent">AR Products</FluentNavLink>
             }
             <FluentNavLink Href="/ar/policies" Icon="@(new Icons.Regular.Size20.LockShield())" IconColor="Color.Accent">AR Policies</FluentNavLink>
+            <FluentNavLink Href="/auditlogs" Icon="@(new Icons.Regular.Size20.TextboxSettings())" IconColor="Color.Accent">Audit logs</FluentNavLink>
             <AuthorizeView>
                 <Authorized>
                     <FluentNavLink Href="account/manage" Icon="@(new Icons.Regular.Size20.LockShield())">@context.User.Identity?.Name</FluentNavLink>
