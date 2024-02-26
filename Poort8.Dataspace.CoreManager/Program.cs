@@ -1,5 +1,7 @@
+using Microsoft.FeatureManagement;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Poort8.Dataspace.AuthorizationRegistry.Extensions;
+using Poort8.Dataspace.CoreManager;
 using Poort8.Dataspace.CoreManager.API;
 using Poort8.Dataspace.CoreManager.Extensions;
 using Poort8.Dataspace.CoreManager.Layout;
@@ -25,6 +27,8 @@ builder.Services.AddIdentitySqlite();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHealthChecks();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddFeatureManagement();
 
 builder.Services.AddScoped<StateContainer>();
 
@@ -54,8 +58,14 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.MapFeatureEndpoints();
-app.MapAuthorizationEndpoints();
+var featureManager = app.Services.GetRequiredService<IFeatureManager>();
+var apiDisabled = await featureManager.IsEnabledAsync(FeatureManagement.ApiDisabled);
+if (!apiDisabled)
+{
+    app.MapFeatureEndpoints();
+    app.MapAuthorizationEndpoints();
+}
+
 app.MapHealthChecks("/health");
 
 app.MapAdditionalIdentityEndpoints();

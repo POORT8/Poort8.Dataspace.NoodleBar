@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 @using Poort8.Dataspace.CoreManager.Identity
+@using Microsoft.FeatureManagement
 
 @inject UserManager<User> UserManager
 @inject IUserStore<User> UserStore
@@ -14,26 +15,35 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IFeatureManager FeatureManager
 
 <PageTitle>Register</PageTitle>
 
 <h1>Register</h1>
 
 <StatusMessage Message="@Message" />
-<EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-    <DataAnnotationsValidator />
-    <hr />
-    <FluentValidationSummary class="text-danger" role="alert" />
-    <FluentStack Orientation="Orientation.Vertical">
-        <FluentTextField Name="Input.Email" @bind-Value="Input.Email" AutoComplete="username" Required="true" Placeholder="name@example.com" Label="Email" Style="width: 100%" />
-        <FluentValidationMessage For="() => Input.Email" class="text-danger" />
-        <FluentTextField type="password" Name="Input.Password" @bind-Value="Input.Password" AutoComplete="current-password" Required="true" Placeholder="password" Label="Password" Style="width: 100%" />
-        <FluentValidationMessage For="() => Input.Password" class="text-danger" />
-        <FluentTextField type="password" Name="Input.ConfirmPassword" @bind-Value="Input.ConfirmPassword" AutoComplete="new-password" Required="true" Placeholder="password" Label="Confirm Password" Style="width: 100%" />
-        <FluentValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
-        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="width: 100%">Register</FluentButton>
-    </FluentStack>
-</EditForm>
+
+@if (RegisterNewUsersDisabled)
+{
+    <p>Registering new users is currently disabled.</p>
+}
+else
+{
+    <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+        <DataAnnotationsValidator />
+        <hr />
+        <FluentValidationSummary class="text-danger" role="alert" />
+        <FluentStack Orientation="Orientation.Vertical">
+            <FluentTextField Name="Input.Email" @bind-Value="Input.Email" AutoComplete="username" Required="true" Placeholder="name@example.com" Label="Email" Style="width: 100%" />
+            <FluentValidationMessage For="() => Input.Email" class="text-danger" />
+            <FluentTextField type="password" Name="Input.Password" @bind-Value="Input.Password" AutoComplete="current-password" Required="true" Placeholder="password" Label="Password" Style="width: 100%" />
+            <FluentValidationMessage For="() => Input.Password" class="text-danger" />
+            <FluentTextField type="password" Name="Input.ConfirmPassword" @bind-Value="Input.ConfirmPassword" AutoComplete="new-password" Required="true" Placeholder="password" Label="Confirm Password" Style="width: 100%" />
+            <FluentValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+            <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="width: 100%">Register</FluentButton>
+        </FluentStack>
+    </EditForm>
+}
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;
@@ -45,6 +55,12 @@
     private string? ReturnUrl { get; set; }
 
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+    private bool RegisterNewUsersDisabled;
+
+    protected override async Task OnInitializedAsync()
+    {
+        RegisterNewUsersDisabled = await FeatureManager.IsEnabledAsync(FeatureManagement.RegisterNewUsersDisabled);
+    }
 
     public async Task RegisterUser(EditContext editContext)
     {
