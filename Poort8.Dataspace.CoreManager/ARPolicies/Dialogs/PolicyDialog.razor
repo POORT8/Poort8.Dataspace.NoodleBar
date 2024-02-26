@@ -1,0 +1,28 @@
+﻿@using Poort8.Dataspace.AuthorizationRegistry.Entities;
+@implements IDialogContentComponent<Policy>
+
+<FluentTextField Label="Use Case" @bind-Value="Content.UseCase" />
+<FluentTextField Label="Issuer" @bind-Value="Content.IssuerId" />
+<FluentTextField Label="Actor" @bind-Value="Content.SubjectId" />
+<FluentTextField Label="Service Provider" @bind-Value="Content.ServiceProvider" />
+<FluentDatePicker Label="Not Before" Value="@DateTimeOffset.FromUnixTimeSeconds(Content.NotBefore).LocalDateTime.Date" ValueChanged=NotBeforeChanged />
+<FluentDatePicker Label="Not On Or After" Value="@DateTimeOffset.FromUnixTimeSeconds(Content.Expiration).LocalDateTime.Date" ValueChanged=ExpirationChanged />
+<FluentTextField Label="Action" @bind-Value="Content.Action" />
+<FluentTextField Label="Resource Type" @bind-Value="Content.Type" />
+<FluentTextField Label="Resource Identifier" @bind-Value="Content.ResourceId" />
+<FluentTextField Label="Resource Attribute" @bind-Value="Content.Attribute" />
+
+@code {
+    [Parameter]
+    public required Policy Content { get; set; }
+
+    private void NotBeforeChanged(DateTime? newDate)
+    {
+        if (newDate is not null) Content.NotBefore = ((DateTimeOffset)newDate).ToUnixTimeSeconds();
+    }
+
+    private void ExpirationChanged(DateTime? newDate)
+    {
+        if (newDate is not null) Content.Expiration = ((DateTimeOffset)newDate).ToUnixTimeSeconds();
+    }
+}

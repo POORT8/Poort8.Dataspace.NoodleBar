@@ -11,8 +11,12 @@ public class Policy
     public long Expiration { get; set; } = DateTimeOffset.Now.AddYears(1).ToUnixTimeSeconds();
     public string IssuerId { get; set; }
     public string SubjectId { get; set; }
-    public string ResourceId { get; set; }
+    public string? ServiceProvider { get; set; }
     public string Action { get; set; }
+    public string ResourceId { get; set; }
+    public string? Type { get; set; }
+    public string? Attribute { get; set; }
+
     public ICollection<PolicyProperty> Properties { get; set; } = new List<PolicyProperty>();
 
     public Policy(string issuerId, string subjectId, string resourceId, string action)
