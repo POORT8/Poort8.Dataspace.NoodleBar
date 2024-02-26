@@ -2,36 +2,23 @@
 @implements IDialogContentComponent<Feature>
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
-@foreach (var property in Content.Properties)
-{
-    <FluentStack Orientation="Orientation.Horizontal" Gap="10">  
-        <FluentTextField Label="Key" @bind-Value="property.Key" />
-        <FluentTextField Label="Value" @bind-Value="property.Value" />
-        <FluentCheckbox Label="Identifier" @bind-Value="property.IsIdentifier" />
-        <FluentButton IconStart="@(new Icons.Regular.Size20.Delete())" Appearance="Appearance.Outline" OnClick="@( () => Content.Properties.Remove(property))"></FluentButton>
-    </FluentStack>
-}
+    @foreach (var property in Content.Properties)
+    {
+        <FluentStack Orientation="Orientation.Horizontal" Gap="10">
+            <FluentTextField Label="Key" @bind-Value="property.Key" />
+            <FluentTextField Label="Value" @bind-Value="property.Value" />
+            <FluentCheckbox Label="Identifier" @bind-Value="property.IsIdentifier" />
+            <FluentButton IconStart="@(new Icons.Regular.Size20.Delete())" Appearance="Appearance.Outline" OnClick="@(() => Content.Properties.Remove(property))"></FluentButton>
+        </FluentStack>
+    }
 
-<FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Property</FluentButton>
+    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Property</FluentButton>
 </FluentStack>
 
 @code {
     //TODO: Use @typeparam and create a generic dialog component for Properties?
     [Parameter]
     public required Feature Content { get; set; }
-
-    [CascadingParameter]
-    public required FluentDialog Dialog { get; set; }
-
-    private async Task SaveClicked()
-    {
-        await Dialog.CloseAsync(Content);
-    }
-
-    private async Task CancelClicked()
-    {
-        await Dialog.CancelAsync();
-    }
 
     private void AddNewClicked()
     {

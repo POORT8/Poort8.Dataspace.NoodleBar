@@ -19,12 +19,12 @@ public partial class Index : IDisposable
     [Inject]
     public required IDialogService DialogService { get; set; }
 
-    public IQueryable<Product>? Products;
+    public IReadOnlyList<Product>? Products;
 
     protected override async Task OnInitializedAsync()
     {
         StateContainer.OnChange += StateHasChanged;
-        Products = (await AuthorizationRegistry!.ReadProducts()).AsQueryable();
+        Products = await AuthorizationRegistry!.ReadProducts();
     }
 
     private async Task AddNewClicked()
@@ -51,7 +51,7 @@ public partial class Index : IDisposable
         if (!result.Cancelled && result.Data is not null)
         {
             await AuthorizationRegistry.CreateProduct((Product)result.Data);
-            Products = (await AuthorizationRegistry.ReadProducts()).AsQueryable();
+            Products = await AuthorizationRegistry.ReadProducts();
         }
     }
 
@@ -84,8 +84,8 @@ public partial class Index : IDisposable
         if (!result.Cancelled && result.Data is not null)
         {
             await AuthorizationRegistry.UpdateProduct((Product)result.Data);
-            Products = (await AuthorizationRegistry.ReadProducts()).AsQueryable();
         }
+        Products = await AuthorizationRegistry.ReadProducts();
     }
 
     private async Task DeleteClicked(Product product)
@@ -100,7 +100,7 @@ public partial class Index : IDisposable
         if (!result.Cancelled)
         {
             await AuthorizationRegistry.DeleteProduct(product.ProductId);
-            Products = (await AuthorizationRegistry.ReadProducts()).AsQueryable();
+            Products = await AuthorizationRegistry.ReadProducts();
         }
     }
 

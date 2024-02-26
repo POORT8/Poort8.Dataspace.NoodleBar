@@ -9,7 +9,7 @@
 
     <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Organization</FluentButton>
 
-    <FluentDataGrid Items="@Organizations">
+    <FluentDataGrid Items="@Organizations?.AsQueryable()">
         <PropertyColumn Property="@(o => o.Identifier)" Sortable="true" />
         <PropertyColumn Property="@(o => o.Name)" Sortable="true" />
         <PropertyColumn Property="@(o => o.Url)" Sortable="false" />
