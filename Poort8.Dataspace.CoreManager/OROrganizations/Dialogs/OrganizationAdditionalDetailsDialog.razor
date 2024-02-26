@@ -12,8 +12,8 @@
     <FluentRadio Value=true>Yes</FluentRadio>
     <FluentRadio Value=false>No</FluentRadio>
 </FluentRadioGroup>
-<FluentTextField Label="Countries of Operation" Value=@string.Join(';', Content.AdditionalDetails.CountriesOfOperation) ValueChanged=CountriesOfOperationChanged />
-<FluentTextField Label="Industries/Sectors" Value=@string.Join(';', Content.AdditionalDetails.Sectors) ValueChanged=SectorsChanged />
+<FluentTextField Label="Countries of Operation" Value=@string.Join(',', Content.AdditionalDetails.CountriesOfOperation) ValueChanged=CountriesOfOperationChanged />
+<FluentTextField Label="Industries/Sectors" Value=@string.Join(',', Content.AdditionalDetails.Sectors) ValueChanged=SectorsChanged />
 
 @code {
     [Parameter]
@@ -21,11 +21,11 @@
 
     private void CountriesOfOperationChanged(string? countries)
     {
-        Content.AdditionalDetails.CountriesOfOperation = countries?.Split(';').ToList() ?? new();
+        Content.AdditionalDetails.CountriesOfOperation = countries?.Split(',').ToList() ?? new();
     }
 
     private void SectorsChanged(string? sectors)
     {
-        Content.AdditionalDetails.Sectors = sectors?.Split(';').ToList() ?? new();
+        Content.AdditionalDetails.Sectors = sectors?.Split(',').ToList() ?? new();
     }
 }

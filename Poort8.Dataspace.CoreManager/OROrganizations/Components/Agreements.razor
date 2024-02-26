@@ -6,8 +6,8 @@
     <PropertyColumn Property="@(a => a.Type)" Sortable="true" />
     <PropertyColumn Property="@(a => a.Title)" Sortable="true" />
     <PropertyColumn Property="@(a => a.Status)" Sortable="true" />
-    <PropertyColumn Title="Date of Signing" Property="@(a => a.DateOfSigning)" Sortable="false" />
-    <PropertyColumn Title="Date of Expiry" Property="@(a => a.DateOfExpiry)" Sortable="false" />
+    <PropertyColumn Title="Date of Signing" Property="@(a => a.DateOfSigning.ToString("dd-MM-yyyy"))" Sortable="false" />
+    <PropertyColumn Title="Date of Expiry" Property="@(a => a.DateOfExpiry.ToString("dd-MM-yyyy"))" Sortable="false" />
     <TemplateColumn Title="Actions" Align="@Align.End">
         <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => EditClicked(@context))" />
         <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteClicked(@context))" />

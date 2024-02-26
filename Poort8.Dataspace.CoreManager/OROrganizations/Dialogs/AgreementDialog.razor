@@ -4,8 +4,8 @@
 <FluentTextField Label="Type" @bind-Value="Content.Type" />
 <FluentTextField Label="Title" @bind-Value="Content.Title" />
 <FluentTextField Label="Status" @bind-Value="Content.Status" />
-<FluentDatePicker AriaLabel="Date of Signing" Value="@Content.DateOfSigning.ToDateTime(TimeOnly.MinValue)" ValueChanged=DateOfSigningChanged />
-<FluentDatePicker AriaLabel="Date of Expiry" Value="@Content.DateOfExpiry.ToDateTime(TimeOnly.MinValue)" ValueChanged=DateOfExpiryChanged />
+<FluentDatePicker Label="Date of Signing" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@Content.DateOfSigning.ToDateTime(TimeOnly.MinValue)" ValueChanged=DateOfSigningChanged />
+<FluentDatePicker Label="Date of Expiry" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@Content.DateOfExpiry.ToDateTime(TimeOnly.MinValue)" ValueChanged=DateOfExpiryChanged />
 <FluentTextField Label="Framework" @bind-Value="Content.Framework" />
 <FluentRadioGroup Name="compliancyVerified" @bind-Value=Content.CompliancyVerified Label="Compliancy Verified">
     <FluentRadio Value=true>Yes</FluentRadio>

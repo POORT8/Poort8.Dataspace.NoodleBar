@@ -19,8 +19,8 @@ public partial class AuthorizationRegistries
     {
         var parameters = new DialogParameters()
         {
-            Title = $"New Authorization Registry",
-            PrimaryAction = "Add New Authorization Registry",
+            Title = $"New Authorization Register",
+            PrimaryAction = "Add New Authorization Register",
             PrimaryActionEnabled = true,
             SecondaryAction = "Cancel",
             Width = "400px",
@@ -47,7 +47,7 @@ public partial class AuthorizationRegistries
     {
         var parameters = new DialogParameters()
         {
-            Title = $"Edit Authorization Registry",
+            Title = $"Edit Authorization Register",
             PrimaryAction = "Save Changes",
             PrimaryActionEnabled = true,
             SecondaryAction = "Cancel",
@@ -76,7 +76,7 @@ public partial class AuthorizationRegistries
             $"Are you sure you want to delete {authorizationRegistry.AuthorizationRegistryOrganizationId}?",
             "Delete",
             "Cancel",
-            "Delete Authorization Registry");
+            "Delete Authorization Register");
 
         var result = await dialog.Result;
         if (!result.Cancelled)

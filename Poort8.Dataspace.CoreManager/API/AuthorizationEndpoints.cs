@@ -8,7 +8,7 @@ public static class AuthorizationEndpoints
     //TODO: Add tests and exception handling
     public static void MapAuthorizationEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/authorization").WithTags("Authorization Registry");
+        var group = routes.MapGroup("/api/authorization").WithTags("Authorization Register");
 
         group.MapGet("/enforce", async (
              string subject,
