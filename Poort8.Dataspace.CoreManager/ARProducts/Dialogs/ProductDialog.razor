@@ -1,0 +1,13 @@
+﻿@using Poort8.Dataspace.AuthorizationRegistry.Entities;
+@implements IDialogContentComponent<Product>
+
+<FluentTextField Label="Identifier" @bind-Value="Content.ProductId" Disabled=@(!string.IsNullOrEmpty(Content.ProductId))/>
+<FluentTextField Label="Name" @bind-Value="Content.Name" />
+<FluentTextField Label="Description" @bind-Value="Content.Description" />
+<FluentTextField Label="Provider" @bind-Value="Content.Provider" />
+<FluentTextField Label="Url" @bind-Value="Content.Url" />
+
+@code {
+    [Parameter]
+    public required Product Content { get; set; }
+}

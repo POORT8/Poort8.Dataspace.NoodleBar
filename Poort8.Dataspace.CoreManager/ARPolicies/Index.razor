@@ -1,0 +1,27 @@
+﻿@page "/ar/policies"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [Authorize]
+
+<PageTitle>Authorization register - Policies</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
+    <FluentLabel Typo="Typography.H1">Authorization register - Policies</FluentLabel>
+
+    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Policy</FluentButton>
+
+    <FluentDataGrid Items="@Policies?.AsQueryable()">
+        <PropertyColumn Title="Issuer" Property="@(p => p.IssuerId)" Sortable="true" />
+        <PropertyColumn Title="Actor" Property="@(p => p.SubjectId)" Sortable="true" />
+        <PropertyColumn Title="Service Provider" Property="@(p => p.ServiceProvider)" Sortable="true" />
+        <PropertyColumn Title="Not Before" Format="dd-MM-yyyy" Property="@(p => DateTimeOffset.FromUnixTimeSeconds(p.NotBefore).LocalDateTime)" Sortable="true" />
+        <PropertyColumn Title="Not On Or After" Format="dd-MM-yyyy" Property="@(p => DateTimeOffset.FromUnixTimeSeconds(p.Expiration).LocalDateTime)" Sortable="true" />
+        <PropertyColumn Title="Resource Type" Property="@(p => p.Type)" Sortable="true" />
+        <PropertyColumn Title="Resource Identifier" Property="@(p => p.ResourceId)" Sortable="true" />
+        <PropertyColumn Title="Resource Attribute" Property="@(p => p.Attribute)" Sortable="true" />
+        <TemplateColumn Title="Actions" Align="@Align.End">
+            <FluentButton Title="Details" IconEnd="@(new Icons.Regular.Size16.Info())" OnClick="@(() => DetailsClicked(@context))" />
+            <FluentButton Title="Properties" IconEnd="@(new Icons.Regular.Size16.TagMultiple())" OnClick="@(() => PropertiesClicked(@context))" />
+            <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteClicked(@context))" />
+        </TemplateColumn>
+    </FluentDataGrid>
+</FluentStack>

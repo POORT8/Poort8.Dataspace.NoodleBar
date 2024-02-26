@@ -4,18 +4,26 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	<CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+	<AnalysisMode>Minimum</AnalysisMode>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
+	<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
+	<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.1.1" />
+	<PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.4.1" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.2" />
+	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
+	  <PrivateAssets>all</PrivateAssets>
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -26,5 +34,4 @@
     <ProjectReference Include="..\Poort8.Dataspace.OrganizationRegistry.SqlServerMigrations\Poort8.Dataspace.OrganizationRegistry.SqlServerMigrations.csproj" />
     <ProjectReference Include="..\Poort8.Dataspace.OrganizationRegistry\Poort8.Dataspace.OrganizationRegistry.csproj" />
   </ItemGroup>
-
 </Project>

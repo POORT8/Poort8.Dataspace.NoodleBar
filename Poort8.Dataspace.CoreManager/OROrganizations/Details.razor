@@ -1,0 +1,36 @@
+﻿@page "/or/organizations/details/{Identifier}"
+@using Poort8.Dataspace.CoreManager.OROrganizations.Components;
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [Authorize]
+
+<PageTitle>OR Organizations</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
+    <FluentLabel Typo="Typography.H1">@(StateContainer.CurrentOROrganization!.Name) Organization Details</FluentLabel>
+
+    <FluentStack Orientation="Orientation.Horizontal" Gap="10">
+        <FluentButton IconStart="@(new Icons.Regular.Size20.ArrowStepBack())" Appearance="Appearance.Accent" OnClick="@(BackClicked)">Back</FluentButton>
+        <FluentButton IconStart="@(new Icons.Regular.Size20.Edit())" Appearance="Appearance.Accent" OnClick="@(EditOrganizationClicked)">Edit Organization</FluentButton>
+    </FluentStack>
+
+    <div>
+        <p>Identifier: <b>@StateContainer.CurrentOROrganization!.Identifier</b></p>
+        <p>Name: <b>@StateContainer.CurrentOROrganization.Name</b></p>
+        <p>Status: <b>@StateContainer.CurrentOROrganization.Adherence.Status</b></p>
+        <p>Valid From: <b>@StateContainer.CurrentOROrganization.Adherence.ValidFrom.ToString("dd-MM-yyyy")</b></p>
+        <p>Valid Until: <b>@StateContainer.CurrentOROrganization.Adherence.ValidUntil.ToString("dd-MM-yyyy")</b></p>
+    </div>
+
+    <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+    <AdditionalDetails/>
+    <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+    <Agreements/>
+    <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+    <AuthorizationRegistries/>
+    <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+    <Certificates/>
+    <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+    <Roles/>
+    <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+    <Services/>
+</FluentStack>

@@ -1,0 +1,13 @@
+﻿@using Poort8.Dataspace.AuthorizationRegistry.Entities;
+@implements IDialogContentComponent<Organization>
+
+<FluentTextField Label="Identifier" @bind-Value="Content.Identifier" Disabled=@(!string.IsNullOrEmpty(Content.Identifier)) />
+<FluentTextField Label="Name" @bind-Value="Content.Name" />
+<FluentTextField Label="Url" @bind-Value="Content.Url" />
+<FluentTextField Label="Representative" @bind-Value="Content.Representative" />
+<FluentTextField Label="Invoicing Contact" @bind-Value="Content.InvoicingContact" />
+
+@code {
+    [Parameter]
+    public required Organization Content { get; set; }
+}

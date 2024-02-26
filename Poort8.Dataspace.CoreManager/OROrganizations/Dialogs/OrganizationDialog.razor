@@ -1,0 +1,26 @@
+﻿@using Poort8.Dataspace.OrganizationRegistry;
+@implements IDialogContentComponent<Organization>
+
+<FluentTextField Label="Identifier" @bind-Value="Content.Identifier" Disabled=@(!string.IsNullOrEmpty(Content.Identifier)) />
+<FluentTextField Label="Name" @bind-Value="Content.Name" />
+<FluentRadioGroup Name="status" @bind-Value="Content.Adherence.Status" Label="Status">
+    <FluentRadio Value=@("Active")>Active</FluentRadio>
+    <FluentRadio Value=@("Not Active")>Not Active</FluentRadio>
+</FluentRadioGroup>
+<FluentDatePicker Label="Valid From" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@Content.Adherence.ValidFrom.ToDateTime(TimeOnly.MinValue)" ValueChanged=AdherenceStartDateChanged />
+<FluentDatePicker Label="Valid To" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@Content.Adherence.ValidUntil.ToDateTime(TimeOnly.MinValue)" ValueChanged=AdherenceEndDateChanged />
+
+@code {
+    [Parameter]
+    public required Organization Content { get; set; }
+
+    private void AdherenceStartDateChanged(DateTime? newDate)
+    {
+        if (newDate is not null) Content.Adherence.ValidFrom = DateOnly.FromDateTime((DateTime)newDate);
+    }
+
+    private void AdherenceEndDateChanged(DateTime? newDate)
+    {
+        if (newDate is not null) Content.Adherence.ValidUntil = DateOnly.FromDateTime((DateTime)newDate);
+    }
+}
