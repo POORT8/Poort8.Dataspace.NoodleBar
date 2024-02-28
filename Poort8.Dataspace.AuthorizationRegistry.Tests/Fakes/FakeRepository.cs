@@ -209,12 +209,12 @@ public class FakeRepository : IRepository
         return Task.FromResult(policies);
     }
 
-    public Task<IReadOnlyList<EntityAuditRecord>> ReadEntityAuditRecords()
+    public Task<IReadOnlyList<EntityAuditRecord>> ReadEntityAuditRecords(int numberOfRecords = 100)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IReadOnlyList<EnforceAuditRecord>> ReadEnforceAuditRecords()
+    public Task<IReadOnlyList<EnforceAuditRecord>> ReadEnforceAuditRecords(int numberOfRecords = 100)
     {
         throw new NotImplementedException();
     }

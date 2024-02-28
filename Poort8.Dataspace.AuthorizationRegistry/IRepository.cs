@@ -44,7 +44,7 @@ public interface IRepository
     Task<bool> DeletePolicy(string policyId);
 
     //Audit
-    Task<IReadOnlyList<EntityAuditRecord>> ReadEntityAuditRecords();
-    Task<IReadOnlyList<EnforceAuditRecord>> ReadEnforceAuditRecords();
+    Task<IReadOnlyList<EntityAuditRecord>> ReadEntityAuditRecords(int numberOfRecords = 100);
+    Task<IReadOnlyList<EnforceAuditRecord>> ReadEnforceAuditRecords(int numberOfRecords = 100);
     Task<EnforceAuditRecord> CreateEnforceAuditRecord(string user, string useCase, string subjectId, string resourceId, string action, bool allow, List<Policy>? explains = null);
 }

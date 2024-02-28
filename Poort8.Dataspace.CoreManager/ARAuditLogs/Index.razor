@@ -1,0 +1,36 @@
+﻿@page "/ar/auditlogs"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [Authorize]
+
+<PageTitle>Authorization register - Audit logs</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
+    <FluentLabel Typo="Typography.H1">Authorization register - Audit logs</FluentLabel>
+
+    <FluentTabs>
+        <FluentTab Label="Entity logs" Id="entityLogsTab">
+            <FluentDataGrid Items="@EntityAuditRecords?.AsQueryable()">
+                <PropertyColumn Title="Identifier" Property="@(o => o.Id)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.Timestamp)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.User)" Sortable="true" />
+                <PropertyColumn Title="Entity type" Property="@(o => o.EntityType)" Sortable="true" />
+                <PropertyColumn Title="Entity identifier" Property="@(o => o.EntityId)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.Action)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.Entity)" Sortable="true" />
+            </FluentDataGrid>
+        </FluentTab>
+        <FluentTab Label="Enforce logs" Id="enforceLogsTab">
+            <FluentDataGrid Items="@EnforceAuditRecords?.AsQueryable()">
+                <PropertyColumn Title="Identifier" Property="@(o => o.Id)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.Timestamp)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.User)" Sortable="true" />
+                <PropertyColumn Title="Use case" Property="@(o => o.UseCase)" Sortable="true" />
+                <PropertyColumn Title="Subject" Property="@(o => o.SubjectId)" Sortable="true" />
+                <PropertyColumn Title="Resource" Property="@(o => o.ResourceId)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.Action)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.Allow)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.Explain)" Sortable="true" />
+            </FluentDataGrid>
+        </FluentTab>
+    </FluentTabs>
+</FluentStack>

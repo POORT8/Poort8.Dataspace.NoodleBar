@@ -7,9 +7,13 @@
 <FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
     <FluentLabel Typo="Typography.H1">Authorization register - Organization mandates</FluentLabel>
 
-    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Organization</FluentButton>
+    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)" Disabled=@NoOrganizations>Add Organization</FluentButton>
+    @if (NoOrganizations)
+    {
+        <FluentLabel>The Organization Registry contains no organizations which you can add</FluentLabel>
+    }
 
-    <FluentDataGrid Items="@Organizations?.AsQueryable()">
+    <FluentDataGrid Items="@AROrganizations?.AsQueryable()">
         <PropertyColumn Property="@(o => o.Identifier)" Sortable="true" />
         <PropertyColumn Property="@(o => o.Name)" Sortable="true" />
         <PropertyColumn Property="@(o => o.Url)" Sortable="false" />

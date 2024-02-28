@@ -1,9 +1,12 @@
+using AROrganization = Poort8.Dataspace.AuthorizationRegistry.Entities.Organization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
+using OROrganization = Poort8.Dataspace.OrganizationRegistry.Organization;
 using Poort8.Dataspace.AuthorizationRegistry;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using Poort8.Dataspace.CoreManager.AROrganizations.Dialogs;
 using Poort8.Dataspace.CoreManager.Services;
+using Poort8.Dataspace.OrganizationRegistry;
 
 namespace Poort8.Dataspace.CoreManager.AROrganizations;
 
@@ -15,25 +18,35 @@ public partial class Index : IDisposable
     [Inject]
     public required NavigationManager NavigationManager { get; set; }
     [Inject]
+    public required IOrganizationRegistry OrganizationRegistry { get; set; }
+    [Inject]
     public required IAuthorizationRegistry AuthorizationRegistry { get; set; }
     [Inject]
     public required IDialogService DialogService { get; set; }
 
-    public IReadOnlyList<Organization>? Organizations;
+    public IReadOnlyList<OROrganization>? OROrganizations;
+    public IReadOnlyList<AROrganization>? AROrganizations;
+
+    private bool NoOrganizations => !(OROrganizations?.Count > 0);
 
     protected override async Task OnInitializedAsync()
     {
         StateContainer.OnChange += StateHasChanged;
+        await FetchOrganizations();
+    }
 
-        Organizations = await AuthorizationRegistry!.ReadOrganizations();
+    private async Task FetchOrganizations()
+    {
+        AROrganizations = await AuthorizationRegistry!.ReadOrganizations();
+        OROrganizations = (await OrganizationRegistry!.ReadOrganizations()).Where(o => !AROrganizations.Any(a => a.Identifier == o.Identifier)).OrderBy(o => o.Name).ToList();
     }
 
     private async Task AddNewClicked()
     {
         var parameters = new DialogParameters()
         {
-            Title = $"New Organization",
-            PrimaryAction = "Add New Organization",
+            Title = $"Add Organization",
+            PrimaryAction = "Add Organization",
             PrimaryActionEnabled = true,
             SecondaryAction = "Cancel",
             Width = "400px",
@@ -43,26 +56,26 @@ public partial class Index : IDisposable
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleAddNewClicked)
         };
 
-        var organization = new Organization("", "", "", "", "");
-        await DialogService.ShowDialogAsync<OrganizationDialog>(organization, parameters);
+        var organization = new AROrganization(OROrganizations![0].Identifier, OROrganizations![0].Name, "", "", "");
+        await DialogService.ShowDialogAsync<AddOrganizationDialog>((organization, OROrganizations), parameters);
     }
 
     private async Task HandleAddNewClicked(DialogResult result)
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            await AuthorizationRegistry.CreateOrganization((Organization)result.Data);
-            Organizations = await AuthorizationRegistry.ReadOrganizations();
+            await AuthorizationRegistry.CreateOrganization((((AROrganization AROrganization, IReadOnlyList<OROrganization>))result.Data).AROrganization);
+            await FetchOrganizations();
         }
     }
 
-    private void DetailsClicked(Organization organization)
+    private void DetailsClicked(AROrganization organization)
     {
         StateContainer.CurrentAROrganization = organization;
         NavigationManager.NavigateTo($"/ar/organizations/details/{organization.Identifier}");
     }
 
-    private async Task PropertiesClicked(Organization organization)
+    private async Task PropertiesClicked(AROrganization organization)
     {
         var parameters = new DialogParameters()
         {
@@ -84,12 +97,12 @@ public partial class Index : IDisposable
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            await AuthorizationRegistry.UpdateOrganization((Organization)result.Data);
+            await AuthorizationRegistry.UpdateOrganization((AROrganization)result.Data);
         }
-        Organizations = await AuthorizationRegistry.ReadOrganizations();
+        await FetchOrganizations();
     }
 
-    private async Task DeleteClicked(Organization organization)
+    private async Task DeleteClicked(AROrganization organization)
     {
         var dialog = await DialogService.ShowConfirmationAsync(
             $"Are you sure you want to delete {organization.Name}?",
@@ -101,7 +114,7 @@ public partial class Index : IDisposable
         if (!result.Cancelled)
         {
             await AuthorizationRegistry.DeleteOrganization(organization.Identifier);
-            Organizations = await AuthorizationRegistry.ReadOrganizations();
+            await FetchOrganizations();
         }
     }
 

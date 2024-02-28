@@ -619,18 +619,24 @@ public class Repository : IRepository
 
     #endregion
 
-    public async Task<IReadOnlyList<EntityAuditRecord>> ReadEntityAuditRecords()
+    public async Task<IReadOnlyList<EntityAuditRecord>> ReadEntityAuditRecords(int numberOfRecords = 100)
     {
         using var context = _contextFactory.CreateDbContext();
 
-        return await context.EntityAuditRecords.ToListAsync();
+        return await context.EntityAuditRecords
+            .OrderByDescending(r => r.Timestamp)
+            .Take(numberOfRecords)
+            .ToListAsync();
     }
 
-    public async Task<IReadOnlyList<EnforceAuditRecord>> ReadEnforceAuditRecords()
+    public async Task<IReadOnlyList<EnforceAuditRecord>> ReadEnforceAuditRecords(int numberOfRecords = 100)
     {
         using var context = _contextFactory.CreateDbContext();
 
-        return await context.EnforceAuditRecords.ToListAsync();
+        return await context.EnforceAuditRecords
+            .OrderByDescending(r => r.Timestamp)
+            .Take(numberOfRecords)
+            .ToListAsync();
     }
 
     public async Task<EnforceAuditRecord> CreateEnforceAuditRecord(string user, string useCase, string subjectId, string resourceId, string action, bool allow, List<Policy>? explains = null)
