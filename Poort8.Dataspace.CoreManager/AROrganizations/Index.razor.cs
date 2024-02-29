@@ -1,12 +1,11 @@
-using AROrganization = Poort8.Dataspace.AuthorizationRegistry.Entities.Organization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
-using OROrganization = Poort8.Dataspace.OrganizationRegistry.Organization;
 using Poort8.Dataspace.AuthorizationRegistry;
-using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using Poort8.Dataspace.CoreManager.AROrganizations.Dialogs;
 using Poort8.Dataspace.CoreManager.Services;
 using Poort8.Dataspace.OrganizationRegistry;
+using AROrganization = Poort8.Dataspace.AuthorizationRegistry.Entities.Organization;
+using OROrganization = Poort8.Dataspace.OrganizationRegistry.Organization;
 
 namespace Poort8.Dataspace.CoreManager.AROrganizations;
 
