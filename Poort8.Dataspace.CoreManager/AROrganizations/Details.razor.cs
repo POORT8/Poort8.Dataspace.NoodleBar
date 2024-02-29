@@ -41,7 +41,7 @@ public partial class Details : IDisposable
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleEditClicked)
         };
 
-        await DialogService.ShowDialogAsync<OrganizationDialog>(StateContainer.CurrentAROrganization!, parameters);
+        await DialogService.ShowDialogAsync<EditOrganizationDialog>(StateContainer.CurrentAROrganization!, parameters);
     }
 
     private async Task HandleEditClicked(DialogResult result)
