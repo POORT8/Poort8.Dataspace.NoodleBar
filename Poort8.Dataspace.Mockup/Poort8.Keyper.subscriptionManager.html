@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Organisation, Employees, and Subscriptions</title>
+    <script>
+        function addField(containerId, fieldName, options) {
+            var container = document.getElementById(containerId);
+            var newFieldSet = document.createElement('fieldset');
+
+            var selectOptions = options.map(option => `<option value="${option}">${option}</option>`).join('');
+
+            newFieldSet.innerHTML = `
+                <label for="${fieldName}Name">Identifier Name:</label>
+                <select name="${fieldName}Name[]">${selectOptions}</select><br>
+                
+                <label for="${fieldName}Value">Identifier Value:</label>
+                <input type="text" name="${fieldName}Value[]"><br>
+            `;
+            
+            container.appendChild(newFieldSet);
+        }
+
+        function addEmployee() {
+            addPerson('employeeContainer', 'employeeIdentifier', ['EORI', 'Telegram Chat ID', 'API Key Hash']);
+        }
+
+        function addPerson(containerId, fieldName, options) {
+            var container = document.getElementById(containerId);
+            var newFieldSet = document.createElement('fieldset');
+            
+            var selectOptions = options.map(option => `<option value="${option}">${option}</option>`).join('');
+
+            newFieldSet.innerHTML = `
+                <legend>Employee</legend>
+                <label for="givenName">First Name:</label>
+                <input type="text" name="givenName[]"><br>
+                
+                <label for="familyName">Last Name:</label>
+                <input type="text" name="familyName[]"><br>
+
+                <label for="telephone">Telephone:</label>
+                <input type="text" name="telephone[]"><br>
+
+                <label for="email">Email:</label>
+                <input type="text" name="email[]"><br>
+
+                <fieldset id="${fieldName}Container">
+                    <legend>Employee Identifiers</legend>
+                    <label for="${fieldName}Name">Identifier Name:</label>
+                    <select name="${fieldName}Name[]">${selectOptions}</select><br>
+                    
+                    <label for="${fieldName}Value">Identifier Value:</label>
+                    <input type="text" name="${fieldName}Value[]"><br>
+                </fieldset>
+
+                <button type="button" onclick="addField('${fieldName}Container', '${fieldName}', ${JSON.stringify(options)})">Add More Identifier</button>
+            `;
+            
+            container.appendChild(newFieldSet);
+        }
+
+        function addSubscription() {
+            var container = document.getElementById('subscriptionContainer');
+            var newFieldSet = document.createElement('fieldset');
+
+            newFieldSet.innerHTML = `
+                <label for="subscription">Subscription:</label>
+                <select name="subscription[]">
+                    <option value="Trial">Trial</option>
+                    <option value="Premium">Premium</option>
+                    <option value="CMA">CMA</option>
+                    <option value="Free">Free</option>
+                    <option value="All channels">All channels</option>
+                    <option value="Chat-only">Chat-only</option>
+                </select><br>
+            `;
+
+            container.appendChild(newFieldSet);
+        }
+    </script>
+</head>
+<body>
+
+<h1>Create Organisation, Employees, and Subscriptions</h1>
+
+<form>
+    <!-- Organisation Section -->
+    <fieldset>
+        <legend>Organisation</legend>
+        <label for="orgName">Organization Name:</label>
+        <input type="text" id="orgName" name="orgName"><br>
+        
+        <label for="domainName">Domain Name:</label>
+        <input type="text" id="domainName" name="domainName"><br>
+
+        <fieldset id="orgIdentifierContainer">
+            <legend>Organisation Identifiers</legend>
+            <label for="orgIdentifierName">Identifier Name:</label>
+            <select name="orgIdentifierName[]">
+                <option value="EORI">EORI</option>
+                <option value="Telegram Chat ID">Telegram Chat ID</option>
+                <option value="API Key Hash">API Key Hash</option>
+            </select><br>
+            
+            <label for="orgIdentifierValue">Identifier Value:</label>
+            <input type="text" name="orgIdentifierValue[]"><br>
+        </fieldset>
+        
+        <button type="button" onclick="addField('orgIdentifierContainer', 'orgIdentifier', ['EORI', 'Telegram Chat ID', 'API Key Hash'])">Add More Identifier</button>
+    </fieldset>
+
+    <!-- Employee Section -->
+    <fieldset id="employeeContainer">
+        <legend>Employees</legend>
+        <!-- Dynamic employee fields will go here -->
+    </fieldset>
+
+    <button type="button" onclick="addEmployee()">Add Employee</button>
+
+    <!-- Subscription Section -->
+    <fieldset id="subscriptionContainer">
+        <legend>Subscriptions</legend>
+        <!-- Dynamic subscription fields will go here -->
+    </fieldset>
+
+    <button type="button" onclick="addSubscription()">Add Subscription</button>
+
+    <input type="submit" value="Save Organisation, Employees, and Subscriptions">
+</form>
+
+</body>
+</html>
