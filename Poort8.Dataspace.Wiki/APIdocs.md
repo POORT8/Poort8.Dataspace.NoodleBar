@@ -1,5 +1,7 @@
 # Noodlebar API Documentation
 
+**Status: 🚧 Draft**
+
 ## Introduction
 
 The Noodlebar API, part of the Poort8 Dataspace, is designed to provide a structured platform for data providers, applications, and data consumers within the Basic Data Infrastructure (BDI). This API facilitates the creation of dataspaces that follow certain principles, enabling an initial setup for dataspace initiators.
