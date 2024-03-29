@@ -12,7 +12,7 @@ For all deployed data services, authentication and authorization process is expl
 
 ## Postman Collection
 
-Access the Noodlebar Postman Collection for practical examples of API requests. Find it here: [Poort8.Noodlebar.postman_collection.json](/Poort8.Noodlebar.postman_collection.json)
+Access the Noodlebar Postman Collection for practical examples of API requests. Find it here: [Poort8.Noodlebar.postman_collection.json](Poort8.Noodlebar.postman_collection.json)
 
 ## Authentication
 
