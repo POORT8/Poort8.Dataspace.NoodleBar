@@ -1,0 +1,710 @@
+{
+	"info": {
+		"_postman_id": "1baad6bc-aa24-4e4a-b74e-a858e4e8b23a",
+		"name": "Poort8.Noodlebar",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14161223",
+		"_collection_link": "https://poort8.postman.co/workspace/Poort8~7a6e5661-2a26-478e-8bf8-0a844a032ef7/collection/14161223-1baad6bc-aa24-4e4a-b74e-a858e4e8b23a?action=share&source=collection_link&creator=14161223"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Option 1. Fetch iSHARE/connect/token",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const jwsRequest = {\r",
+									"    url: \"https://scheme.isharetest.net/testing/generate-jws\",\r",
+									"    method: \"POST\",\r",
+									"    header: {\r",
+									"        alg: \"RS256\",\r",
+									"        typ: \"JWT\",\r",
+									"        aud: pm.environment.get(\"ARIdentifier\"),\r",
+									"        iss: pm.environment.get(\"ARIdentifier\"),\r",
+									"        x5c: pm.environment.get(\"IsharePublicKey\")\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'application/text',\r",
+									"        raw: pm.environment.get(\"IsharePrivateKey\")\r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest(jwsRequest, function (err, res) {\r",
+									"    if (err) {\r",
+									"        console.log(\"error: \" + err);\r",
+									"    } else {\r",
+									"        pm.expect(res).to.have.property('code', 200);\r",
+									"        pm.environment.set('current.client_assertion', res.text());\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonBody = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify response\", function () {\r",
+									"    pm.expect(jsonBody.access_token).to.not.null;\r",
+									"    pm.expect(jsonBody.token_type).to.eql(\"Bearer\");\r",
+									"    pm.expect(jsonBody.expires_in).to.eql(3600);\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"token\", jsonBody.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "iSHARE",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "EU.EORI.NL888888881",
+									"type": "text"
+								},
+								{
+									"key": "client_assertion_type",
+									"value": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+									"type": "text"
+								},
+								{
+									"key": "client_assertion",
+									"value": "{{client_assertion}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/ishare/connect/token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"ishare",
+								"connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Option 2. Fetch login token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonBody = pm.response.json();",
+									"",
+									"pm.test(\"Verify 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Verify response\", function () {",
+									"    pm.expect(jsonBody.access_token).to.not.null;",
+									"    pm.expect(jsonBody.token_type).to.eql(\"Bearer\");",
+									"    pm.expect(jsonBody.expires_in).to.eql(3600);",
+									"});",
+									"",
+									"pm.environment.set(\"token\", jsonBody.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"userPassword123\",\n  \"twoFactorCode\": \"123456\",\n  \"twoFactorRecoveryCode\": null\n}\n",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login?useCookies=true&useSessionCookies=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							],
+							"query": [
+								{
+									"key": "useCookies",
+									"value": "true"
+								},
+								{
+									"key": "useSessionCookies",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Untitled Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"value\": \"reference #/components/schemas/MicrosoftAspNetCoreIdentityDataLoginRequest not found in the OpenAPI spec\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/login?useCookies=<boolean>&useSessionCookies=<boolean>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"login"
+									],
+									"query": [
+										{
+											"key": "useCookies",
+											"value": "<boolean>"
+										},
+										{
+											"key": "useSessionCookies",
+											"value": "<boolean>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"value\": \"reference #/components/schemas/MicrosoftAspNetCoreAuthenticationBearerTokenAccessTokenResponse not found in the OpenAPI spec\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Authorization",
+			"item": [
+				{
+					"name": "Option 1. Enforce",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enforce?subject=<string>&resource=<string>&action=<string>&useCase=<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enforce"
+							],
+							"query": [
+								{
+									"key": "subject",
+									"value": "<string>",
+									"description": "(Required) "
+								},
+								{
+									"key": "resource",
+									"value": "<string>",
+									"description": "(Required) "
+								},
+								{
+									"key": "action",
+									"value": "<string>",
+									"description": "(Required) "
+								},
+								{
+									"key": "useCase",
+									"value": "<string>",
+									"description": "(Required) "
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/enforce?subject=<string>&resource=<string>&action=<string>&useCase=<string>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"enforce"
+									],
+									"query": [
+										{
+											"key": "subject",
+											"value": "<string>",
+											"description": "(Required) "
+										},
+										{
+											"key": "resource",
+											"value": "<string>",
+											"description": "(Required) "
+										},
+										{
+											"key": "action",
+											"value": "<string>",
+											"description": "(Required) "
+										},
+										{
+											"key": "useCase",
+											"value": "<string>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"allowed\": \"<boolean>\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Option 2. Explained-enforce",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/explained-enforce?subject=<string>&resource=<string>&action=<string>&useCase=<string>&issuer=<string>&serviceProvider=<string>&type=<string>&attribute=<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"explained-enforce"
+							],
+							"query": [
+								{
+									"key": "subject",
+									"value": "<string>",
+									"description": "(Required) "
+								},
+								{
+									"key": "resource",
+									"value": "<string>",
+									"description": "(Required) "
+								},
+								{
+									"key": "action",
+									"value": "<string>",
+									"description": "(Required) "
+								},
+								{
+									"key": "useCase",
+									"value": "<string>",
+									"description": "(Required) "
+								},
+								{
+									"key": "issuer",
+									"value": "<string>",
+									"description": "(Required) "
+								},
+								{
+									"key": "serviceProvider",
+									"value": "<string>",
+									"description": "(Required) "
+								},
+								{
+									"key": "type",
+									"value": "<string>",
+									"description": "(Required) "
+								},
+								{
+									"key": "attribute",
+									"value": "<string>",
+									"description": "(Required) "
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/explained-enforce?subject=<string>&resource=<string>&action=<string>&useCase=<string>&issuer=<string>&serviceProvider=<string>&type=<string>&attribute=<string>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"explained-enforce"
+									],
+									"query": [
+										{
+											"key": "subject",
+											"value": "<string>",
+											"description": "(Required) "
+										},
+										{
+											"key": "resource",
+											"value": "<string>",
+											"description": "(Required) "
+										},
+										{
+											"key": "action",
+											"value": "<string>",
+											"description": "(Required) "
+										},
+										{
+											"key": "useCase",
+											"value": "<string>",
+											"description": "(Required) "
+										},
+										{
+											"key": "issuer",
+											"value": "<string>",
+											"description": "(Required) "
+										},
+										{
+											"key": "serviceProvider",
+											"value": "<string>",
+											"description": "(Required) "
+										},
+										{
+											"key": "type",
+											"value": "<string>",
+											"description": "(Required) "
+										},
+										{
+											"key": "attribute",
+											"value": "<string>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"allowed\": \"<boolean>\",\n  \"explainPolicies\": [\n    {\n      \"policyId\": \"<string>\",\n      \"useCase\": \"<string>\",\n      \"issuedAt\": \"<long>\",\n      \"notBefore\": \"<long>\",\n      \"expiration\": \"<long>\",\n      \"issuerId\": \"<string>\",\n      \"subjectId\": \"<string>\",\n      \"serviceProvider\": \"<string>\",\n      \"action\": \"<string>\",\n      \"resourceId\": \"<string>\",\n      \"type\": \"<string>\",\n      \"attribute\": \"<string>\",\n      \"license\": \"<string>\",\n      \"properties\": [\n        {\n          \"propertyId\": \"<string>\",\n          \"key\": \"<string>\",\n          \"value\": \"<string>\",\n          \"isIdentifier\": \"<boolean>\"\n        },\n        {\n          \"propertyId\": \"<string>\",\n          \"key\": \"<string>\",\n          \"value\": \"<string>\",\n          \"isIdentifier\": \"<boolean>\"\n        }\n      ]\n    },\n    {\n      \"policyId\": \"<string>\",\n      \"useCase\": \"<string>\",\n      \"issuedAt\": \"<long>\",\n      \"notBefore\": \"<long>\",\n      \"expiration\": \"<long>\",\n      \"issuerId\": \"<string>\",\n      \"subjectId\": \"<string>\",\n      \"serviceProvider\": \"<string>\",\n      \"action\": \"<string>\",\n      \"resourceId\": \"<string>\",\n      \"type\": \"<string>\",\n      \"attribute\": \"<string>\",\n      \"license\": \"<string>\",\n      \"properties\": [\n        {\n          \"propertyId\": \"<string>\",\n          \"key\": \"<string>\",\n          \"value\": \"<string>\",\n          \"isIdentifier\": \"<boolean>\"\n        },\n        {\n          \"propertyId\": \"<string>\",\n          \"key\": \"<string>\",\n          \"value\": \"<string>\",\n          \"isIdentifier\": \"<boolean>\"\n        }\n      ]\n    }\n  ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Option 3. iSHARE/delegation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"delegationRequest\": {\n    \"policyIssuer\": \"<string>\",\n    \"target\": {\n      \"accessSubject\": \"<string>\"\n    },\n    \"policySets\": [\n      {\n        \"policies\": [\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          },\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"policies\": [\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          },\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/ishare/delegation",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"ishare",
+								"delegation"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"delegationRequest\": {\n    \"policyIssuer\": \"<string>\",\n    \"target\": {\n      \"accessSubject\": \"<string>\"\n    },\n    \"policySets\": [\n      {\n        \"policies\": [\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          },\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"policies\": [\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          },\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/ishare/delegation",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"ishare",
+										"delegation"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"delegation_token\": \"<string>\"\n}"
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"delegationRequest\": {\n    \"policyIssuer\": \"<string>\",\n    \"target\": {\n      \"accessSubject\": \"<string>\"\n    },\n    \"policySets\": [\n      {\n        \"policies\": [\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          },\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"policies\": [\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          },\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/ishare/delegation",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"ishare",
+										"delegation"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "text",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Forbidden",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"delegationRequest\": {\n    \"policyIssuer\": \"<string>\",\n    \"target\": {\n      \"accessSubject\": \"<string>\"\n    },\n    \"policySets\": [\n      {\n        \"policies\": [\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          },\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"policies\": [\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          },\n          {\n            \"target\": {\n              \"resource\": {\n                \"type\": \"<string>\",\n                \"identifiers\": [\n                  \"<string>\",\n                  \"<string>\"\n                ],\n                \"attributes\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              },\n              \"actions\": [\n                \"<string>\",\n                \"<string>\"\n              ],\n              \"environment\": {\n                \"serviceProviders\": [\n                  \"<string>\",\n                  \"<string>\"\n                ]\n              }\n            },\n            \"rules\": [\n              {\n                \"effect\": \"<string>\"\n              },\n              {\n                \"effect\": \"<string>\"\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/ishare/delegation",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"ishare",
+										"delegation"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "text",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Dataservice",
+			"item": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://example.com"
+		}
+	]
+}
