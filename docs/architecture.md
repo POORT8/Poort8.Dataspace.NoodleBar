@@ -139,7 +139,7 @@ Onboarding-->Prototype
 2. **Authorization Register (AuthRegister)**
     - Entails:
       - Permissions
-      - Resource groups and resources
+      - Products and features
       - Organizations and users
     - Requirements:
       - iSHARE endpoints

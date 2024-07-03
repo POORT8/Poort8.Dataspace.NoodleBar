@@ -1,5 +1,7 @@
 # Poort8 Dataspace NoodleBar
 
+## TODO: local dev getting started
+
 ### Context
 
 The project is under the Basis Data Infrastructuur (BDI) umbrella, pending it's ongoing development.
