@@ -371,5 +371,3 @@ FodyWeavers.xsd
 **/Identity.db
 **/Identity.db-shm
 **/Identity.db-wal
-**/deploy/
-.github/workflows/
