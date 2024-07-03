@@ -1,0 +1,5035 @@
+﻿{
+  "components": {
+    "schemas": {
+      "MicrosoftAspNetCoreAuthenticationBearerTokenAccessTokenResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "accessToken": {
+            "type": {
+              "Options": null
+            }
+          },
+          "expiresIn": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "refreshToken": {
+            "type": {
+              "Options": null
+            }
+          },
+          "tokenType": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "MicrosoftAspNetCoreHttpHttpValidationProblemDetails": {
+        "allOf": [
+          {
+            "$ref": {
+              "Options": null
+            }
+          },
+          {
+            "additionalProperties": {
+              "nullable": {
+                "Options": null
+              }
+            },
+            "properties": {
+              "errors": {
+                "additionalProperties": {
+                  "items": {
+                    "type": {
+                      "Options": null
+                    }
+                  },
+                  "type": {
+                    "Options": null
+                  }
+                },
+                "type": {
+                  "Options": null
+                }
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        ]
+      },
+      "MicrosoftAspNetCoreIdentityDataForgotPasswordRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "email": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "MicrosoftAspNetCoreIdentityDataInfoRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "newEmail": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "newPassword": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "oldPassword": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "MicrosoftAspNetCoreIdentityDataInfoResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "email": {
+            "type": {
+              "Options": null
+            }
+          },
+          "isEmailConfirmed": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "MicrosoftAspNetCoreIdentityDataLoginRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "email": {
+            "type": {
+              "Options": null
+            }
+          },
+          "password": {
+            "type": {
+              "Options": null
+            }
+          },
+          "twoFactorCode": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "twoFactorRecoveryCode": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "MicrosoftAspNetCoreIdentityDataRefreshRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "refreshToken": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "MicrosoftAspNetCoreIdentityDataRegisterRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "email": {
+            "type": {
+              "Options": null
+            }
+          },
+          "password": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "MicrosoftAspNetCoreIdentityDataResendConfirmationEmailRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "email": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "MicrosoftAspNetCoreIdentityDataResetPasswordRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "email": {
+            "type": {
+              "Options": null
+            }
+          },
+          "newPassword": {
+            "type": {
+              "Options": null
+            }
+          },
+          "resetCode": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "MicrosoftAspNetCoreIdentityDataTwoFactorRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "enable": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "forgetMachine": {
+            "type": {
+              "Options": null
+            }
+          },
+          "resetRecoveryCodes": {
+            "type": {
+              "Options": null
+            }
+          },
+          "resetSharedKey": {
+            "type": {
+              "Options": null
+            }
+          },
+          "twoFactorCode": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "MicrosoftAspNetCoreIdentityDataTwoFactorResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isMachineRemembered": {
+            "type": {
+              "Options": null
+            }
+          },
+          "isTwoFactorEnabled": {
+            "type": {
+              "Options": null
+            }
+          },
+          "recoveryCodes": {
+            "items": {
+              "type": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "recoveryCodesLeft": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "sharedKey": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "MicrosoftAspNetCoreMvcProblemDetails": {
+        "additionalProperties": {
+          "nullable": {
+            "Options": null
+          }
+        },
+        "properties": {
+          "detail": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "instance": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "status": {
+            "format": {
+              "Options": null
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "title": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "type": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIAuthorizationEnforceRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIAuthorizationEnforceResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "allowed": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIAuthorizationExplainedEnforceRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIAuthorizationExplainedEnforceResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "allowed": {
+            "type": {
+              "Options": null
+            }
+          },
+          "explainPolicies": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIOROrganizationsGetOrganizationByIdAdditionalDetailsDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "capabilitiesUrl": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "companyEmail": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "companyPhone": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "countriesOfOperation": {
+            "items": {
+              "type": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "description": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "logoUrl": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "publiclyPublishable": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "sectors": {
+            "items": {
+              "type": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "tags": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "websiteUrl": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIOROrganizationsGetOrganizationByIdAdherenceDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "status": {
+            "type": {
+              "Options": null
+            }
+          },
+          "validFrom": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "validUntil": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIOROrganizationsGetOrganizationByIdAgreementDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "agreementId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "compliancyVerified": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "contractFile": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "dataspaceId": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "dateOfExpiry": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "dateOfSigning": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "framework": {
+            "type": {
+              "Options": null
+            }
+          },
+          "hashOfSignedContract": {
+            "type": {
+              "Options": null
+            }
+          },
+          "status": {
+            "type": {
+              "Options": null
+            }
+          },
+          "title": {
+            "type": {
+              "Options": null
+            }
+          },
+          "type": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIOROrganizationsGetOrganizationByIdAuthorizationRegistryDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "authorizationRegistryId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "authorizationRegistryOrganizationId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "authorizationRegistryUrl": {
+            "type": {
+              "Options": null
+            }
+          },
+          "dataspaceId": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIOROrganizationsGetOrganizationByIdCertificateDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "certificateFile": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "certificateId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "enabledFrom": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIOROrganizationsGetOrganizationByIdOrganizationPropertyDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIOROrganizationsGetOrganizationByIdOrganizationRoleDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "compliancyVerified": {
+            "type": {
+              "Options": null
+            }
+          },
+          "endDate": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "legalAdherence": {
+            "type": {
+              "Options": null
+            }
+          },
+          "loA": {
+            "type": {
+              "Options": null
+            }
+          },
+          "role": {
+            "type": {
+              "Options": null
+            }
+          },
+          "roleId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "startDate": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIOROrganizationsGetOrganizationByIdResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "additionalDetails": {
+            "$ref": {
+              "Options": null
+            }
+          },
+          "adherence": {
+            "$ref": {
+              "Options": null
+            }
+          },
+          "agreements": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "authorizationRegistries": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "certificates": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "identifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "roles": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "services": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIOROrganizationsGetOrganizationByIdServiceDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "color": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "description": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "logoUrl": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "serviceId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "url": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIPoliciesCreatePolicyPolicyProperty": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIPoliciesCreatePolicyRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "action": {
+            "type": {
+              "Options": null
+            }
+          },
+          "attribute": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "expiration": {
+            "format": {
+              "Options": null
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "issuedAt": {
+            "format": {
+              "Options": null
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "issuerId": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "license": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "notBefore": {
+            "format": {
+              "Options": null
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "rules": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "serviceProvider": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "subjectId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "type": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIPoliciesUpdatePolicyPolicyProperty": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIPoliciesUpdatePolicyRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "action": {
+            "type": {
+              "Options": null
+            }
+          },
+          "attribute": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "expiration": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "issuedAt": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "issuerId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "license": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "notBefore": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "policyId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "rules": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "serviceProvider": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "subjectId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "type": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourceGroupsCreateResourceGroupRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "provider": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceGroupId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "resources": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "url": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourceGroupsCreateResourceGroupResourceGroupPropertyDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourceGroupsCreateResourceGroupResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "provider": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceGroupId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "resources": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "url": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourceGroupsGetAllResourceGroupsResourceGroupPropertyDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourceGroupsGetAllResourceGroupsResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "provider": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceGroupId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "resources": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "url": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourceGroupsGetResourceGroupByIdResourceGroupPropertyDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourceGroupsGetResourceGroupByIdResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "provider": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceGroupId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "resources": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "url": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourceGroupsUpdateResourceGroupRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "provider": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceGroupId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "url": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourceGroupsUpdateResourceGroupResourceGroupPropertyDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourceGroupsUpdateResourceGroupResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "provider": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceGroupId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "resources": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "url": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourcesAddNewResourceToResourceGroupRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourcesAddNewResourceToResourceGroupResourcePropertyDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourcesAddNewResourceToResourceGroupResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourcesCreateResourceRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourcesCreateResourceResourcePropertyDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourcesCreateResourceResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourcesGetAllResourcesResourcePropertyDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourcesGetAllResourcesResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourcesGetResourceByIdResourcePropertyDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourcesGetResourceByIdResponse": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourcesUpdateResourceRequest": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAPIResourcesUpdateResourceResourcePropertyDto": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAuthorizationRegistryEntitiesPolicy": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "action": {
+            "type": {
+              "Options": null
+            }
+          },
+          "attribute": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "expiration": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "issuedAt": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "issuerId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "license": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "notBefore": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "policyId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "rules": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "serviceProvider": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "subjectId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "type": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAuthorizationRegistryEntitiesPolicy_PolicyProperty": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "propertyId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAuthorizationRegistryEntitiesResource": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "description": {
+            "type": {
+              "Options": null
+            }
+          },
+          "name": {
+            "type": {
+              "Options": null
+            }
+          },
+          "properties": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "resourceId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "useCase": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8DataspaceAuthorizationRegistryEntitiesResource_ResourceProperty": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "isIdentifier": {
+            "type": {
+              "Options": null
+            }
+          },
+          "key": {
+            "type": {
+              "Options": null
+            }
+          },
+          "propertyId": {
+            "type": {
+              "Options": null
+            }
+          },
+          "value": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsAccessSubjectTarget": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "accessSubject": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsDelegationEvidence": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "notBefore": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "notOnOrAfter": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "policyIssuer": {
+            "type": {
+              "Options": null
+            }
+          },
+          "policySets": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "target": {
+            "$ref": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsDelegationMask": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "delegationRequest": {
+            "$ref": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsDelegationMask_DelegationRequestObject": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "policyIssuer": {
+            "type": {
+              "Options": null
+            }
+          },
+          "policySets": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "target": {
+            "$ref": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsDelegationMask_DelegationRequestObject_PolicySet": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "policies": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsDelegationMask_DelegationRequestObject_PolicySet_Policy": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "rules": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "target": {
+            "nullable": {
+              "Options": null
+            },
+            "oneOf": [
+              {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            ]
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsDelegationMask_DelegationRequestObject_PolicySet_Policy_Rule": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "effect": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsDelegationMask_DelegationRequestObject_PolicySet_Policy_TargetObject": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "actions": {
+            "items": {
+              "type": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "environment": {
+            "nullable": {
+              "Options": null
+            },
+            "oneOf": [
+              {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            ]
+          },
+          "resource": {
+            "nullable": {
+              "Options": null
+            },
+            "oneOf": [
+              {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            ]
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsDelegationMask_DelegationRequestObject_PolicySet_Policy_TargetObject_EnvironmentObject": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "serviceProviders": {
+            "items": {
+              "type": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsDelegationMask_DelegationRequestObject_PolicySet_Policy_TargetObject_ResourceObject": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "attributes": {
+            "items": {
+              "type": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "identifiers": {
+            "items": {
+              "type": {
+                "Options": null
+              }
+            },
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "type": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsDelegationMask_DelegationRequestObject_TargetObject": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "accessSubject": {
+            "nullable": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsLicenseEnvironment": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "licenses": {
+            "items": {
+              "type": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsLicenseTarget": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "environment": {
+            "$ref": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsPolicy": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "rules": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "target": {
+            "$ref": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsPolicySet": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "maxDelegationDepth": {
+            "format": {
+              "Options": null
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "policies": {
+            "items": {
+              "$ref": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "target": {
+            "$ref": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsResource": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "attributes": {
+            "items": {
+              "type": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "identifiers": {
+            "items": {
+              "type": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "type": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsResourceTarget": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "actions": {
+            "items": {
+              "type": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          },
+          "environment": {
+            "$ref": {
+              "Options": null
+            }
+          },
+          "resource": {
+            "$ref": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsRule": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "effect": {
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      },
+      "Poort8IshareCoreModelsServiceProviderEnvironment": {
+        "additionalProperties": {
+          "Options": null
+        },
+        "properties": {
+          "serviceProviders": {
+            "items": {
+              "type": {
+                "Options": null
+              }
+            },
+            "type": {
+              "Options": null
+            }
+          }
+        },
+        "type": {
+          "Options": null
+        }
+      }
+    },
+    "securitySchemes": {
+      "JWTBearerAuth": {
+        "bearerFormat": {
+          "Options": null
+        },
+        "description": {
+          "Options": null
+        },
+        "scheme": {
+          "Options": null
+        },
+        "type": {
+          "Options": null
+        }
+      }
+    }
+  },
+  "info": {
+    "title": {
+      "Options": null
+    },
+    "version": {
+      "Options": null
+    }
+  },
+  "openapi": {
+    "Options": null
+  },
+  "paths": {
+    "/Account/Logout": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            },
+            "x-position": {
+              "Options": null
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": {
+              "Options": null
+            }
+          }
+        }
+      }
+    },
+    "/Account/Manage/DownloadPersonalData": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "responses": {
+          "200": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTBearerAuth": []
+          }
+        ]
+      }
+    },
+    "/Account/Manage/LinkExternalLogin": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            },
+            "x-position": {
+              "Options": null
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTBearerAuth": []
+          }
+        ]
+      }
+    },
+    "/Account/PerformExternalLogin": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            },
+            "x-position": {
+              "Options": null
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            },
+            "x-position": {
+              "Options": null
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": {
+              "Options": null
+            }
+          }
+        }
+      }
+    },
+    "/api/authorization/enforce": {
+      "get": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      }
+    },
+    "/api/authorization/explained-enforce": {
+      "get": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      }
+    },
+    "/api/authorization/unsigned-delegation": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "description": {
+            "Options": null
+          },
+          "required": {
+            "Options": null
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      }
+    },
+    "/api/organization-registry/{id}": {
+      "get": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      }
+    },
+    "/api/policies": {
+      "get": {
+        "operationId": {
+          "Options": null
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": {
+                      "Options": null
+                    }
+                  },
+                  "type": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      },
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "description": {
+            "Options": null
+          },
+          "required": {
+            "Options": null
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      },
+      "put": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "description": {
+            "Options": null
+          },
+          "required": {
+            "Options": null
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      }
+    },
+    "/api/policies/{id}": {
+      "delete": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/plain": {
+                "schema": {}
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      },
+      "get": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      }
+    },
+    "/api/resourcegroups": {
+      "get": {
+        "operationId": {
+          "Options": null
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": {
+                      "Options": null
+                    }
+                  },
+                  "type": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      },
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "description": {
+            "Options": null
+          },
+          "required": {
+            "Options": null
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      },
+      "put": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "description": {
+            "Options": null
+          },
+          "required": {
+            "Options": null
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      }
+    },
+    "/api/resourcegroups/{id}": {
+      "delete": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/plain": {
+                "schema": {}
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      },
+      "get": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      }
+    },
+    "/api/resourcegroups/{resourceGroupId}/resources": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "description": {
+            "Options": null
+          },
+          "required": {
+            "Options": null
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "summary": {
+          "Options": null
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      }
+    },
+    "/api/resourcegroups/{resourceGroupId}/resources/{resourceId}": {
+      "delete": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/plain": {
+                "schema": {}
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "summary": {
+          "Options": null
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      },
+      "put": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/plain": {
+                "schema": {}
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "summary": {
+          "Options": null
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      }
+    },
+    "/api/resources": {
+      "get": {
+        "operationId": {
+          "Options": null
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": {
+                      "Options": null
+                    }
+                  },
+                  "type": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      },
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "description": {
+            "Options": null
+          },
+          "required": {
+            "Options": null
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      },
+      "put": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "description": {
+            "Options": null
+          },
+          "required": {
+            "Options": null
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      }
+    },
+    "/api/resources/{id}": {
+      "delete": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/plain": {
+                "schema": {}
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      },
+      "get": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "required": {
+              "Options": null
+            },
+            "schema": {
+              "type": {
+                "Options": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "401": {
+            "description": {
+              "Options": null
+            }
+          },
+          "403": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "tags": [
+          {
+            "Options": null
+          }
+        ]
+      }
+    },
+    "/confirmEmail": {
+      "get": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "schema": {
+              "nullable": {
+                "Options": null
+              },
+              "type": {
+                "Options": null
+              }
+            },
+            "x-position": {
+              "Options": null
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "schema": {
+              "nullable": {
+                "Options": null
+              },
+              "type": {
+                "Options": null
+              }
+            },
+            "x-position": {
+              "Options": null
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "schema": {
+              "nullable": {
+                "Options": null
+              },
+              "type": {
+                "Options": null
+              }
+            },
+            "x-position": {
+              "Options": null
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": {
+              "Options": null
+            }
+          }
+        }
+      }
+    },
+    "/forgotPassword": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "description": {
+              "Options": null
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "parameters": [
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "schema": {
+              "nullable": {
+                "Options": null
+              },
+              "type": {
+                "Options": null
+              }
+            },
+            "x-position": {
+              "Options": null
+            }
+          },
+          {
+            "in": {
+              "Options": null
+            },
+            "name": {
+              "Options": null
+            },
+            "schema": {
+              "nullable": {
+                "Options": null
+              },
+              "type": {
+                "Options": null
+              }
+            },
+            "x-position": {
+              "Options": null
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          }
+        }
+      }
+    },
+    "/manage/2fa": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "404": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTBearerAuth": []
+          }
+        ]
+      }
+    },
+    "/manage/info": {
+      "get": {
+        "operationId": {
+          "Options": null
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "404": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTBearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          },
+          "404": {
+            "description": {
+              "Options": null
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTBearerAuth": []
+          }
+        ]
+      }
+    },
+    "/refresh": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "description": {
+              "Options": null
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          }
+        }
+      }
+    },
+    "/resendConfirmationEmail": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "description": {
+              "Options": null
+            }
+          }
+        }
+      }
+    },
+    "/resetPassword": {
+      "post": {
+        "operationId": {
+          "Options": null
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": {
+                  "Options": null
+                }
+              }
+            }
+          },
+          "x-name": {
+            "Options": null
+          },
+          "x-position": {
+            "Options": null
+          }
+        },
+        "responses": {
+          "200": {
+            "description": {
+              "Options": null
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": {
+                    "Options": null
+                  }
+                }
+              }
+            },
+            "description": {
+              "Options": null
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-generator": {
+    "Options": null
+  }
+}

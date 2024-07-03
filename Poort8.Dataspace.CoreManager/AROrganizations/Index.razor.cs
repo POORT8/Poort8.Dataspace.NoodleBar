@@ -1,15 +1,16 @@
-using AROrganization = Poort8.Dataspace.AuthorizationRegistry.Entities.Organization;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 using Microsoft.FluentUI.AspNetCore.Components;
-using OROrganization = Poort8.Dataspace.OrganizationRegistry.Organization;
 using Poort8.Dataspace.AuthorizationRegistry;
 using Poort8.Dataspace.CoreManager.AROrganizations.Dialogs;
 using Poort8.Dataspace.CoreManager.Services;
 using Poort8.Dataspace.OrganizationRegistry;
+using AROrganization = Poort8.Dataspace.AuthorizationRegistry.Entities.Organization;
+using OROrganization = Poort8.Dataspace.OrganizationRegistry.Organization;
 
 namespace Poort8.Dataspace.CoreManager.AROrganizations;
 
-public partial class Index : IDisposable
+public partial class Index : ComponentBase, IDisposable
 {
     private bool disposedValue;
     [Inject]
@@ -17,16 +18,18 @@ public partial class Index : IDisposable
     [Inject]
     public required NavigationManager NavigationManager { get; set; }
     [Inject]
-    public required IOrganizationRegistry OrganizationRegistry { get; set; }
-    [Inject]
     public required IAuthorizationRegistry AuthorizationRegistry { get; set; }
     [Inject]
+    public required IOrganizationRegistry OrganizationRegistry { get; set; }
+    [Inject]
     public required IDialogService DialogService { get; set; }
+    [Inject]
+    public required IOptions<CoreManagerOptions> Options { get; set; }
 
-    public IReadOnlyList<OROrganization>? OROrganizations;
-    public IReadOnlyList<AROrganization>? AROrganizations;
+    private IReadOnlyList<AROrganization>? AROrganizations;
+    private IReadOnlyList<OROrganization>? NotAddedOROrganizations;
 
-    private bool NoOrganizations => !(OROrganizations?.Count > 0);
+    private bool NoOrganizations => !(NotAddedOROrganizations?.Count > 0);
 
     protected override async Task OnInitializedAsync()
     {
@@ -36,8 +39,9 @@ public partial class Index : IDisposable
 
     private async Task FetchOrganizations()
     {
-        AROrganizations = await AuthorizationRegistry!.ReadOrganizations();
-        OROrganizations = (await OrganizationRegistry!.ReadOrganizations()).Where(o => !AROrganizations.Any(a => a.Identifier == o.Identifier)).OrderBy(o => o.Name).ToList();
+        AROrganizations = await AuthorizationRegistry.ReadOrganizations(Options.Value.UseCase);
+        StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+        NotAddedOROrganizations = StateContainer.CurrentOROrganizations.Where(o => !AROrganizations.Any(a => a.Identifier == o.Identifier)).ToList();
     }
 
     private async Task AddNewClicked()
@@ -55,8 +59,8 @@ public partial class Index : IDisposable
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleAddNewClicked)
         };
 
-        var organization = new AROrganization(OROrganizations![0].Identifier, OROrganizations![0].Name, "", "", "");
-        await DialogService.ShowDialogAsync<AddOrganizationDialog>((organization, OROrganizations), parameters);
+        var organization = new AROrganization(NotAddedOROrganizations![0].Identifier, Options.Value.UseCase, NotAddedOROrganizations[0].Name, "", "", "");
+        await DialogService.ShowDialogAsync<AddOrganizationDialog>((organization, NotAddedOROrganizations), parameters);
     }
 
     private async Task HandleAddNewClicked(DialogResult result)
@@ -98,7 +102,7 @@ public partial class Index : IDisposable
         {
             await AuthorizationRegistry.UpdateOrganization((AROrganization)result.Data);
         }
-        await FetchOrganizations();
+        AROrganizations = await AuthorizationRegistry.ReadOrganizations(Options.Value.UseCase);
     }
 
     private async Task DeleteClicked(AROrganization organization)

@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
-using Poort8.Dataspace.OrganizationRegistry;
-using Poort8.Dataspace.CoreManager.Services;
+using Poort8.Dataspace.AuthorizationRegistry;
 using Poort8.Dataspace.CoreManager.OROrganizations.Dialogs;
+using Poort8.Dataspace.CoreManager.Services;
+using Poort8.Dataspace.OrganizationRegistry;
 
 namespace Poort8.Dataspace.CoreManager.OROrganizations;
 
-public partial class Index : IDisposable
+public partial class Index : ComponentBase, IDisposable
 {
     private bool disposedValue;
     [Inject]
@@ -16,14 +17,15 @@ public partial class Index : IDisposable
     [Inject]
     public required IOrganizationRegistry OrganizationRegistry { get; set; }
     [Inject]
+    public required IAuthorizationRegistry AuthorizationRegistry { get; set; }
+    [Inject]
     public required IDialogService DialogService { get; set; }
-    public IReadOnlyList<Organization>? Organizations;
 
     protected override async Task OnInitializedAsync()
     {
         StateContainer.OnChange += StateHasChanged;
 
-        Organizations = await OrganizationRegistry!.ReadOrganizations();
+        StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
     }
 
     private async Task AddNewClicked()
@@ -49,8 +51,11 @@ public partial class Index : IDisposable
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            await OrganizationRegistry.CreateOrganization((Organization)result.Data);
-            Organizations = await OrganizationRegistry.ReadOrganizations();
+            var organization = (Organization)result.Data;
+            await OrganizationRegistry.CreateOrganization(organization);
+            StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+
+            await UpdateAROrganizationName(organization.Identifier, organization.Name);
         }
     }
 
@@ -72,7 +77,20 @@ public partial class Index : IDisposable
         if (!result.Cancelled)
         {
             await OrganizationRegistry.DeleteOrganization(organization.Identifier);
-            Organizations = await OrganizationRegistry.ReadOrganizations();
+            StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+
+            await UpdateAROrganizationName(organization.Identifier);
+        }
+    }
+
+    private async Task UpdateAROrganizationName(string identifier, string? newName = null)
+    {
+        var arOrganization = await AuthorizationRegistry.ReadOrganization(identifier);
+        if (arOrganization is not null)
+        {
+            arOrganization.Name = newName ?? string.Empty;
+            arOrganization = await AuthorizationRegistry.UpdateOrganization(arOrganization);
+            if (arOrganization.Identifier == StateContainer.CurrentAROrganization?.Identifier) StateContainer.CurrentAROrganization = arOrganization;
         }
     }
 

@@ -1,11 +1,14 @@
-﻿namespace Poort8.Dataspace.CoreManager.Services;
+﻿using Poort8.Dataspace.OrganizationRegistry;
+
+namespace Poort8.Dataspace.CoreManager.Services;
 
 public class StateContainer
 {
     private AuthorizationRegistry.Entities.Organization? currentAROrganization;
-    private AuthorizationRegistry.Entities.Product? currentProduct;
+    private AuthorizationRegistry.Entities.ResourceGroup? currentResourceGroup;
     private AuthorizationRegistry.Entities.Policy? currentPolicy;
-    private OrganizationRegistry.Organization? currentOROrganization;
+    private IReadOnlyList<Organization>? currentOROrganizations;
+    private Organization? currentOROrganization;
 
     public AuthorizationRegistry.Entities.Organization? CurrentAROrganization
     {
@@ -17,12 +20,12 @@ public class StateContainer
         }
     }
 
-    public AuthorizationRegistry.Entities.Product? CurrentProduct
+    public AuthorizationRegistry.Entities.ResourceGroup? CurrentResourceGroup
     {
-        get => currentProduct;
+        get => currentResourceGroup;
         set
         {
-            currentProduct = value;
+            currentResourceGroup = value;
             NotifyStateChanged();
         }
     }
@@ -37,7 +40,17 @@ public class StateContainer
         }
     }
 
-    public OrganizationRegistry.Organization? CurrentOROrganization
+    public IReadOnlyList<Organization>? CurrentOROrganizations
+    {
+        get => currentOROrganizations;
+        set
+        {
+            currentOROrganizations = value;
+            NotifyStateChanged();
+        }
+    }
+
+    public Organization? CurrentOROrganization
     {
         get => currentOROrganization;
         set

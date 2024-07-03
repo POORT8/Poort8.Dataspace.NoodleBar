@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Poort8.Dataspace.Identity;
 
 namespace Poort8.Dataspace.CoreManager.Identity.Account;
 internal sealed class IdentityUserAccessor(UserManager<User> userManager, IdentityRedirectManager redirectManager)

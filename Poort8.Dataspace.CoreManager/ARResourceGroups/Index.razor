@@ -1,0 +1,28 @@
+﻿@page "/ar/resourcegroups"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [Authorize]
+
+<PageTitle>Authorization register - @Options.Value.ResourceGroupAlternativeNamePlural</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
+    <FluentLabel Typo="Typography.H1">Authorization register - @Options.Value.ResourceGroupAlternativeNamePlural</FluentLabel>
+
+    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)" Disabled=@NoOrganizations>New @Options.Value.ResourceGroupAlternativeName</FluentButton>
+    @if (NoOrganizations)
+    {
+        <FluentLabel>The Organization Registry contains no organizations which you can add @Options.Value.ResourceGroupAlternativeNamePlural to</FluentLabel>
+    }
+
+    <FluentDataGrid Items="@ResourceGroups?.AsQueryable()">
+        <PropertyColumn Title="Identifier" Property="@(o => o.ResourceGroupId)" Sortable="true" />
+        <PropertyColumn Property="@(o => o.Name)" Sortable="true" />
+        <PropertyColumn Property="@(o => o.Description)" Sortable="false" />
+        <PropertyColumn Title="Provider" Property="@(o => GetOROrganizationName(o.Provider))" Sortable="false" />
+        <PropertyColumn Property="@(o => o.Url)" Sortable="false" />
+        <TemplateColumn Title="Actions" Align="@Align.End">
+            <FluentButton Title="Details" IconEnd="@(new Icons.Regular.Size16.Info())" OnClick="@(() => DetailsClicked(@context))" />
+            <FluentButton Title="Properties" IconEnd="@(new Icons.Regular.Size16.TagMultiple())" OnClick="@(() => PropertiesClicked(@context))" />
+            <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => DeleteClicked(@context))" />
+        </TemplateColumn>
+    </FluentDataGrid>
+</FluentStack>

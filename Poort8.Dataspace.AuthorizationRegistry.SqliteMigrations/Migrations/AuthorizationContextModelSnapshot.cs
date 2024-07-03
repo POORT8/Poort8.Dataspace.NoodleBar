@@ -15,22 +15,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
-
-            modelBuilder.Entity("FeatureProduct", b =>
-                {
-                    b.Property<string>("FeaturesFeatureId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProductId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("FeaturesFeatureId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("FeatureProduct");
-                });
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Audit.EnforceAuditRecord", b =>
                 {
@@ -69,6 +54,9 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Timestamp")
+                        .IsDescending();
+
                     b.ToTable("EnforceAuditRecords");
                 });
 
@@ -102,6 +90,9 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Timestamp")
+                        .IsDescending();
+
                     b.ToTable("EntityAuditRecords");
                 });
 
@@ -127,6 +118,10 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Telephone")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UseCase")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -164,51 +159,6 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.ToTable("EmployeeProperty");
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", b =>
-                {
-                    b.Property<string>("FeatureId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("FeatureId");
-
-                    b.ToTable("ArFeature", (string)null);
-                });
-
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature+FeatureProperty", b =>
-                {
-                    b.Property<string>("PropertyId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FeatureId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsIdentifier")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("PropertyId");
-
-                    b.HasIndex("FeatureId");
-
-                    b.ToTable("FeatureProperty");
-                });
-
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization", b =>
                 {
                     b.Property<string>("Identifier")
@@ -227,6 +177,10 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UseCase")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -284,11 +238,17 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("License")
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("NotBefore")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ResourceId")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Rules")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ServiceProvider")
@@ -337,9 +297,58 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.ToTable("PolicyProperty");
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", b =>
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Resource", b =>
                 {
-                    b.Property<string>("ProductId")
+                    b.Property<string>("ResourceId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UseCase")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ResourceId");
+
+                    b.ToTable("ArResource", (string)null);
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Resource+ResourceProperty", b =>
+                {
+                    b.Property<string>("PropertyId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsIdentifier")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ResourceId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("PropertyId");
+
+                    b.HasIndex("ResourceId");
+
+                    b.ToTable("ResourceProperty");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.ResourceGroup", b =>
+                {
+                    b.Property<string>("ResourceGroupId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
@@ -356,12 +365,16 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ProductId");
+                    b.Property<string>("UseCase")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.ToTable("ArProduct", (string)null);
+                    b.HasKey("ResourceGroupId");
+
+                    b.ToTable("ArResourceGroup", (string)null);
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product+ProductProperty", b =>
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.ResourceGroup+ResourceGroupProperty", b =>
                 {
                     b.Property<string>("PropertyId")
                         .HasColumnType("TEXT");
@@ -373,7 +386,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProductId")
+                    b.Property<string>("ResourceGroupId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -383,24 +396,24 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.HasKey("PropertyId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ResourceGroupId");
 
-                    b.ToTable("ProductProperty");
+                    b.ToTable("ResourceGroupProperty");
                 });
 
-            modelBuilder.Entity("FeatureProduct", b =>
+            modelBuilder.Entity("ResourceResourceGroup", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", null)
-                        .WithMany()
-                        .HasForeignKey("FeaturesFeatureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("ResourceGroupId")
+                        .HasColumnType("TEXT");
 
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("ResourcesResourceId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ResourceGroupId", "ResourcesResourceId");
+
+                    b.HasIndex("ResourcesResourceId");
+
+                    b.ToTable("ResourceResourceGroup");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", b =>
@@ -417,15 +430,6 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", null)
                         .WithMany("Properties")
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature+FeatureProperty", b =>
-                {
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", null)
-                        .WithMany("Properties")
-                        .HasForeignKey("FeatureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -448,21 +452,40 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product+ProductProperty", b =>
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Resource+ResourceProperty", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", null)
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Resource", null)
                         .WithMany("Properties")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.ResourceGroup+ResourceGroupProperty", b =>
+                {
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.ResourceGroup", null)
+                        .WithMany("Properties")
+                        .HasForeignKey("ResourceGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ResourceResourceGroup", b =>
+                {
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.ResourceGroup", null)
+                        .WithMany()
+                        .HasForeignKey("ResourceGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Resource", null)
+                        .WithMany()
+                        .HasForeignKey("ResourcesResourceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", b =>
-                {
-                    b.Navigation("Properties");
-                });
-
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", b =>
                 {
                     b.Navigation("Properties");
                 });
@@ -479,7 +502,12 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.Navigation("Properties");
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", b =>
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Resource", b =>
+                {
+                    b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.ResourceGroup", b =>
                 {
                     b.Navigation("Properties");
                 });

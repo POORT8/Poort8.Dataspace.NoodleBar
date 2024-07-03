@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
-using Poort8.Dataspace.CoreManager.Identity;
 using Poort8.Dataspace.CoreManager.Identity.Account.Pages;
 using Poort8.Dataspace.CoreManager.Identity.Account.Pages.Manage;
+using Poort8.Dataspace.Identity;
 using System.Security.Claims;
 using System.Text.Json;
 

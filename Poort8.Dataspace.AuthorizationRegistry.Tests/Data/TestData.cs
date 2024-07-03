@@ -11,10 +11,10 @@ internal static class TestData
         return new Employee($"{id}-emp-id", $"{id}{index}-emp-name", "familyName", "telephone", "email", properties);
     }
 
-    internal static Feature CreateNewFeature(string id, int index)
+    internal static Resource CreateNewResource(string id, int index)
     {
-        var properties = new List<Feature.FeatureProperty>() { new Feature.FeatureProperty("key", "value"), new Feature.FeatureProperty("otherIdentifier", $"{id}{index}-feat-otherId", true) };
-        return new Feature($"{id}-feat-id", $"{id}{index}-feat-name", "description", properties);
+        var properties = new List<Resource.ResourceProperty>() { new Resource.ResourceProperty("key", "value"), new Resource.ResourceProperty("otherIdentifier", $"{id}{index}-res-otherId", true) };
+        return new Resource($"{id}-res-id", $"{id}{index}-res-name", "description", properties);
     }
 
     internal static Organization CreateNewOrganization(string id, int index)
@@ -23,9 +23,9 @@ internal static class TestData
         return new Organization($"{id}-org-id", $"{id}{index}-org-name", "url", "representative", "invoicingContact", properties);
     }
 
-    internal static Product CreateNewProduct(string id, int index)
+    internal static ResourceGroup CreateNewResourceGroup(string id, int index)
     {
-        var properties = new List<Product.ProductProperty>() { new Product.ProductProperty("key", "value"), new Product.ProductProperty("otherIdentifier", $"{id}{index}-prod-otherId", true) };
-        return new Product($"{id}-prod-id", $"{id}{index}-prod-name", "description", "provider", "url", properties);
+        var properties = new List<ResourceGroup.ResourceGroupProperty>() { new ResourceGroup.ResourceGroupProperty("key", "value"), new ResourceGroup.ResourceGroupProperty("otherIdentifier", $"{id}{index}-rg-otherId", true) };
+        return new ResourceGroup($"{id}-rg-id", $"{id}{index}-rg-name", "description", "provider", "url", properties);
     }
 }

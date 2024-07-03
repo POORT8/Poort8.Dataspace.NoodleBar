@@ -1,4 +1,4 @@
-# Poort8 Dataspace Noodle Bar
+# Poort8 Dataspace NoodleBar
 
 ### Context
 
@@ -57,16 +57,16 @@ New apps can utilize the dataspace data model, authorization registry, and organ
 
 In the developing realm of federated dataspace schemes, different - sometimes ambiguous - terminology is used. If possible, the Poort8 dataspace follows [schema.org](https://schema.org) for terminologie and data models. For authorizations, Poort8 uses terminologie in line with [casbin.org](https://casbin.org). In the table below we provide a non-exhaustive overview of how typical terminologie is mapped to our Dataspace software.
 
-| Poort8.Dataspace | equivalent to ...                                   |
-| ---------------- | --------------------------------------------------- |
-| organisation     | party                                               |
-| issuer           | entitledParty, data owner                           |
-| subject          | accessSubject, data consumer, data service consumer |
-| provider         | service provider, data service provider             |
-| federated app    | application of a service provider                   |
-| product,service  | resourceType                                        |
-| features         | attributes                                          |
-| policy           | authorization, permission                           |
+| Poort8.Dataspace        | equivalent to ...                                   |
+| ----------------------- | --------------------------------------------------- |
+| organisation            | party                                               |
+| issuer                  | entitledParty, data owner                           |
+| subject                 | accessSubject, data consumer, data service consumer |
+| provider                | service provider, data service provider             |
+| federated app           | application of a service provider                   |
+| resource group,service  | resourceType                                        |
+| resources               | attributes                                          |
+| policy                  | authorization, permission                           |
 
 ## Getting Started
 

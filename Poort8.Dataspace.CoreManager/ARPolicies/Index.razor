@@ -7,14 +7,19 @@
 <FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
     <FluentLabel Typo="Typography.H1">Authorization register - Policies</FluentLabel>
 
-    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Policy</FluentButton>
+    <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)" Disabled=@NoOrganizations>New Policy</FluentButton>
+    @if (NoOrganizations)
+    {
+        <FluentLabel>The Organization Registry contains no organizations which you can add policies to</FluentLabel>
+    }
 
     <FluentDataGrid Items="@Policies?.AsQueryable()">
-        <PropertyColumn Title="Issuer" Property="@(p => p.IssuerId)" Sortable="true" />
-        <PropertyColumn Title="Actor" Property="@(p => p.SubjectId)" Sortable="true" />
-        <PropertyColumn Title="Service Provider" Property="@(p => p.ServiceProvider)" Sortable="true" />
+        <PropertyColumn Title="Issuer" Property="@(p => GetOROrganizationName(p.IssuerId))" Sortable="true" />
+        <PropertyColumn Title="Actor" Property="@(p => GetOROrganizationName(p.SubjectId))" Sortable="true" />
+        <PropertyColumn Title="Service Provider" Property="@(p => GetOROrganizationName(p.ServiceProvider))" Sortable="true" />
         <PropertyColumn Title="Not Before" Format="dd-MM-yyyy" Property="@(p => DateTimeOffset.FromUnixTimeSeconds(p.NotBefore).LocalDateTime)" Sortable="true" />
         <PropertyColumn Title="Not On Or After" Format="dd-MM-yyyy" Property="@(p => DateTimeOffset.FromUnixTimeSeconds(p.Expiration).LocalDateTime)" Sortable="true" />
+        <PropertyColumn Title="Action" Property="@(p => p.Action)" Sortable="true" />
         <PropertyColumn Title="Resource Type" Property="@(p => p.Type)" Sortable="true" />
         <PropertyColumn Title="Resource Identifier" Property="@(p => p.ResourceId)" Sortable="true" />
         <PropertyColumn Title="Resource Attribute" Property="@(p => p.Attribute)" Sortable="true" />

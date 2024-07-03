@@ -13,8 +13,8 @@ public class AuthorizationContext : DbContext
     public DbSet<EnforceAuditRecord> EnforceAuditRecords { get; set; }
     public DbSet<Organization> Organizations { get; set; }
     public DbSet<Employee> Employees { get; set; }
-    public DbSet<Product> Products { get; set; }
-    public DbSet<Feature> Features { get; set; }
+    public DbSet<ResourceGroup> ResourceGroups { get; set; }
+    public DbSet<Resource> Resources { get; set; }
     public DbSet<Policy> Policies { get; set; }
 
     public AuthorizationContext(DbContextOptions<AuthorizationContext> options, IHttpContextAccessor? httpContextAccessor = null) : base(options)
@@ -30,9 +30,9 @@ public class AuthorizationContext : DbContext
             .WithOne()
             .IsRequired();
 
-        modelBuilder.Entity<Product>()
-            .ToTable("ArProduct")
-            .HasMany(p => p.Features)
+        modelBuilder.Entity<ResourceGroup>()
+            .ToTable("ArResourceGroup")
+            .HasMany(p => p.Resources)
             .WithMany();
 
         modelBuilder.Entity<Organization>()
@@ -47,14 +47,14 @@ public class AuthorizationContext : DbContext
             .WithOne()
             .IsRequired();
 
-        modelBuilder.Entity<Product>()
-            .ToTable("ArProduct")
+        modelBuilder.Entity<ResourceGroup>()
+            .ToTable("ArResourceGroup")
             .HasMany(e => e.Properties)
             .WithOne()
             .IsRequired();
 
-        modelBuilder.Entity<Feature>()
-            .ToTable("ArFeature")
+        modelBuilder.Entity<Resource>()
+            .ToTable("ArResource")
             .HasMany(e => e.Properties)
             .WithOne()
             .IsRequired();
@@ -64,6 +64,14 @@ public class AuthorizationContext : DbContext
             .HasMany(e => e.Properties)
             .WithOne()
             .IsRequired();
+
+        modelBuilder.Entity<EnforceAuditRecord>()
+            .HasIndex(p => p.Timestamp)
+            .IsDescending();
+
+        modelBuilder.Entity<EntityAuditRecord>()
+            .HasIndex(p => p.Timestamp)
+            .IsDescending();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

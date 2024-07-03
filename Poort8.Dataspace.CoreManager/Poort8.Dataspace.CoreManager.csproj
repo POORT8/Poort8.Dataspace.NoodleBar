@@ -7,29 +7,36 @@
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	<CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
 	<AnalysisMode>Minimum</AnalysisMode>
+	<UserSecretsId>6b5a615b-de02-4512-8146-a17f1df66027</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
-	<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
-	<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.1.1" />
-	<PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.4.1" />
-    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.4.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-	<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.2" />
-	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
+	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
+	<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
+	<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.3.1" />
+	<PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.7.2" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.7.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+	<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.6" />
+	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.6" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6">
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Poort8.Dataspace.API\Poort8.Dataspace.API.csproj" />
     <ProjectReference Include="..\Poort8.Dataspace.AuthorizationRegistry.SqliteMigrations\Poort8.Dataspace.AuthorizationRegistry.SqliteMigrations.csproj" />
     <ProjectReference Include="..\Poort8.Dataspace.AuthorizationRegistry.SqlServerMigrations\Poort8.Dataspace.AuthorizationRegistry.SqlServerMigrations.csproj" />
     <ProjectReference Include="..\Poort8.Dataspace.AuthorizationRegistry\Poort8.Dataspace.AuthorizationRegistry.csproj" />
+    <ProjectReference Include="..\Poort8.Dataspace.Identity.SqliteMigrations\Poort8.Dataspace.Identity.SqliteMigrations.csproj" />
+    <ProjectReference Include="..\Poort8.Dataspace.Identity.SqlServerMigrations\Poort8.Dataspace.Identity.SqlServerMigrations.csproj" />
+    <ProjectReference Include="..\Poort8.Dataspace.Identity\Poort8.Dataspace.Identity.csproj" />
     <ProjectReference Include="..\Poort8.Dataspace.OrganizationRegistry.SqliteMigrations\Poort8.Dataspace.OrganizationRegistry.SqliteMigrations.csproj" />
     <ProjectReference Include="..\Poort8.Dataspace.OrganizationRegistry.SqlServerMigrations\Poort8.Dataspace.OrganizationRegistry.SqlServerMigrations.csproj" />
     <ProjectReference Include="..\Poort8.Dataspace.OrganizationRegistry\Poort8.Dataspace.OrganizationRegistry.csproj" />

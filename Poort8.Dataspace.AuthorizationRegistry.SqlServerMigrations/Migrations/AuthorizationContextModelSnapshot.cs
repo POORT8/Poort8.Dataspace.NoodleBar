@@ -17,25 +17,10 @@ namespace Poort8.Dataspace.CoreManager.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("FeatureProduct", b =>
-                {
-                    b.Property<string>("FeaturesFeatureId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProductId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("FeaturesFeatureId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("FeatureProduct");
-                });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Audit.EnforceAuditRecord", b =>
                 {
@@ -74,6 +59,9 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Timestamp")
+                        .IsDescending();
+
                     b.ToTable("EnforceAuditRecords");
                 });
 
@@ -107,6 +95,9 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Timestamp")
+                        .IsDescending();
+
                     b.ToTable("EntityAuditRecords");
                 });
 
@@ -132,6 +123,10 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Telephone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UseCase")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -169,51 +164,6 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.ToTable("EmployeeProperty");
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", b =>
-                {
-                    b.Property<string>("FeatureId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("FeatureId");
-
-                    b.ToTable("ArFeature", (string)null);
-                });
-
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature+FeatureProperty", b =>
-                {
-                    b.Property<string>("PropertyId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FeatureId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsIdentifier")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PropertyId");
-
-                    b.HasIndex("FeatureId");
-
-                    b.ToTable("FeatureProperty");
-                });
-
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Organization", b =>
                 {
                     b.Property<string>("Identifier")
@@ -232,6 +182,10 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UseCase")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -289,11 +243,17 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("License")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("NotBefore")
                         .HasColumnType("bigint");
 
                     b.Property<string>("ResourceId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Rules")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ServiceProvider")
@@ -342,9 +302,58 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.ToTable("PolicyProperty");
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", b =>
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Resource", b =>
                 {
-                    b.Property<string>("ProductId")
+                    b.Property<string>("ResourceId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UseCase")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ResourceId");
+
+                    b.ToTable("ArResource", (string)null);
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Resource+ResourceProperty", b =>
+                {
+                    b.Property<string>("PropertyId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsIdentifier")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResourceId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PropertyId");
+
+                    b.HasIndex("ResourceId");
+
+                    b.ToTable("ResourceProperty");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.ResourceGroup", b =>
+                {
+                    b.Property<string>("ResourceGroupId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
@@ -361,12 +370,16 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ProductId");
+                    b.Property<string>("UseCase")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("ArProduct", (string)null);
+                    b.HasKey("ResourceGroupId");
+
+                    b.ToTable("ArResourceGroup", (string)null);
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product+ProductProperty", b =>
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.ResourceGroup+ResourceGroupProperty", b =>
                 {
                     b.Property<string>("PropertyId")
                         .HasColumnType("nvarchar(450)");
@@ -378,7 +391,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProductId")
+                    b.Property<string>("ResourceGroupId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -388,24 +401,24 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.HasKey("PropertyId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ResourceGroupId");
 
-                    b.ToTable("ProductProperty");
+                    b.ToTable("ResourceGroupProperty");
                 });
 
-            modelBuilder.Entity("FeatureProduct", b =>
+            modelBuilder.Entity("ResourceResourceGroup", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", null)
-                        .WithMany()
-                        .HasForeignKey("FeaturesFeatureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("ResourceGroupId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("ResourcesResourceId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ResourceGroupId", "ResourcesResourceId");
+
+                    b.HasIndex("ResourcesResourceId");
+
+                    b.ToTable("ResourceResourceGroup");
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", b =>
@@ -422,15 +435,6 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", null)
                         .WithMany("Properties")
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature+FeatureProperty", b =>
-                {
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", null)
-                        .WithMany("Properties")
-                        .HasForeignKey("FeatureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -453,21 +457,40 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product+ProductProperty", b =>
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Resource+ResourceProperty", b =>
                 {
-                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", null)
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Resource", null)
                         .WithMany("Properties")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.ResourceGroup+ResourceGroupProperty", b =>
+                {
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.ResourceGroup", null)
+                        .WithMany("Properties")
+                        .HasForeignKey("ResourceGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ResourceResourceGroup", b =>
+                {
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.ResourceGroup", null)
+                        .WithMany()
+                        .HasForeignKey("ResourceGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Poort8.Dataspace.AuthorizationRegistry.Entities.Resource", null)
+                        .WithMany()
+                        .HasForeignKey("ResourcesResourceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Employee", b =>
-                {
-                    b.Navigation("Properties");
-                });
-
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Feature", b =>
                 {
                     b.Navigation("Properties");
                 });
@@ -484,7 +507,12 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.Navigation("Properties");
                 });
 
-            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Product", b =>
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.Resource", b =>
+                {
+                    b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Entities.ResourceGroup", b =>
                 {
                     b.Navigation("Properties");
                 });

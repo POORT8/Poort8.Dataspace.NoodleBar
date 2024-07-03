@@ -8,8 +8,8 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Tests.Fakes;
 public class FakeRepository : IRepository
 {
     private readonly List<Organization> _organizations = new();
-    private readonly List<Product> _products = new();
-    private readonly List<Feature> _features = new();
+    private readonly List<ResourceGroup> _resourceGroups = new();
+    private readonly List<Resource> _resources = new();
     private readonly List<Policy> _policies = new();
 
     public Task<Policy> CreatePolicy(Policy policy)
@@ -50,7 +50,7 @@ public class FakeRepository : IRepository
         return Task.FromResult(organization.DeepClone());
     }
 
-    public Task<IReadOnlyList<Organization>> ReadOrganizations(string? name, string? propertyKey, string? propertyValue)
+    public Task<IReadOnlyList<Organization>> ReadOrganizations(string? useCase, string? name, string? propertyKey, string? propertyValue)
     {
         var organizations = _organizations.Select(o => o.DeepClone()).ToList() as IReadOnlyList<Organization>;
         return Task.FromResult(organizations);
@@ -94,7 +94,7 @@ public class FakeRepository : IRepository
         throw new NotImplementedException();
     }
 
-    public Task<IReadOnlyList<Employee>> ReadEmployees(string? organizationId = null, string? familyName = null, string? email = null, string? propertyKey = null, string? propertyValue = null)
+    public Task<IReadOnlyList<Employee>> ReadEmployees(string? useCase, string? organizationId = null, string? familyName = null, string? email = null, string? propertyKey = null, string? propertyValue = null)
     {
         throw new NotImplementedException();
     }
@@ -116,81 +116,81 @@ public class FakeRepository : IRepository
         return Task.FromResult(employee.DeepClone());
     }
 
-    public Task<Product> CreateProduct(Product product)
+    public Task<ResourceGroup> CreateResourceGroup(ResourceGroup resourceGroup)
     {
-        _products.Add(product);
-        return Task.FromResult(product.DeepClone());
+        _resourceGroups.Add(resourceGroup);
+        return Task.FromResult(resourceGroup.DeepClone());
     }
 
-    public Task<Product> CreateProductWithExistingFeatures(Product product, ICollection<string> featureIds)
+    public Task<ResourceGroup> CreateResourceGroupWithExistingResources(ResourceGroup resourceGroup, ICollection<string> resourceIds)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Product?> ReadProduct(string productId)
+    public Task<ResourceGroup?> ReadResourceGroup(string resourceGroupId)
     {
-        return Task.FromResult(_products.FirstOrDefault(p => p.ProductId == productId));
+        return Task.FromResult(_resourceGroups.FirstOrDefault(p => p.ResourceGroupId == resourceGroupId));
     }
 
-    public Task<IReadOnlyList<Product>> ReadProducts(string? name = null, string? propertyKey = null, string? propertyValue = null)
+    public Task<IReadOnlyList<ResourceGroup>> ReadResourceGroups(string? useCase, string? name = null, string? propertyKey = null, string? propertyValue = null)
     {
-        var products = _products.Select(o => o.DeepClone()).ToList() as IReadOnlyList<Product>;
-        return Task.FromResult(products);
+        var resourceGroups = _resourceGroups.Select(o => o.DeepClone()).ToList() as IReadOnlyList<ResourceGroup>;
+        return Task.FromResult(resourceGroups);
     }
 
-    public Task<Product> UpdateProduct(Product product)
+    public Task<ResourceGroup> UpdateResourceGroup(ResourceGroup resourceGroup)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> DeleteProduct(string productId)
+    public Task<bool> DeleteResourceGroup(string resourceGroupId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Feature> CreateFeature(Feature feature)
+    public Task<Resource> CreateResource(Resource resource)
     {
-        _features.Add(feature);
-        return Task.FromResult(feature.DeepClone());
+        _resources.Add(resource);
+        return Task.FromResult(resource.DeepClone());
     }
 
-    public Task<Feature> AddExistingFeatureToProduct(string productId, string featureId)
+    public Task<Resource> AddExistingResourceToResourceGroup(string resourceGroupId, string resourceId)
     {
-        _products.First(o => o.ProductId == productId).Features.Add(_features.First(f => f.FeatureId == featureId));
-        return Task.FromResult(_features.First(f => f.FeatureId == featureId).DeepClone());
+        _resourceGroups.First(o => o.ResourceGroupId == resourceGroupId).Resources.Add(_resources.First(f => f.ResourceId == resourceId));
+        return Task.FromResult(_resources.First(f => f.ResourceId == resourceId).DeepClone());
     }
 
-    public Task<Feature> AddNewFeatureToProduct(string productId, Feature feature)
+    public Task<Resource> AddNewResourceToResourceGroup(string resourceGroupId, Resource resource)
     {
-        _products.First(o => o.ProductId == productId).Features.Add(feature);
-        return Task.FromResult(feature.DeepClone());
+        _resourceGroups.First(o => o.ResourceGroupId == resourceGroupId).Resources.Add(resource);
+        return Task.FromResult(resource.DeepClone());
     }
 
-    public Task<Feature?> ReadFeature(string featureId)
+    public Task<Resource?> ReadResource(string resourceId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IReadOnlyList<Feature>> ReadFeatures(string? name = null, string? propertyKey = null, string? propertyValue = null)
+    public Task<IReadOnlyList<Resource>> ReadResources(string? useCase, string? name = null, string? propertyKey = null, string? propertyValue = null)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Feature> UpdateFeature(Feature feature)
+    public Task<Resource> UpdateResource(Resource resource)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> DeleteFeature(string featureId)
+    public Task<bool> DeleteResource(string resourceId)
     {
-        _features.RemoveAll(f => f.FeatureId == featureId);
-        foreach (var product in _products)
+        _resources.RemoveAll(f => f.ResourceId == resourceId);
+        foreach (var resourceGroup in _resourceGroups)
         {
-            foreach (var feature in product.Features)
+            foreach (var resource in resourceGroup.Resources)
             {
-                if (feature.FeatureId == featureId)
+                if (resource.ResourceId == resourceId)
                 {
-                    product.Features.Remove(feature);
+                    resourceGroup.Resources.Remove(resource);
                     return Task.FromResult(true);
                 }
             }
@@ -198,7 +198,7 @@ public class FakeRepository : IRepository
         return Task.FromResult(false);
     }
 
-    public Task<bool> RemoveFeatureFromProduct(string productId, string featureId)
+    public Task<bool> RemoveResourceFromResourceGroup(string resourceGroupId, string resourceId)
     {
         throw new NotImplementedException();
     }

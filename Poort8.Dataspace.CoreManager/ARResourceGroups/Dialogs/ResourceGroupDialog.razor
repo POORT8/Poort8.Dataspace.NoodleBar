@@ -1,0 +1,26 @@
+﻿@using Poort8.Dataspace.AuthorizationRegistry.Entities;
+@using Poort8.Dataspace.CoreManager.Services;
+@using OROrganization = Poort8.Dataspace.OrganizationRegistry.Organization;
+@implements IDialogContentComponent<ResourceGroup>
+
+<FluentTextField Label="Identifier" @bind-Value="Content.ResourceGroupId" Disabled=@(!string.IsNullOrEmpty(Content.ResourceGroupId)) />
+<FluentTextField Label="Name" @bind-Value="Content.Name" />
+<FluentTextField Label="Description" @bind-Value="Content.Description" />
+@if (StateContainer.CurrentOROrganizations is not null && StateContainer.CurrentOROrganizations.Any(o => o.Identifier.Equals(Content.Provider)))
+{
+    <FluentSelect Label="Provider" @bind-Value="Content.Provider" @bind-SelectedOption="@selectedOROrganization" Items="@StateContainer.CurrentOROrganizations" OptionValue="@(o => o?.Identifier)" OptionText="@(o => $"{o?.Name} ({o?.Identifier})")" />
+}
+else
+{
+    <FluentTextField Label="Provider" @bind-Value="Content.Provider" Disabled=true/>
+}
+<FluentTextField Label="Url" @bind-Value="Content.Url" />
+
+@code {
+    [Parameter]
+    public required ResourceGroup Content { get; set; }
+    [Inject]
+    public required StateContainer StateContainer { get; set; }
+
+    OROrganization? selectedOROrganization;
+}

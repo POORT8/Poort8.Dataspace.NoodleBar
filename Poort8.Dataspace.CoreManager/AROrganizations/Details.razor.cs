@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Poort8.Dataspace.AuthorizationRegistry;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
@@ -7,7 +8,7 @@ using Poort8.Dataspace.CoreManager.Services;
 
 namespace Poort8.Dataspace.CoreManager.AROrganizations;
 
-public partial class Details : IDisposable
+public partial class Details : ComponentBase, IDisposable
 {
     private bool disposedValue;
     [Parameter]
@@ -20,6 +21,8 @@ public partial class Details : IDisposable
     public required IAuthorizationRegistry AuthorizationRegistry { get; set; }
     [Inject]
     public required IDialogService DialogService { get; set; }
+    [Inject]
+    public required IOptions<CoreManagerOptions> Options { get; set; }
 
     protected override void OnInitialized()
     {
@@ -65,8 +68,8 @@ public partial class Details : IDisposable
     {
         var parameters = new DialogParameters()
         {
-            Title = $"New Employee",
-            PrimaryAction = "Add New Employee",
+            Title = $"New {Options.Value.EmployeeAlternativeName}",
+            PrimaryAction = $"Add New {Options.Value.EmployeeAlternativeName}",
             PrimaryActionEnabled = true,
             SecondaryAction = "Cancel",
             Width = "400px",
@@ -76,7 +79,7 @@ public partial class Details : IDisposable
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleAddNewEmployeeClicked)
         };
 
-        var employee = new Employee("", "", "", "", "");
+        var employee = new Employee("", Options.Value.UseCase, "", "", "", "");
         await DialogService.ShowDialogAsync<EmployeeDialog>(employee, parameters);
     }
 
@@ -93,7 +96,7 @@ public partial class Details : IDisposable
     {
         var parameters = new DialogParameters()
         {
-            Title = $"Edit Employee",
+            Title = $"Edit {Options.Value.EmployeeAlternativeName}",
             PrimaryAction = "Save Changes",
             PrimaryActionEnabled = true,
             SecondaryAction = "Cancel",
@@ -120,7 +123,7 @@ public partial class Details : IDisposable
     {
         var parameters = new DialogParameters()
         {
-            Title = $"Employee Properties",
+            Title = $"{Options.Value.EmployeeAlternativeName} Properties",
             PrimaryAction = "Save Properties",
             PrimaryActionEnabled = true,
             SecondaryAction = "Cancel",
@@ -149,7 +152,7 @@ public partial class Details : IDisposable
             $"Are you sure you want to delete {employee.GivenName} {employee.FamilyName}?",
             "Delete",
             "Cancel",
-            "Delete Employee");
+            $"Delete {Options.Value.EmployeeAlternativeName}");
 
         var result = await dialog.Result;
         if (!result.Cancelled)

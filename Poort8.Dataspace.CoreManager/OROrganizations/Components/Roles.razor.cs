@@ -6,8 +6,9 @@ using Poort8.Dataspace.OrganizationRegistry;
 
 namespace Poort8.Dataspace.CoreManager.OROrganizations.Components;
 
-public partial class Roles
+public partial class Roles : ComponentBase, IDisposable
 {
+    private bool disposedValue;
     [Inject]
     public required IDialogService DialogService { get; set; }
     [Inject]
@@ -39,7 +40,8 @@ public partial class Roles
         if (!result.Cancelled && result.Data is not null)
         {
             await OrganizationRegistry.AddNewRoleToOrganization(StateContainer.CurrentOROrganization!.Identifier, (OrganizationRole)result.Data);
-            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
+            StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+            StateContainer.CurrentOROrganization = StateContainer.CurrentOROrganizations.First(o => o.Identifier == StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
@@ -67,7 +69,8 @@ public partial class Roles
         {
             await OrganizationRegistry.UpdateRole((OrganizationRole)result.Data);
         }
-        StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
+        StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+        StateContainer.CurrentOROrganization = StateContainer.CurrentOROrganizations.First(o => o.Identifier == StateContainer.CurrentOROrganization!.Identifier);
     }
 
     private async Task DeleteClicked(OrganizationRole role)
@@ -82,7 +85,23 @@ public partial class Roles
         if (!result.Cancelled)
         {
             await OrganizationRegistry.DeleteRole(role.RoleId);
-            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
+            StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+            StateContainer.CurrentOROrganization = StateContainer.CurrentOROrganizations.First(o => o.Identifier == StateContainer.CurrentOROrganization!.Identifier);
         }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing) StateContainer!.OnChange -= StateHasChanged;
+            disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }
