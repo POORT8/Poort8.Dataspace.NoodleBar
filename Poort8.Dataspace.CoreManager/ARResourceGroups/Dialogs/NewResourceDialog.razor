@@ -1,0 +1,11 @@
+﻿@using Poort8.Dataspace.AuthorizationRegistry.Entities;
+@implements IDialogContentComponent<Resource>
+
+<FluentTextField Label="Identifier" @bind-Value="Content.ResourceId" Disabled=@(!string.IsNullOrEmpty(Content.ResourceId)) />
+<FluentTextField Label="Name" @bind-Value="Content.Name" />
+<FluentTextField Label="Description" @bind-Value="Content.Description" />
+
+@code {
+    [Parameter]
+    public required Resource Content { get; set; }
+}

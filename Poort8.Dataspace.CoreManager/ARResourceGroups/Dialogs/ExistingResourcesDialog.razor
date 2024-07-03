@@ -1,0 +1,26 @@
+﻿@using Poort8.Dataspace.AuthorizationRegistry.Entities;
+@implements IDialogContentComponent<List<(Resource Resource, bool Add)>>
+
+<FluentStack Orientation="Orientation.Vertical">
+    @if (Content.Count > 0)
+    {
+        foreach (var entry in Content)
+        {
+            <FluentCheckbox Value="@entry.Add" ValueChanged="@((v) => ChangeResourceState(entry, v))">@entry.Resource.Name</FluentCheckbox>
+        }
+    }
+    else
+    {
+        <FluentLabel>There are no other existing Resources</FluentLabel>
+    }
+</FluentStack>
+
+@code {
+    [Parameter]
+    public required List<(Resource Resource, bool Add)> Content { get; set; }
+
+    private void ChangeResourceState((Resource Resource, bool Add) entry, bool add)
+    {
+        Content[Content.IndexOf(entry)] = (entry.Resource, add);
+    }
+}

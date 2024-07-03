@@ -238,256 +238,256 @@ public class RepositoryTests
     }
 
     [Fact]
-    public async Task ProductCrud()
+    public async Task ResourceGroupCrud()
     {
-        var product = TestData.CreateNewProduct(nameof(ProductCrud), 1);
-        var productEntity = await _authorizationRegistry.CreateProduct(product);
+        var resourceGroup = TestData.CreateNewResourceGroup(nameof(ResourceGroupCrud), 1);
+        var resourceGroupEntity = await _authorizationRegistry.CreateResourceGroup(resourceGroup);
 
-        Assert.NotNull(productEntity);
-        Assert.Equal(product.ProductId, productEntity.ProductId);
-        Assert.NotNull(productEntity.Properties);
-        Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
+        Assert.NotNull(resourceGroupEntity);
+        Assert.Equal(resourceGroup.ResourceGroupId, resourceGroupEntity.ResourceGroupId);
+        Assert.NotNull(resourceGroupEntity.Properties);
+        Assert.Equal(resourceGroup.Properties.Count, resourceGroupEntity.Properties.Count);
 
-        var readEntity = await _authorizationRegistry.ReadProduct(product.ProductId);
+        var readEntity = await _authorizationRegistry.ReadResourceGroup(resourceGroup.ResourceGroupId);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(product.ProductId, readEntity.ProductId);
+        Assert.Equal(resourceGroup.ResourceGroupId, readEntity.ResourceGroupId);
 
-        var readByPropIdEntity = await _authorizationRegistry.ReadProduct(product.Properties.ToArray()[1].Value);
+        var readByPropIdEntity = await _authorizationRegistry.ReadResourceGroup(resourceGroup.Properties.ToArray()[1].Value);
 
         Assert.NotNull(readByPropIdEntity);
-        Assert.Equal(product.ProductId, readByPropIdEntity.ProductId);
+        Assert.Equal(resourceGroup.ResourceGroupId, readByPropIdEntity.ResourceGroupId);
 
-        var readByNameEntity = await _authorizationRegistry.ReadProducts(name: product.Name);
+        var readByNameEntity = await _authorizationRegistry.ReadResourceGroups(name: resourceGroup.Name);
 
         Assert.NotNull(readByNameEntity);
         Assert.Single(readByNameEntity);
-        Assert.Equal(product.ProductId, readByNameEntity[0].ProductId);
+        Assert.Equal(resourceGroup.ResourceGroupId, readByNameEntity[0].ResourceGroupId);
 
-        var productUpdate = TestData.CreateNewProduct(nameof(ProductCrud), 2);
-        var updateEntity = await _authorizationRegistry.UpdateProduct(productUpdate);
+        var resourceGroupUpdate = TestData.CreateNewResourceGroup(nameof(ResourceGroupCrud), 2);
+        var updateEntity = await _authorizationRegistry.UpdateResourceGroup(resourceGroupUpdate);
 
         Assert.NotNull(updateEntity);
-        Assert.Equal(product.ProductId, updateEntity.ProductId);
-        Assert.Equal(productUpdate.Name, updateEntity.Name);
-        Assert.NotEqual(product.Name, updateEntity.Name);
+        Assert.Equal(resourceGroup.ResourceGroupId, updateEntity.ResourceGroupId);
+        Assert.Equal(resourceGroupUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(resourceGroup.Name, updateEntity.Name);
 
-        readEntity = await _authorizationRegistry.ReadProduct(product.ProductId);
+        readEntity = await _authorizationRegistry.ReadResourceGroup(resourceGroup.ResourceGroupId);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(product.ProductId, readEntity.ProductId);
-        Assert.Equal(productUpdate.Name, updateEntity.Name);
-        Assert.NotEqual(product.Name, updateEntity.Name);
+        Assert.Equal(resourceGroup.ResourceGroupId, readEntity.ResourceGroupId);
+        Assert.Equal(resourceGroupUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(resourceGroup.Name, updateEntity.Name);
 
-        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
+        var success = await _authorizationRegistry.DeleteResourceGroup(resourceGroup.ResourceGroupId);
         Assert.True(success);
     }
 
     [Fact]
-    public async Task ProductUpdate()
+    public async Task ResourceGroupUpdate()
     {
-        var product = TestData.CreateNewProduct(nameof(ProductUpdate), 1);
-        var productEntity = await _authorizationRegistry.CreateProduct(product);
+        var resourceGroup = TestData.CreateNewResourceGroup(nameof(ResourceGroupUpdate), 1);
+        var resourceGroupEntity = await _authorizationRegistry.CreateResourceGroup(resourceGroup);
 
-        Assert.NotNull(productEntity);
-        Assert.Equal(product.ProductId, productEntity.ProductId);
-        Assert.NotNull(productEntity.Properties);
-        Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
+        Assert.NotNull(resourceGroupEntity);
+        Assert.Equal(resourceGroup.ResourceGroupId, resourceGroupEntity.ResourceGroupId);
+        Assert.NotNull(resourceGroupEntity.Properties);
+        Assert.Equal(resourceGroup.Properties.Count, resourceGroupEntity.Properties.Count);
 
-        var productUpdate = TestData.CreateNewProduct(nameof(ProductUpdate), 2);
-        var updateEntity = await _authorizationRegistry.UpdateProduct(productUpdate);
-
-        Assert.NotNull(updateEntity);
-        Assert.Equal(product.ProductId, updateEntity.ProductId);
-        Assert.Equal(productUpdate.Name, updateEntity.Name);
-        Assert.NotEqual(product.Name, updateEntity.Name);
-
-        var feature = TestData.CreateNewFeature(nameof(ProductUpdate), 1);
-        productUpdate.Features.Add(feature);
-
-        updateEntity = await _authorizationRegistry.UpdateProduct(productUpdate);
-
-        Assert.Single(updateEntity.Features);
-
-        updateEntity.Features.First().Name = "updated-name";
-        productUpdate.Properties.Add(new Product.ProductProperty("test", "test"));
-        updateEntity = await _authorizationRegistry.UpdateProduct(productUpdate);
+        var resourceGroupUpdate = TestData.CreateNewResourceGroup(nameof(ResourceGroupUpdate), 2);
+        var updateEntity = await _authorizationRegistry.UpdateResourceGroup(resourceGroupUpdate);
 
         Assert.NotNull(updateEntity);
-        Assert.Equal("updated-name", updateEntity.Features.First().Name);
+        Assert.Equal(resourceGroup.ResourceGroupId, updateEntity.ResourceGroupId);
+        Assert.Equal(resourceGroupUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(resourceGroup.Name, updateEntity.Name);
+
+        var resource = TestData.CreateNewResource(nameof(ResourceGroupUpdate), 1);
+        resourceGroupUpdate.Resources.Add(resource);
+
+        updateEntity = await _authorizationRegistry.UpdateResourceGroup(resourceGroupUpdate);
+
+        Assert.Single(updateEntity.Resources);
+
+        updateEntity.Resources.First().Name = "updated-name";
+        resourceGroupUpdate.Properties.Add(new ResourceGroup.ResourceGroupProperty("test", "test"));
+        updateEntity = await _authorizationRegistry.UpdateResourceGroup(resourceGroupUpdate);
+
+        Assert.NotNull(updateEntity);
+        Assert.Equal("updated-name", updateEntity.Resources.First().Name);
         Assert.Equal(3, updateEntity.Properties.Count);
 
-        updateEntity.Features.Clear();
+        updateEntity.Resources.Clear();
         updateEntity.Properties.Clear();
-        updateEntity = await _authorizationRegistry.UpdateProduct(updateEntity);
+        updateEntity = await _authorizationRegistry.UpdateResourceGroup(updateEntity);
 
-        Assert.Empty(updateEntity.Features);
+        Assert.Empty(updateEntity.Resources);
         Assert.Empty(updateEntity.Properties);
 
-        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
+        var success = await _authorizationRegistry.DeleteResourceGroup(resourceGroup.ResourceGroupId);
         Assert.True(success);
     }
 
     [Fact]
-    public async Task FeatureCrud()
+    public async Task ResourceCrud()
     {
-        var feature = TestData.CreateNewFeature(nameof(FeatureCrud), 1);
-        var featureEntity = await _authorizationRegistry.CreateFeature(feature);
+        var resource = TestData.CreateNewResource(nameof(ResourceCrud), 1);
+        var resourceEntity = await _authorizationRegistry.CreateResource(resource);
 
-        Assert.NotNull(featureEntity);
-        Assert.Equal(feature.FeatureId, featureEntity.FeatureId);
-        Assert.NotNull(featureEntity.Properties);
-        Assert.Equal(feature.Properties.Count, featureEntity.Properties.Count);
+        Assert.NotNull(resourceEntity);
+        Assert.Equal(resource.ResourceId, resourceEntity.ResourceId);
+        Assert.NotNull(resourceEntity.Properties);
+        Assert.Equal(resource.Properties.Count, resourceEntity.Properties.Count);
 
-        var readEntity = await _authorizationRegistry.ReadFeature(feature.FeatureId);
+        var readEntity = await _authorizationRegistry.ReadResource(resource.ResourceId);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(feature.FeatureId, readEntity.FeatureId);
+        Assert.Equal(resource.ResourceId, readEntity.ResourceId);
 
-        var readByPropIdEntity = await _authorizationRegistry.ReadFeature(feature.Properties.ToArray()[1].Value);
+        var readByPropIdEntity = await _authorizationRegistry.ReadResource(resource.Properties.ToArray()[1].Value);
 
         Assert.NotNull(readByPropIdEntity);
-        Assert.Equal(feature.FeatureId, readByPropIdEntity.FeatureId);
+        Assert.Equal(resource.ResourceId, readByPropIdEntity.ResourceId);
 
-        var readByNameEntity = await _authorizationRegistry.ReadFeatures(name: feature.Name);
+        var readByNameEntity = await _authorizationRegistry.ReadResources(name: resource.Name);
 
         Assert.NotNull(readByNameEntity);
         Assert.Single(readByNameEntity);
-        Assert.Equal(feature.FeatureId, readByNameEntity[0].FeatureId);
+        Assert.Equal(resource.ResourceId, readByNameEntity[0].ResourceId);
 
-        var featureUpdate = TestData.CreateNewFeature(nameof(FeatureCrud), 2);
-        var updateEntity = await _authorizationRegistry.UpdateFeature(featureUpdate);
+        var resourceUpdate = TestData.CreateNewResource(nameof(ResourceCrud), 2);
+        var updateEntity = await _authorizationRegistry.UpdateResource(resourceUpdate);
 
         Assert.NotNull(updateEntity);
-        Assert.Equal(feature.FeatureId, updateEntity.FeatureId);
-        Assert.Equal(featureUpdate.Name, updateEntity.Name);
-        Assert.NotEqual(feature.Name, updateEntity.Name);
+        Assert.Equal(resource.ResourceId, updateEntity.ResourceId);
+        Assert.Equal(resourceUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(resource.Name, updateEntity.Name);
 
-        readEntity = await _authorizationRegistry.ReadFeature(feature.FeatureId);
+        readEntity = await _authorizationRegistry.ReadResource(resource.ResourceId);
 
         Assert.NotNull(readEntity);
-        Assert.Equal(feature.FeatureId, readEntity.FeatureId);
-        Assert.Equal(featureUpdate.Name, updateEntity.Name);
-        Assert.NotEqual(feature.Name, updateEntity.Name);
+        Assert.Equal(resource.ResourceId, readEntity.ResourceId);
+        Assert.Equal(resourceUpdate.Name, updateEntity.Name);
+        Assert.NotEqual(resource.Name, updateEntity.Name);
 
-        var success = await _authorizationRegistry.DeleteFeature(feature.FeatureId);
+        var success = await _authorizationRegistry.DeleteResource(resource.ResourceId);
         Assert.True(success);
     }
 
     [Fact]
-    public async Task FeatureUpdate()
+    public async Task ResourceUpdate()
     {
-        var product = TestData.CreateNewProduct(nameof(FeatureUpdate), 1);
-        var feature = TestData.CreateNewFeature(nameof(FeatureUpdate), 1);
-        product.Features.Add(feature);
-        var productEntity = await _authorizationRegistry.CreateProduct(product);
+        var resourceGroup = TestData.CreateNewResourceGroup(nameof(ResourceUpdate), 1);
+        var resource = TestData.CreateNewResource(nameof(ResourceUpdate), 1);
+        resourceGroup.Resources.Add(resource);
+        var resourceGroupEntity = await _authorizationRegistry.CreateResourceGroup(resourceGroup);
 
-        Assert.NotNull(productEntity);
-        Assert.Equal(product.ProductId, productEntity.ProductId);
-        Assert.NotNull(productEntity.Properties);
-        Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
-        Assert.Single(productEntity.Features);
+        Assert.NotNull(resourceGroupEntity);
+        Assert.Equal(resourceGroup.ResourceGroupId, resourceGroupEntity.ResourceGroupId);
+        Assert.NotNull(resourceGroupEntity.Properties);
+        Assert.Equal(resourceGroup.Properties.Count, resourceGroupEntity.Properties.Count);
+        Assert.Single(resourceGroupEntity.Resources);
 
-        feature.FeatureId = "fail";
-        await Assert.ThrowsAsync<InvalidOperationException>(async () => await _authorizationRegistry.UpdateFeature(feature));
+        resource.ResourceId = "fail";
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await _authorizationRegistry.UpdateResource(resource));
 
-        var feature2 = TestData.CreateNewFeature(nameof(FeatureUpdate), 2);
-        feature2.Properties.Add(new Feature.FeatureProperty("test", "test"));
-        var updateEntity = await _authorizationRegistry.UpdateFeature(feature2);
+        var resource2 = TestData.CreateNewResource(nameof(ResourceUpdate), 2);
+        resource2.Properties.Add(new Resource.ResourceProperty("test", "test"));
+        var updateEntity = await _authorizationRegistry.UpdateResource(resource2);
 
         Assert.NotNull(updateEntity);
-        Assert.Equal(feature2.FeatureId, updateEntity.FeatureId);
+        Assert.Equal(resource2.ResourceId, updateEntity.ResourceId);
         Assert.Equal(3, updateEntity.Properties.Count);
 
         updateEntity.Properties.Clear();
-        updateEntity = await _authorizationRegistry.UpdateFeature(updateEntity);
+        updateEntity = await _authorizationRegistry.UpdateResource(updateEntity);
 
         Assert.Empty(updateEntity.Properties);
 
-        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
+        var success = await _authorizationRegistry.DeleteResourceGroup(resourceGroup.ResourceGroupId);
         Assert.True(success);
     }
 
     [Fact]
-    public async Task AddNewFeatureToProduct()
+    public async Task AddNewResourceToResourceGroup()
     {
-        var product = TestData.CreateNewProduct(nameof(AddNewFeatureToProduct), 1);
-        var productEntity = await _authorizationRegistry.CreateProduct(product);
+        var resourceGroup = TestData.CreateNewResourceGroup(nameof(AddNewResourceToResourceGroup), 1);
+        var resourceGroupEntity = await _authorizationRegistry.CreateResourceGroup(resourceGroup);
 
-        Assert.NotNull(productEntity);
-        Assert.Equal(product.ProductId, productEntity.ProductId);
-        Assert.NotNull(productEntity.Properties);
-        Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
+        Assert.NotNull(resourceGroupEntity);
+        Assert.Equal(resourceGroup.ResourceGroupId, resourceGroupEntity.ResourceGroupId);
+        Assert.NotNull(resourceGroupEntity.Properties);
+        Assert.Equal(resourceGroup.Properties.Count, resourceGroupEntity.Properties.Count);
 
-        var feature = TestData.CreateNewFeature(nameof(AddNewFeatureToProduct), 1);
-        await _authorizationRegistry.AddNewFeatureToProduct(product.ProductId, feature);
+        var resource = TestData.CreateNewResource(nameof(AddNewResourceToResourceGroup), 1);
+        await _authorizationRegistry.AddNewResourceToResourceGroup(resourceGroup.ResourceGroupId, resource);
 
-        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
+        var success = await _authorizationRegistry.DeleteResourceGroup(resourceGroup.ResourceGroupId);
         Assert.True(success);
     }
 
     [Fact]
-    public async Task AddExistingFeatureToProduct()
+    public async Task AddExistingResourceToResourceGroup()
     {
-        var product = TestData.CreateNewProduct(nameof(AddExistingFeatureToProduct), 1);
-        var productEntity = await _authorizationRegistry.CreateProduct(product);
+        var resourceGroup = TestData.CreateNewResourceGroup(nameof(AddExistingResourceToResourceGroup), 1);
+        var resourceGroupEntity = await _authorizationRegistry.CreateResourceGroup(resourceGroup);
 
-        Assert.NotNull(productEntity);
-        Assert.Equal(product.ProductId, productEntity.ProductId);
-        Assert.NotNull(productEntity.Properties);
-        Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
+        Assert.NotNull(resourceGroupEntity);
+        Assert.Equal(resourceGroup.ResourceGroupId, resourceGroupEntity.ResourceGroupId);
+        Assert.NotNull(resourceGroupEntity.Properties);
+        Assert.Equal(resourceGroup.Properties.Count, resourceGroupEntity.Properties.Count);
 
-        var feature = TestData.CreateNewFeature(nameof(AddExistingFeatureToProduct), 1);
-        var featureEntity = await _authorizationRegistry.CreateFeature(feature);
-        await _authorizationRegistry.AddExistingFeatureToProduct(product.ProductId, featureEntity.FeatureId);
+        var resource = TestData.CreateNewResource(nameof(AddExistingResourceToResourceGroup), 1);
+        var resourceEntity = await _authorizationRegistry.CreateResource(resource);
+        await _authorizationRegistry.AddExistingResourceToResourceGroup(resourceGroup.ResourceGroupId, resourceEntity.ResourceId);
 
-        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
+        var success = await _authorizationRegistry.DeleteResourceGroup(resourceGroup.ResourceGroupId);
         Assert.True(success);
     }
 
     [Fact]
-    public async Task RemoveFeatureFromProduct()
+    public async Task RemoveResourceFromResourceGroup()
     {
-        var product = TestData.CreateNewProduct(nameof(RemoveFeatureFromProduct), 1);
-        var productEntity = await _authorizationRegistry.CreateProduct(product);
+        var resourceGroup = TestData.CreateNewResourceGroup(nameof(RemoveResourceFromResourceGroup), 1);
+        var resourceGroupEntity = await _authorizationRegistry.CreateResourceGroup(resourceGroup);
 
-        Assert.NotNull(productEntity);
-        Assert.Equal(product.ProductId, productEntity.ProductId);
-        Assert.NotNull(productEntity.Properties);
-        Assert.Equal(product.Properties.Count, productEntity.Properties.Count);
+        Assert.NotNull(resourceGroupEntity);
+        Assert.Equal(resourceGroup.ResourceGroupId, resourceGroupEntity.ResourceGroupId);
+        Assert.NotNull(resourceGroupEntity.Properties);
+        Assert.Equal(resourceGroup.Properties.Count, resourceGroupEntity.Properties.Count);
 
-        var feature = TestData.CreateNewFeature(nameof(RemoveFeatureFromProduct), 1);
-        await _authorizationRegistry.AddNewFeatureToProduct(product.ProductId, feature);
+        var resource = TestData.CreateNewResource(nameof(RemoveResourceFromResourceGroup), 1);
+        await _authorizationRegistry.AddNewResourceToResourceGroup(resourceGroup.ResourceGroupId, resource);
 
-        productEntity = await _authorizationRegistry.ReadProduct(product.ProductId);
-        Assert.Single(productEntity!.Features);
+        resourceGroupEntity = await _authorizationRegistry.ReadResourceGroup(resourceGroup.ResourceGroupId);
+        Assert.Single(resourceGroupEntity!.Resources);
 
-        await _authorizationRegistry.RemoveFeatureFromProduct(product.ProductId, feature.FeatureId);
+        await _authorizationRegistry.RemoveResourceFromResourceGroup(resourceGroup.ResourceGroupId, resource.ResourceId);
 
-        productEntity = await _authorizationRegistry.ReadProduct(product.ProductId);
-        Assert.Empty(productEntity!.Features);
+        resourceGroupEntity = await _authorizationRegistry.ReadResourceGroup(resourceGroup.ResourceGroupId);
+        Assert.Empty(resourceGroupEntity!.Resources);
 
-        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
+        var success = await _authorizationRegistry.DeleteResourceGroup(resourceGroup.ResourceGroupId);
         Assert.True(success);
     }
 
     [Fact]
-    public async Task CreateProductWithExistingFeatures()
+    public async Task CreateResourceGroupWithExistingResources()
     {
-        var feature1 = TestData.CreateNewFeature(nameof(CreateProductWithExistingFeatures), 1);
-        var featureEntity1 = await _authorizationRegistry.CreateFeature(feature1);
-        var feature2 = TestData.CreateNewFeature(nameof(CreateProductWithExistingFeatures) + "2", 2);
-        feature2.Properties.Clear();
-        var featureEntity2 = await _authorizationRegistry.CreateFeature(feature2);
+        var resource1 = TestData.CreateNewResource(nameof(CreateResourceGroupWithExistingResources), 1);
+        var resourceEntity1 = await _authorizationRegistry.CreateResource(resource1);
+        var resource2 = TestData.CreateNewResource(nameof(CreateResourceGroupWithExistingResources) + "2", 2);
+        resource2.Properties.Clear();
+        var resourceEntity2 = await _authorizationRegistry.CreateResource(resource2);
 
-        var product = TestData.CreateNewProduct(nameof(CreateProductWithExistingFeatures), 1);
-        var productEntity = await _authorizationRegistry.CreateProductWithExistingFeatures(product, new List<string>() { featureEntity1.FeatureId, featureEntity2.FeatureId });
+        var resourceGroup = TestData.CreateNewResourceGroup(nameof(CreateResourceGroupWithExistingResources), 1);
+        var resourceGroupEntity = await _authorizationRegistry.CreateResourceGroupWithExistingResources(resourceGroup, new List<string>() { resourceEntity1.ResourceId, resourceEntity2.ResourceId });
 
-        Assert.NotNull(productEntity);
-        Assert.Equal(product.ProductId, productEntity.ProductId);
-        Assert.Equal(2, productEntity.Features.Count);
+        Assert.NotNull(resourceGroupEntity);
+        Assert.Equal(resourceGroup.ResourceGroupId, resourceGroupEntity.ResourceGroupId);
+        Assert.Equal(2, resourceGroupEntity.Resources.Count);
 
-        var success = await _authorizationRegistry.DeleteProduct(product.ProductId);
+        var success = await _authorizationRegistry.DeleteResourceGroup(resourceGroup.ResourceGroupId);
         Assert.True(success);
     }
 

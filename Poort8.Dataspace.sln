@@ -21,6 +21,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.Authorizat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.CoreManager", "Poort8.Dataspace.CoreManager\Poort8.Dataspace.CoreManager.csproj", "{CD1007D9-950F-43CA-833F-87F862306757}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.Identity", "Poort8.Dataspace.Identity\Poort8.Dataspace.Identity.csproj", "{07850F03-59CF-42C6-859C-A30ACFD9F305}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.Identity.SqliteMigrations", "Poort8.Dataspace.Identity.SqliteMigrations\Poort8.Dataspace.Identity.SqliteMigrations.csproj", "{A16622B2-CD61-445C-A4DF-7351B084ACDB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.Identity.SqlServerMigrations", "Poort8.Dataspace.Identity.SqlServerMigrations\Poort8.Dataspace.Identity.SqlServerMigrations.csproj", "{73B0CE79-6E30-4E04-B9D4-2A7C56F633B9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Poort8.Dataspace.API", "Poort8.Dataspace.API\Poort8.Dataspace.API.csproj", "{6AC0AE2F-1F24-4D6C-BF5C-74937D1DB84A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poort8.Dataspace.API.Tests", "Poort8.Dataspace.API.Tests\Poort8.Dataspace.API.Tests.csproj", "{9E206CE0-36AF-4F24-BB28-44119C9C4712}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +73,26 @@ Global
 		{CD1007D9-950F-43CA-833F-87F862306757}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD1007D9-950F-43CA-833F-87F862306757}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD1007D9-950F-43CA-833F-87F862306757}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07850F03-59CF-42C6-859C-A30ACFD9F305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07850F03-59CF-42C6-859C-A30ACFD9F305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07850F03-59CF-42C6-859C-A30ACFD9F305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07850F03-59CF-42C6-859C-A30ACFD9F305}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A16622B2-CD61-445C-A4DF-7351B084ACDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A16622B2-CD61-445C-A4DF-7351B084ACDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A16622B2-CD61-445C-A4DF-7351B084ACDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A16622B2-CD61-445C-A4DF-7351B084ACDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73B0CE79-6E30-4E04-B9D4-2A7C56F633B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73B0CE79-6E30-4E04-B9D4-2A7C56F633B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73B0CE79-6E30-4E04-B9D4-2A7C56F633B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73B0CE79-6E30-4E04-B9D4-2A7C56F633B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AC0AE2F-1F24-4D6C-BF5C-74937D1DB84A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AC0AE2F-1F24-4D6C-BF5C-74937D1DB84A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AC0AE2F-1F24-4D6C-BF5C-74937D1DB84A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AC0AE2F-1F24-4D6C-BF5C-74937D1DB84A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E206CE0-36AF-4F24-BB28-44119C9C4712}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E206CE0-36AF-4F24-BB28-44119C9C4712}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E206CE0-36AF-4F24-BB28-44119C9C4712}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E206CE0-36AF-4F24-BB28-44119C9C4712}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

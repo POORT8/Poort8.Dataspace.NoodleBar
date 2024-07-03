@@ -7,7 +7,7 @@ using Poort8.Dataspace.CoreManager.Services;
 
 namespace Poort8.Dataspace.CoreManager.ARPolicies;
 
-public partial class Details : IDisposable
+public partial class Details : ComponentBase, IDisposable
 {
     private bool disposedValue;
     [Parameter]
@@ -76,5 +76,10 @@ public partial class Details : IDisposable
     {
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
+    }
+
+    private string GetOROrganizationName(string? identifier)
+    {
+        return (StateContainer.CurrentOROrganizations?.FirstOrDefault(o => o.Identifier == identifier)?.Name + " " ?? string.Empty) + $"({identifier})";
     }
 }

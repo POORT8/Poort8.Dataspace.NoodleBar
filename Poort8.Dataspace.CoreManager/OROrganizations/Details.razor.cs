@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
-using Poort8.Dataspace.OrganizationRegistry;
-using Poort8.Dataspace.CoreManager.Services;
+using Poort8.Dataspace.AuthorizationRegistry;
 using Poort8.Dataspace.CoreManager.OROrganizations.Dialogs;
+using Poort8.Dataspace.CoreManager.Services;
+using Poort8.Dataspace.OrganizationRegistry;
 
 namespace Poort8.Dataspace.CoreManager.OROrganizations;
 
-public partial class Details : IDisposable
+public partial class Details : ComponentBase, IDisposable
 {
     private bool disposedValue;
     [Parameter]
@@ -17,6 +18,8 @@ public partial class Details : IDisposable
     public required NavigationManager NavigationManager { get; set; }
     [Inject]
     public required IOrganizationRegistry OrganizationRegistry { get; set; }
+    [Inject]
+    public required IAuthorizationRegistry AuthorizationRegistry { get; set; }
     [Inject]
     public required IDialogService DialogService { get; set; }
 
@@ -47,11 +50,22 @@ public partial class Details : IDisposable
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            StateContainer.CurrentOROrganization = await OrganizationRegistry.UpdateOrganization((Organization)result.Data);
+            var organization = (Organization)result.Data;
+            StateContainer.CurrentOROrganization = await OrganizationRegistry.UpdateOrganization(organization);
+            StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+
+            var arOrganization = await AuthorizationRegistry.ReadOrganization(organization.Identifier);
+            if (arOrganization is not null)
+            {
+                arOrganization.Name = organization.Name;
+                arOrganization = await AuthorizationRegistry.UpdateOrganization(arOrganization);
+                if (arOrganization.Identifier == StateContainer.CurrentAROrganization?.Identifier) StateContainer.CurrentAROrganization = arOrganization;
+            }
         }
         else
         {
-            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
+            StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+            StateContainer.CurrentOROrganization = StateContainer.CurrentOROrganizations.First(o => o.Identifier == StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 

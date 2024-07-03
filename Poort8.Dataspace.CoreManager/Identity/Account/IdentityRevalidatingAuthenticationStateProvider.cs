@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Poort8.Dataspace.Identity;
 using System.Security.Claims;
 
 namespace Poort8.Dataspace.CoreManager.Identity.Account;

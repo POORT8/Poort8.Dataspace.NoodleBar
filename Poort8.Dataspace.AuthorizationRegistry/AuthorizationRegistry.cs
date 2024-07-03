@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Poort8.Dataspace.AuthorizationRegistry.Audit;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using Poort8.Dataspace.AuthorizationRegistry.Exceptions;
+using Poort8.Dataspace.AuthorizationRegistry.Extensions;
 using System.Security.Claims;
 
 namespace Poort8.Dataspace.AuthorizationRegistry;
@@ -30,7 +31,9 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
         foreach (var policy in policies)
         {
-            var success = await _enforcer.AddPolicyAsync(policy.ToPolicyValues());
+            string policyType = UseCases.GetPolicyType(policy);
+
+            var success = await _enforcer.AddNamedPolicyAsync(policyType, policy.ToPolicyValues());
             if (!success) throw new EnforcerException("Could not add policy to enforcer.");
         }
 
@@ -47,29 +50,31 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         return organizationEntity;
     }
 
-    public async Task<Product> CreateProduct(Product product)
+    public async Task<ResourceGroup> CreateResourceGroup(ResourceGroup resourceGroup)
     {
-        var productEntity = await _repository.CreateProduct(product);
+        var resourceGroupEntity = await _repository.CreateResourceGroup(resourceGroup);
         await ResetResourceGroup();
-        return productEntity;
+        return resourceGroupEntity;
     }
 
-    public async Task<Product> CreateProductWithExistingFeatures(Product product, ICollection<string> featureIds)
+    public async Task<ResourceGroup> CreateResourceGroupWithExistingResources(ResourceGroup resourceGroup, ICollection<string> resourceIds)
     {
-        var productEntity = await CreateProduct(product);
+        var resourceGroupEntity = await CreateResourceGroup(resourceGroup);
 
-        foreach (var featureId in featureIds)
+        foreach (var resourceId in resourceIds)
         {
-            await AddExistingFeatureToProduct(productEntity.ProductId, featureId);
+            await AddExistingResourceToResourceGroup(resourceGroupEntity.ResourceGroupId, resourceId);
         }
 
-        productEntity = await ReadProduct(productEntity.ProductId);
-        return productEntity!;
+        resourceGroupEntity = await ReadResourceGroup(resourceGroupEntity.ResourceGroupId);
+        return resourceGroupEntity!;
     }
 
     public async Task<Policy> CreatePolicy(Policy policy)
     {
-        var success = await _enforcer.AddPolicyAsync(policy.ToPolicyValues());
+        string policyType = UseCases.GetPolicyType(policy);
+
+        var success = await _enforcer.AddNamedPolicyAsync(policyType, policy.ToPolicyValues());
         if (!success) throw new EnforcerException("Could not add policy to enforcer.");
 
         try
@@ -78,7 +83,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         }
         catch (Exception)
         {
-            success = await _enforcer.RemovePolicyAsync(policy.ToPolicyValues());
+            success = await _enforcer.RemoveNamedPolicyAsync(policyType, policy.ToPolicyValues());
             if (!success) throw new EnforcerException("_repository.Create failed and could not remove policy from enforcer.");
 
             throw;
@@ -92,25 +97,25 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         return employeeEntity;
     }
 
-    public async Task<Feature> CreateFeature(Feature feature)
+    public async Task<Resource> CreateResource(Resource resource)
     {
-        var featureEntity = await _repository.CreateFeature(feature);
+        var resourceEntity = await _repository.CreateResource(resource);
         await ResetResourceGroup();
-        return featureEntity;
+        return resourceEntity;
     }
 
-    public async Task<Feature> AddExistingFeatureToProduct(string productId, string featureId)
+    public async Task<Resource> AddExistingResourceToResourceGroup(string resourceGroupId, string resourceId)
     {
-        var featureEntity = await _repository.AddExistingFeatureToProduct(productId, featureId);
+        var resourceEntity = await _repository.AddExistingResourceToResourceGroup(resourceGroupId, resourceId);
         await ResetResourceGroup();
-        return featureEntity;
+        return resourceEntity;
     }
 
-    public async Task<Feature> AddNewFeatureToProduct(string productId, Feature feature)
+    public async Task<Resource> AddNewResourceToResourceGroup(string resourceGroupId, Resource resource)
     {
-        var featureEntity = await _repository.AddNewFeatureToProduct(productId, feature);
+        var resourceEntity = await _repository.AddNewResourceToResourceGroup(resourceGroupId, resource);
         await ResetResourceGroup();
-        return featureEntity;
+        return resourceEntity;
     }
 
     #endregion
@@ -122,12 +127,13 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     }
 
     public async Task<IReadOnlyList<Organization>> ReadOrganizations(
+        string? useCase = default,
         string? name = default,
         string? propertyKey = default,
         string? propertyValue = default)
     {
         ValidateReadQuery(propertyKey, propertyValue);
-        return await _repository.ReadOrganizations(name, propertyKey, propertyValue);
+        return await _repository.ReadOrganizations(useCase, name, propertyKey, propertyValue);
     }
 
     public async Task<Employee?> ReadEmployee(string employeeId)
@@ -136,6 +142,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     }
 
     public async Task<IReadOnlyList<Employee>> ReadEmployees(
+        string? useCase = default,
         string? organizationId = default,
         string? familyName = default,
         string? email = default,
@@ -143,35 +150,37 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         string? propertyValue = default)
     {
         ValidateReadQuery(propertyKey, propertyValue);
-        return await _repository.ReadEmployees(organizationId, familyName, email, propertyKey, propertyValue);
+        return await _repository.ReadEmployees(useCase, organizationId, familyName, email, propertyKey, propertyValue);
     }
 
-    public async Task<Product?> ReadProduct(string productId)
+    public async Task<ResourceGroup?> ReadResourceGroup(string resourceGroupId)
     {
-        return await _repository.ReadProduct(productId);
+        return await _repository.ReadResourceGroup(resourceGroupId);
     }
 
-    public async Task<IReadOnlyList<Product>> ReadProducts(
+    public async Task<IReadOnlyList<ResourceGroup>> ReadResourceGroups(
+        string? useCase = default,
         string? name = default,
         string? propertyKey = default,
         string? propertyValue = default)
     {
         ValidateReadQuery(propertyKey, propertyValue);
-        return await _repository.ReadProducts(name, propertyKey, propertyValue);
+        return await _repository.ReadResourceGroups(useCase, name, propertyKey, propertyValue);
     }
 
-    public async Task<Feature?> ReadFeature(string featureId)
+    public async Task<Resource?> ReadResource(string resourceId)
     {
-        return await _repository.ReadFeature(featureId);
+        return await _repository.ReadResource(resourceId);
     }
 
-    public async Task<IReadOnlyList<Feature>> ReadFeatures(
+    public async Task<IReadOnlyList<Resource>> ReadResources(
+        string? useCase = default,
         string? name = default,
         string? propertyKey = default,
         string? propertyValue = default)
     {
         ValidateReadQuery(propertyKey, propertyValue);
-        return await _repository.ReadFeatures(name, propertyKey, propertyValue);
+        return await _repository.ReadResources(useCase, name, propertyKey, propertyValue);
     }
 
     public async Task<Policy?> ReadPolicy(string policyId)
@@ -209,25 +218,27 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         return employeeEntity;
     }
 
-    public async Task<Product> UpdateProduct(Product product)
+    public async Task<ResourceGroup> UpdateResourceGroup(ResourceGroup resourceGroup)
     {
-        var productEntity = await _repository.UpdateProduct(product);
+        var resourceGroupEntity = await _repository.UpdateResourceGroup(resourceGroup);
         await ResetResourceGroup();
-        return productEntity;
+        return resourceGroupEntity;
     }
 
-    public async Task<Feature> UpdateFeature(Feature feature)
+    public async Task<Resource> UpdateResource(Resource resource)
     {
-        var featureEntity = await _repository.UpdateFeature(feature);
+        var resourceEntity = await _repository.UpdateResource(resource);
         await ResetResourceGroup();
-        return featureEntity;
+        return resourceEntity;
     }
 
     public async Task<Policy> UpdatePolicy(Policy policy)
     {
         var oldPolicy = await ReadPolicy(policy.PolicyId) ?? throw new RepositoryException("Policy not found.");
 
-        var success = await _enforcer.UpdateNamedPolicyAsync("p", oldPolicy.ToPolicyValues(), policy.ToPolicyValues());
+        string policyType = UseCases.GetPolicyType(policy);
+
+        var success = await _enforcer.UpdateNamedPolicyAsync(policyType, oldPolicy.ToPolicyValues(), policy.ToPolicyValues());
         if (!success) throw new EnforcerException("Could not update policy in enforcer.");
 
         try
@@ -236,7 +247,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         }
         catch (Exception)
         {
-            success = await _enforcer.UpdateNamedPolicyAsync("p", policy.ToPolicyValues(), oldPolicy.ToPolicyValues());
+            success = await _enforcer.UpdateNamedPolicyAsync(policyType, policy.ToPolicyValues(), oldPolicy.ToPolicyValues());
             if (!success) throw new EnforcerException("_repository.Update failed and could not update policy in enforcer.");
 
             throw;
@@ -261,24 +272,24 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         return success;
     }
 
-    public async Task<bool> DeleteProduct(string productId)
+    public async Task<bool> DeleteResourceGroup(string resourceGroupId)
     {
         //TODO: What to do with the policies?
-        var success = await _repository.DeleteProduct(productId);
+        var success = await _repository.DeleteResourceGroup(resourceGroupId);
         if (success) await ResetResourceGroup();
         return success;
     }
 
-    public async Task<bool> DeleteFeature(string featureId)
+    public async Task<bool> DeleteResource(string resourceId)
     {
-        var success = await _repository.DeleteFeature(featureId);
+        var success = await _repository.DeleteResource(resourceId);
         if (success) await ResetResourceGroup();
         return success;
     }
 
-    public async Task<bool> RemoveFeatureFromProduct(string productId, string featureId)
+    public async Task<bool> RemoveResourceFromResourceGroup(string resourceGroupId, string resourceId)
     {
-        var success = await _repository.RemoveFeatureFromProduct(productId, featureId);
+        var success = await _repository.RemoveResourceFromResourceGroup(resourceGroupId, resourceId);
         if (success) await ResetResourceGroup();
         return success;
     }
@@ -287,7 +298,9 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     {
         var policyEntity = await ReadPolicy(policyId) ?? throw new RepositoryException("Policy not found.");
 
-        var success = await _enforcer.RemovePolicyAsync(policyEntity.ToPolicyValues());
+        string policyType = UseCases.GetPolicyType(policyEntity);
+
+        var success = await _enforcer.RemoveNamedPolicyAsync(policyType, policyEntity.ToPolicyValues());
         if (!success) throw new EnforcerException("Could not delete policy from enforcer.");
 
         try
@@ -296,7 +309,7 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         }
         catch (Exception)
         {
-            success = await _enforcer.AddPolicyAsync(policyEntity.ToPolicyValues());
+            success = await _enforcer.AddNamedPolicyAsync(policyType, policyEntity.ToPolicyValues());
             if (!success) throw new EnforcerException("_repository.Delete failed and could not add policy to enforcer.");
 
             throw;
@@ -304,13 +317,12 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     }
 
     #endregion
-
     #region Authorization
 
     public async Task<bool> Enforce(string subjectId, string resourceId, string action, string useCase = "default")
     {
         var now = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
-        var allowed = await _enforcer.EnforceAsync(useCase, now, subjectId, resourceId, action);
+        var allowed = await _enforcer.EnforceAsync(useCase.ToLower(), now, subjectId.ToLower(), resourceId.ToLower(), action.ToLower());
 
         var user = _currentUser?.Identity?.Name ?? "unknown";
         await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed);
@@ -321,7 +333,46 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     public async Task<(bool allowed, List<Policy> explainPolicy)> ExplainedEnforce(string subjectId, string resourceId, string action, string useCase = "default")
     {
         var now = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
-        var (allowed, explainCasbinPolicies) = await _enforcer.EnforceExAsync(useCase, now, subjectId, resourceId, action);
+        var (allowed, explainCasbinPolicies) = await _enforcer.EnforceExAsync(useCase.ToLower(), now, subjectId.ToLower(), resourceId.ToLower(), action.ToLower());
+
+        var explainPolicies = new List<Policy>(explainCasbinPolicies.Count());
+        foreach (var explainCasbinPolicy in explainCasbinPolicies)
+        {
+            var explainPolicy = await ReadPolicy(explainCasbinPolicy.First()) ?? throw new EnforcerException("Explain policy not found.");
+            explainPolicies.Add(explainPolicy);
+        }
+
+        var user = _currentUser?.Identity?.Name ?? "unknown";
+        await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed, explainPolicies);
+
+        return (allowed, explainPolicies);
+    }
+
+    public async Task<(bool allowed, List<Policy> explainPolicy)> ExplainedEnforce(string issuerId, string subjectId, string serviceProvider, string action, string resourceId, string type, string attribute, string useCase = "ishare")
+    {
+        var now = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+        var context = _enforcer.CreateContext("rishare", "pishare", "e", "mishare", true);
+        var (allowed, explainCasbinPolicies) = await AREnforcerExtension.EnforceExAsync(_enforcer, context, useCase.ToLower(), now, issuerId.ToLower(), subjectId.ToLower(), serviceProvider.ToLower(), action.ToLower(), resourceId.ToLower(), type.ToLower(), attribute.ToLower());
+
+        var explainPolicies = new List<Policy>(explainCasbinPolicies.Count());
+        foreach (var explainCasbinPolicy in explainCasbinPolicies)
+        {
+            var explainPolicy = await ReadPolicy(explainCasbinPolicy.First()) ?? throw new EnforcerException("Explain policy not found.");
+            explainPolicies.Add(explainPolicy);
+        }
+
+        var user = _currentUser?.Identity?.Name ?? "unknown";
+        await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed, explainPolicies);
+
+        return (allowed, explainPolicies);
+    }
+
+    public async Task<(bool allowed, List<Policy> explainPolicy)> ExplainedEnforce(string issuerId, string subjectId, string serviceProvider, string action, string resourceId, string type, string attribute, dynamic requestContext, string useCase = "isharerules")
+    {
+        var now = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+        _enforcer.AddFunction("EnforceIshareRules", RuleEnforcers.GetRuleEnforcer(useCase));
+        var context = _enforcer.CreateContext("risharerules", "pisharerules", "e", "misharerules", true);
+        var (allowed, explainCasbinPolicies) = await AREnforcerExtension.EnforceExAsync(_enforcer, context, useCase.ToLower(), now, issuerId.ToLower(), subjectId.ToLower(), serviceProvider.ToLower(), action.ToLower(), resourceId.ToLower(), type.ToLower(), attribute.ToLower(), requestContext as object);
 
         var explainPolicies = new List<Policy>(explainCasbinPolicies.Count());
         foreach (var explainCasbinPolicy in explainCasbinPolicies)
@@ -363,28 +414,28 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         var organizationPropertyIdentifiers = organizationEntities
             .SelectMany(org => org.Properties
             .Where(p => p.IsIdentifier)
-            .Select(p => new List<string> { p.Value, org.Identifier }))
+            .Select(p => new List<string> { p.Value.ToLower(), org.Identifier.ToLower(), org.UseCase.ToLower() }))
             .ToList();
 
         var employeeIdentifiers = organizationEntities
-            .SelectMany(org => org.Employees, (o, e) => new List<string> { e.EmployeeId, o.Identifier })
+            .SelectMany(org => org.Employees, (o, e) => new List<string> { e.EmployeeId.ToLower(), o.Identifier.ToLower(), e.UseCase.ToLower() })
             .ToList();
 
         var employeeEmail = organizationEntities
             .SelectMany(org => org.Employees
-            .Select(e => new List<string> { e.Email, org.Identifier }))
+            .Select(e => new List<string> { e.Email.ToLower(), org.Identifier.ToLower(), e.UseCase.ToLower() }))
             .ToList();
 
         var employeeTelephone = organizationEntities
             .SelectMany(org => org.Employees
-            .Select(e => new List<string> { e.Telephone, org.Identifier }))
+            .Select(e => new List<string> { e.Telephone.ToLower(), org.Identifier.ToLower(), e.UseCase.ToLower() }))
             .ToList();
 
         var employeePropertyIdentifiers = organizationEntities
             .SelectMany(org => org.Employees
             .SelectMany(emp => emp.Properties
             .Where(p => p.IsIdentifier)
-            .Select(p => new List<string> { p.Value, org.Identifier })))
+            .Select(p => new List<string> { p.Value.ToLower(), org.Identifier.ToLower(), emp.UseCase.ToLower() })))
             .ToList();
 
         return organizationPropertyIdentifiers
@@ -399,8 +450,8 @@ public class AuthorizationRegistry : IAuthorizationRegistry
     {
         await ResetGroup("resourceGroup");
 
-        var productEntities = await ReadProducts();
-        var newGroups = GetAllResourceGroups(productEntities);
+        var resourceGroupEntities = await ReadResourceGroups();
+        var newGroups = GetAllResourceGroups(resourceGroupEntities);
         if (newGroups.Count > 0)
         {
             var success = await _enforcer.AddNamedGroupingPoliciesAsync("resourceGroup", newGroups);
@@ -408,28 +459,28 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         }
     }
 
-    private static List<List<string>> GetAllResourceGroups(IReadOnlyList<Product> productEntities)
+    private static List<List<string>> GetAllResourceGroups(IReadOnlyList<ResourceGroup> resourceGroupEntities)
     {
-        var productPropertyIdentifiers = productEntities
-            .SelectMany(prod => prod.Properties
-            .Where(prop => prop.IsIdentifier)
-            .Select(p => new List<string> { p.Value, prod.ProductId }))
+        var resourceGroupPropertyIdentifiers = resourceGroupEntities
+            .SelectMany(rg => rg.Properties
+            .Where(rg => rg.IsIdentifier)
+            .Select(p => new List<string> { p.Value.ToLower(), rg.ResourceGroupId.ToLower(), rg.UseCase.ToLower() }))
             .ToList();
 
-        var featureIdentifiers = productEntities
-            .SelectMany(prod => prod.Features, (prod, f) => new List<string> { f.FeatureId, prod.ProductId })
+        var resourceIdentifiers = resourceGroupEntities
+            .SelectMany(rg => rg.Resources, (rg, f) => new List<string> { f.ResourceId.ToLower(), rg.ResourceGroupId.ToLower(), f.UseCase.ToLower() })
             .ToList();
 
-        var featurePropertyIdentifiers = productEntities
-            .SelectMany(prod => prod.Features
-            .SelectMany(feat => feat.Properties
+        var resourcePropertyIdentifiers = resourceGroupEntities
+            .SelectMany(rg => rg.Resources
+            .SelectMany(r => r.Properties
             .Where(p => p.IsIdentifier)
-            .Select(p => new List<string> { p.Value, prod.ProductId })))
+            .Select(p => new List<string> { p.Value.ToLower(), rg.ResourceGroupId.ToLower(), r.UseCase.ToLower() })))
             .ToList();
 
-        return productPropertyIdentifiers
-            .Concat(featureIdentifiers)
-            .Concat(featurePropertyIdentifiers)
+        return resourceGroupPropertyIdentifiers
+            .Concat(resourceIdentifiers)
+            .Concat(resourcePropertyIdentifiers)
             .ToList();
     }
 

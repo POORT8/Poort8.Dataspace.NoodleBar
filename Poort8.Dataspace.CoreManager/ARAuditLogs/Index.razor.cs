@@ -14,7 +14,7 @@ public partial class Index : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        EntityAuditRecords = [.. (await AuthorizationRegistry!.GetEntityAuditRecords()).OrderByDescending(o => o.Timestamp)];
-        EnforceAuditRecords = [.. (await AuthorizationRegistry!.GetEnforceAuditRecords()).OrderByDescending(o => o.Timestamp)];
+        EntityAuditRecords = [.. (await AuthorizationRegistry.GetEntityAuditRecords()).OrderByDescending(o => o.Timestamp)];
+        EnforceAuditRecords = [.. (await AuthorizationRegistry.GetEnforceAuditRecords()).OrderByDescending(o => o.Timestamp)];
     }
 }

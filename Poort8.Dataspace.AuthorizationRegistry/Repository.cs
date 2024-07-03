@@ -23,26 +23,26 @@ public class Repository : IRepository
         return organizationEntity.Entity;
     }
 
-    public async Task<Product> CreateProduct(Product product)
+    public async Task<ResourceGroup> CreateResourceGroup(ResourceGroup resourceGroup)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var productEntity = await context.AddAsync(product);
+        var resourceGroupEntity = await context.AddAsync(resourceGroup);
         await context.SaveChangesAsync();
-        return productEntity.Entity;
+        return resourceGroupEntity.Entity;
     }
 
-    public async Task<Product> CreateProductWithExistingFeatures(Product product, ICollection<string> featureIds)
+    public async Task<ResourceGroup> CreateResourceGroupWithExistingResources(ResourceGroup resourceGroup, ICollection<string> resourceIds)
     {
-        var productEntity = await CreateProduct(product);
+        var resourceGroupEntity = await CreateResourceGroup(resourceGroup);
 
-        foreach (var featureId in featureIds)
+        foreach (var resourceId in resourceIds)
         {
-            await AddExistingFeatureToProduct(productEntity.ProductId, featureId);
+            await AddExistingResourceToResourceGroup(resourceGroupEntity.ResourceGroupId, resourceId);
         }
 
-        productEntity = await ReadProduct(productEntity.ProductId);
-        return productEntity!;
+        resourceGroupEntity = await ReadResourceGroup(resourceGroupEntity.ResourceGroupId);
+        return resourceGroupEntity!;
     }
 
     public async Task<Policy> CreatePolicy(Policy policy)
@@ -67,41 +67,41 @@ public class Repository : IRepository
         return employee;
     }
 
-    public async Task<Feature> CreateFeature(Feature feature)
+    public async Task<Resource> CreateResource(Resource resource)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var featureEntity = await context.AddAsync(feature);
+        var resourceEntity = await context.AddAsync(resource);
         await context.SaveChangesAsync();
-        return featureEntity.Entity;
+        return resourceEntity.Entity;
     }
 
-    public async Task<Feature> AddExistingFeatureToProduct(string productId, string featureId)
+    public async Task<Resource> AddExistingResourceToResourceGroup(string resourceGroupId, string resourceId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var productEntity = await context.Products
-            .FirstAsync(p => p.ProductId == productId);
-        var featureEntity = await context.Features
-            .FirstAsync(f => f.FeatureId == featureId);
-        productEntity.Features.Add(featureEntity);
+        var resourceGroupEntity = await context.ResourceGroups
+            .FirstAsync(rg => rg.ResourceGroupId == resourceGroupId);
+        var resourceEntity = await context.Resources
+            .FirstAsync(r => r.ResourceId == resourceId);
+        resourceGroupEntity.Resources.Add(resourceEntity);
 
-        context.Update(productEntity);
+        context.Update(resourceGroupEntity);
         await context.SaveChangesAsync();
-        return featureEntity;
+        return resourceEntity;
     }
 
-    public async Task<Feature> AddNewFeatureToProduct(string productId, Feature feature)
+    public async Task<Resource> AddNewResourceToResourceGroup(string resourceGroupId, Resource resource)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var productEntity = await context.Products
-            .FirstAsync(p => p.ProductId == productId);
-        productEntity.Features.Add(feature);
+        var resourceGroupEntity = await context.ResourceGroups
+            .FirstAsync(rg => rg.ResourceGroupId == resourceGroupId);
+        resourceGroupEntity.Resources.Add(resource);
 
-        context.Update(productEntity);
+        context.Update(resourceGroupEntity);
         await context.SaveChangesAsync();
-        return feature;
+        return resource;
     }
 
     #endregion
@@ -127,11 +127,12 @@ public class Repository : IRepository
             .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == identifier));
     }
 
-    public async Task<IReadOnlyList<Organization>> ReadOrganizations(string? name, string? propertyKey, string? propertyValue)
+    public async Task<IReadOnlyList<Organization>> ReadOrganizations(string? useCase, string? name, string? propertyKey, string? propertyValue)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
         return await context.Organizations
+            .Where(p => useCase == default || useCase == p.UseCase)
             .Where(o => name == default || name == o.Name)
             .Where(o => propertyKey == default || o.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
             .Include(o => o.Employees)
@@ -157,6 +158,7 @@ public class Repository : IRepository
     }
 
     public async Task<IReadOnlyList<Employee>> ReadEmployees(
+        string? useCase = default,
         string? organizationId = default,
         string? familyName = default,
         string? email = default,
@@ -173,6 +175,7 @@ public class Repository : IRepository
         }
 
         return await context.Employees
+            .Where(p => useCase == default || useCase == p.UseCase)
             .Where(e => organizationId == default || organizationId == organizationEntityIdentifier)
             .Where(e => familyName == default || familyName == e.FamilyName)
             .Where(e => email == default || email == e.Email)
@@ -181,66 +184,70 @@ public class Repository : IRepository
             .ToListAsync();
     }
 
-    public async Task<Product?> ReadProduct(string productId)
+    public async Task<ResourceGroup?> ReadResourceGroup(string resourceGroupId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var product = await context.Products
-            .Include(p => p.Features)
-            .ThenInclude(f => f.Properties)
-            .Include(p => p.Properties)
-            .FirstOrDefaultAsync(p => p.ProductId == productId);
+        var resourceGroup = await context.ResourceGroups
+            .Include(rg => rg.Resources)
+            .ThenInclude(r => r.Properties)
+            .Include(rg => rg.Properties)
+            .FirstOrDefaultAsync(rg => rg.ResourceGroupId == resourceGroupId);
 
-        if (product is not null)
-            return product;
+        if (resourceGroup is not null)
+            return resourceGroup;
 
-        return await context.Products
-            .Include(p => p.Features)
-            .ThenInclude(f => f.Properties)
-            .Include(p => p.Properties)
-            .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == productId));
+        return await context.ResourceGroups
+            .Include(rg => rg.Resources)
+            .ThenInclude(r => r.Properties)
+            .Include(rg => rg.Properties)
+            .FirstOrDefaultAsync(rg => rg.Properties.Any(p => p.IsIdentifier && p.Value == resourceGroupId));
     }
 
-    public async Task<IReadOnlyList<Product>> ReadProducts(
+    public async Task<IReadOnlyList<ResourceGroup>> ReadResourceGroups(
+        string? useCase = default,
         string? name = default,
         string? propertyKey = default,
         string? propertyValue = default)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        return await context.Products
-            .Where(p => name == default || name == p.Name)
-            .Where(p => propertyKey == default || p.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
-            .Include(p => p.Features)
-            .ThenInclude(f => f.Properties)
-            .Include(p => p.Properties)
+        return await context.ResourceGroups
+            .Where(rg => useCase == default || useCase == rg.UseCase)
+            .Where(rg => name == default || name == rg.Name)
+            .Where(rg => propertyKey == default || rg.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
+            .Include(rg => rg.Resources)
+            .ThenInclude(r => r.Properties)
+            .Include(rg => rg.Properties)
             .ToListAsync();
     }
 
-    public async Task<Feature?> ReadFeature(string featureId)
+    public async Task<Resource?> ReadResource(string resourceId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var feature = await context.Features
+        var resource = await context.Resources
             .Include(e => e.Properties)
-            .FirstOrDefaultAsync(e => e.FeatureId == featureId);
+            .FirstOrDefaultAsync(e => e.ResourceId == resourceId);
 
-        if (feature is not null)
-            return feature;
+        if (resource is not null)
+            return resource;
 
-        return await context.Features
+        return await context.Resources
             .Include(e => e.Properties)
-            .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == featureId));
+            .FirstOrDefaultAsync(p => p.Properties.Any(p => p.IsIdentifier && p.Value == resourceId));
     }
 
-    public async Task<IReadOnlyList<Feature>> ReadFeatures(
+    public async Task<IReadOnlyList<Resource>> ReadResources(
+        string? useCase = default,
         string? name = default,
         string? propertyKey = default,
         string? propertyValue = default)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        return await context.Features
+        return await context.Resources
+            .Where(p => useCase == default || useCase == p.UseCase)
             .Where(f => name == default || name == f.Name)
             .Where(f => propertyKey == default || f.Properties.Any(p => propertyKey == p.Key && propertyValue == p.Value))
             .Include(f => f.Properties)
@@ -386,50 +393,50 @@ public class Repository : IRepository
         }
     }
 
-    public async Task<Product> UpdateProduct(Product product)
+    public async Task<ResourceGroup> UpdateResourceGroup(ResourceGroup resourceGroup)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var productEntity = await context.Products
-            .Include(p => p.Features)
-            .ThenInclude(f => f.Properties)
-            .Include(p => p.Properties)
-            .SingleAsync(p => p.ProductId == product.ProductId);
+        var resourceGroupEntity = await context.ResourceGroups
+            .Include(rg => rg.Resources)
+            .ThenInclude(r => r.Properties)
+            .Include(rg => rg.Properties)
+            .SingleAsync(rg => rg.ResourceGroupId == resourceGroup.ResourceGroupId);
 
-        context.Entry(productEntity).CurrentValues.SetValues(product);
+        context.Entry(resourceGroupEntity).CurrentValues.SetValues(resourceGroup);
 
-        foreach (var feature in product.Features)
+        foreach (var resource in resourceGroup.Resources)
         {
-            var featureEntity = productEntity.Features
-                .FirstOrDefault(f => f.FeatureId == feature.FeatureId);
+            var resourceEntity = resourceGroupEntity.Resources
+                .FirstOrDefault(r => r.ResourceId == resource.ResourceId);
 
-            if (featureEntity == null)
+            if (resourceEntity == null)
             {
-                productEntity.Features.Add(feature);
+                resourceGroupEntity.Resources.Add(resource);
             }
             else
             {
-                context.Entry(featureEntity).CurrentValues.SetValues(feature);
-                UpdateFeatureProperties(context, feature, featureEntity);
+                context.Entry(resourceEntity).CurrentValues.SetValues(resource);
+                UpdateResourceProperties(context, resource, resourceEntity);
             }
         }
 
-        foreach (var feature in productEntity.Features)
+        foreach (var resource in resourceGroupEntity.Resources)
         {
-            if (!product.Features.Any(p => p.FeatureId == feature.FeatureId))
+            if (!resourceGroup.Resources.Any(r => r.ResourceId == resource.ResourceId))
             {
-                context.Remove(feature);
+                context.Remove(resource);
             }
         }
 
-        foreach (var property in product.Properties)
+        foreach (var property in resourceGroup.Properties)
         {
-            var propertyEntity = productEntity.Properties
+            var propertyEntity = resourceGroupEntity.Properties
                 .FirstOrDefault(p => p.PropertyId == property.PropertyId);
 
             if (propertyEntity == null)
             {
-                productEntity.Properties.Add(property);
+                resourceGroupEntity.Properties.Add(property);
             }
             else
             {
@@ -437,43 +444,43 @@ public class Repository : IRepository
             }
         }
 
-        foreach (var property in productEntity.Properties)
+        foreach (var property in resourceGroupEntity.Properties)
         {
-            if (!product.Properties.Any(p => p.PropertyId == property.PropertyId))
+            if (!resourceGroup.Properties.Any(p => p.PropertyId == property.PropertyId))
             {
                 context.Remove(property);
             }
         }
 
         await context.SaveChangesAsync();
-        return productEntity;
+        return resourceGroupEntity;
     }
 
-    public async Task<Feature> UpdateFeature(Feature feature)
+    public async Task<Resource> UpdateResource(Resource resource)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var featureEntity = await context.Features
+        var resourceEntity = await context.Resources
             .Include(f => f.Properties)
-            .SingleAsync(f => f.FeatureId == feature.FeatureId);
+            .SingleAsync(f => f.ResourceId == resource.ResourceId);
 
-        context.Entry(featureEntity).CurrentValues.SetValues(feature);
-        UpdateFeatureProperties(context, feature, featureEntity);
+        context.Entry(resourceEntity).CurrentValues.SetValues(resource);
+        UpdateResourceProperties(context, resource, resourceEntity);
 
         await context.SaveChangesAsync();
-        return featureEntity;
+        return resourceEntity;
     }
 
-    private static void UpdateFeatureProperties(AuthorizationContext context, Feature feature, Feature featureEntity)
+    private static void UpdateResourceProperties(AuthorizationContext context, Resource resource, Resource resourceEntity)
     {
-        foreach (var property in feature.Properties)
+        foreach (var property in resource.Properties)
         {
-            var propertyEntity = featureEntity.Properties
+            var propertyEntity = resourceEntity.Properties
                 .FirstOrDefault(p => p.PropertyId == property.PropertyId);
 
             if (propertyEntity == null)
             {
-                featureEntity.Properties.Add(property);
+                resourceEntity.Properties.Add(property);
             }
             else
             {
@@ -481,9 +488,9 @@ public class Repository : IRepository
             }
         }
 
-        foreach (var property in featureEntity.Properties)
+        foreach (var property in resourceEntity.Properties)
         {
-            if (!feature.Properties.Any(p => p.PropertyId == property.PropertyId))
+            if (!resource.Properties.Any(p => p.PropertyId == property.PropertyId))
             {
                 context.Remove(property);
             }
@@ -558,47 +565,47 @@ public class Repository : IRepository
         return true;
     }
 
-    public async Task<bool> DeleteProduct(string productId)
+    public async Task<bool> DeleteResourceGroup(string resourceGroupId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var productEntity = await context.Products
-            .FirstOrDefaultAsync(p => p.ProductId == productId);
+        var resourceGroupEntity = await context.ResourceGroups
+            .FirstOrDefaultAsync(p => p.ResourceGroupId == resourceGroupId);
 
-        if (productEntity == null) return false;
+        if (resourceGroupEntity == null) return false;
 
-        context.Remove(productEntity);
+        context.Remove(resourceGroupEntity);
         await context.SaveChangesAsync();
         return true;
     }
 
-    public async Task<bool> DeleteFeature(string featureId)
+    public async Task<bool> DeleteResource(string resourceId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var featureEntity = await context.Features
-            .FirstOrDefaultAsync(f => f.FeatureId == featureId);
+        var resourceEntity = await context.Resources
+            .FirstOrDefaultAsync(f => f.ResourceId == resourceId);
 
-        if (featureEntity == null) return false;
+        if (resourceEntity == null) return false;
 
-        context.Remove(featureEntity);
+        context.Remove(resourceEntity);
         await context.SaveChangesAsync();
         return true;
     }
 
-    public async Task<bool> RemoveFeatureFromProduct(string productId, string featureId)
+    public async Task<bool> RemoveResourceFromResourceGroup(string resourceGroupId, string resourceId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
 
-        var product = await context.Products
-            .Include(p => p.Features)
-            .FirstAsync(p => p.ProductId == productId);
-        var features = product.Features as List<Feature>;
-        var feature = features!.FirstOrDefault(f => f.FeatureId == featureId);
+        var resourceGroup = await context.ResourceGroups
+            .Include(p => p.Resources)
+            .FirstAsync(p => p.ResourceGroupId == resourceGroupId);
+        var resources = resourceGroup.Resources as List<Resource>;
+        var resource = resources!.FirstOrDefault(f => f.ResourceId == resourceId);
 
-        if (feature == null) return false;
+        if (resource == null) return false;
 
-        features!.Remove(feature);
+        resources!.Remove(resource);
         await context.SaveChangesAsync();
         return true;
     }
@@ -624,6 +631,7 @@ public class Repository : IRepository
         using var context = _contextFactory.CreateDbContext();
 
         return await context.EntityAuditRecords
+            .AsNoTracking()
             .OrderByDescending(r => r.Timestamp)
             .Take(numberOfRecords)
             .ToListAsync();
@@ -634,6 +642,7 @@ public class Repository : IRepository
         using var context = _contextFactory.CreateDbContext();
 
         return await context.EnforceAuditRecords
+            .AsNoTracking()
             .OrderByDescending(r => r.Timestamp)
             .Take(numberOfRecords)
             .ToListAsync();

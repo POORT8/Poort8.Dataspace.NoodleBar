@@ -5,6 +5,7 @@ public class Employee //https://schema.org/Person
 {
     [Key]
     public string EmployeeId { get; set; }
+    public string UseCase { get; set; } = "default";
     public string GivenName { get; set; }
     public string FamilyName { get; set; }
     public string Telephone { get; set; }
@@ -21,13 +22,21 @@ public class Employee //https://schema.org/Person
     }
 
     public Employee(string employeeId, string givenName, string familyName, string telephone, string email, ICollection<EmployeeProperty> properties)
+        : this(employeeId, givenName, familyName, telephone, email)
     {
-        EmployeeId = employeeId;
-        GivenName = givenName;
-        FamilyName = familyName;
-        Telephone = telephone;
-        Email = email;
         Properties = properties;
+    }
+
+    public Employee(string employeeId, string useCase, string givenName, string familyName, string telephone, string email)
+        : this(employeeId, givenName, familyName, telephone, email)
+    {
+        UseCase = useCase;
+    }
+
+    public Employee(string employeeId, string useCase, string givenName, string familyName, string telephone, string email, ICollection<EmployeeProperty> properties)
+        : this(employeeId, givenName, familyName, telephone, email, properties)
+    {
+        UseCase = useCase;
     }
 
     public class EmployeeProperty

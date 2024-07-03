@@ -6,8 +6,9 @@ using Poort8.Dataspace.OrganizationRegistry;
 
 namespace Poort8.Dataspace.CoreManager.OROrganizations.Components;
 
-public partial class AuthorizationRegistries
+public partial class AuthorizationRegistries : ComponentBase, IDisposable
 {
+    private bool disposedValue;
     [Inject]
     public required IDialogService DialogService { get; set; }
     [Inject]
@@ -39,7 +40,8 @@ public partial class AuthorizationRegistries
         if (!result.Cancelled && result.Data is not null)
         {
             await OrganizationRegistry.AddNewAuthorizationRegistryToOrganization(StateContainer.CurrentOROrganization!.Identifier, (OrganizationRegistry.AuthorizationRegistry)result.Data);
-            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
+            StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+            StateContainer.CurrentOROrganization = StateContainer.CurrentOROrganizations.First(o => o.Identifier == StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
@@ -67,7 +69,8 @@ public partial class AuthorizationRegistries
         {
             await OrganizationRegistry.UpdateAuthorizationRegistry((OrganizationRegistry.AuthorizationRegistry)result.Data);
         }
-        StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
+        StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+        StateContainer.CurrentOROrganization = StateContainer.CurrentOROrganizations.First(o => o.Identifier == StateContainer.CurrentOROrganization!.Identifier);
     }
 
     private async Task DeleteClicked(OrganizationRegistry.AuthorizationRegistry authorizationRegistry)
@@ -82,7 +85,23 @@ public partial class AuthorizationRegistries
         if (!result.Cancelled)
         {
             await OrganizationRegistry.DeleteAuthorizationRegistry(authorizationRegistry.AuthorizationRegistryId);
-            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
+            StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+            StateContainer.CurrentOROrganization = StateContainer.CurrentOROrganizations.First(o => o.Identifier == StateContainer.CurrentOROrganization!.Identifier);
         }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing) StateContainer!.OnChange -= StateHasChanged;
+            disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

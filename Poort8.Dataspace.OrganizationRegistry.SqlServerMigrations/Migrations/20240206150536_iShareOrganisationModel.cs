@@ -34,7 +34,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 table: "OrOrganization",
                 type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: "[]");
 
             migrationBuilder.AddColumn<string>(
                 name: "AdditionalDetails_Description",
@@ -59,7 +59,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                 table: "OrOrganization",
                 type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: "[]");
 
             migrationBuilder.AddColumn<string>(
                 name: "AdditionalDetails_Tags",

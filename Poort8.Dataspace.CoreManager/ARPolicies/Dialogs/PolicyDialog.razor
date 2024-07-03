@@ -1,10 +1,33 @@
 ﻿@using Poort8.Dataspace.AuthorizationRegistry.Entities;
+@using Poort8.Dataspace.CoreManager.Services;
+@using OROrganization = Poort8.Dataspace.OrganizationRegistry.Organization;
 @implements IDialogContentComponent<Policy>
 
 <FluentTextField Label="Use Case" @bind-Value="Content.UseCase" />
-<FluentTextField Label="Issuer" @bind-Value="Content.IssuerId" />
-<FluentTextField Label="Actor" @bind-Value="Content.SubjectId" />
-<FluentTextField Label="Service Provider" @bind-Value="Content.ServiceProvider" />
+@if (StateContainer.CurrentOROrganizations is not null && StateContainer.CurrentOROrganizations.Any(o => o.Identifier.Equals(Content.IssuerId)))
+{
+    <FluentSelect Label="Issuer" @bind-Value="Content.IssuerId" @bind-SelectedOption="@selectedIssuerOROrganization" Items="@StateContainer.CurrentOROrganizations" OptionValue="@(o => o?.Identifier)" OptionText="@(o => $"{o?.Name} ({o?.Identifier})")" />
+}
+else
+{
+    <FluentTextField Label="Issuer" @bind-Value="Content.IssuerId" Disabled=true />
+}
+@if (StateContainer.CurrentOROrganizations is not null && StateContainer.CurrentOROrganizations.Any(o => o.Identifier.Equals(Content.SubjectId)))
+{
+    <FluentSelect Label="Actor" @bind-Value="Content.SubjectId" @bind-SelectedOption="@selectedActorOROrganization" Items="@StateContainer.CurrentOROrganizations" OptionValue="@(o => o?.Identifier)" OptionText="@(o => $"{o?.Name} ({o?.Identifier})")" />
+}
+else
+{
+    <FluentTextField Label="Actor" @bind-Value="Content.SubjectId" Disabled=true />
+}
+@if (StateContainer.CurrentOROrganizations is not null && StateContainer.CurrentOROrganizations.Any(o => o.Identifier.Equals(Content.ServiceProvider)))
+{
+    <FluentSelect Label="Service Provider" @bind-Value="Content.ServiceProvider" @bind-SelectedOption="@selectedServiceProviderOROrganization" Items="@StateContainer.CurrentOROrganizations" OptionValue="@(o => o?.Identifier)" OptionText="@(o => $"{o?.Name} ({o?.Identifier})")" />
+}
+else
+{
+    <FluentTextField Label="Service Provider" @bind-Value="Content.ServiceProvider" Disabled=true />
+}
 <FluentDatePicker Label="Not Before" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@DateTimeOffset.FromUnixTimeSeconds(Content.NotBefore).LocalDateTime.Date" ValueChanged=NotBeforeChanged />
 <FluentDatePicker Label="Not On Or After" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@DateTimeOffset.FromUnixTimeSeconds(Content.Expiration).LocalDateTime.Date" ValueChanged=ExpirationChanged />
 <FluentTextField Label="Action" @bind-Value="Content.Action" />
@@ -15,6 +38,12 @@
 @code {
     [Parameter]
     public required Policy Content { get; set; }
+    [Inject]
+    public required StateContainer StateContainer { get; set; }
+
+    private OROrganization? selectedIssuerOROrganization;
+    private OROrganization? selectedActorOROrganization;
+    private OROrganization? selectedServiceProviderOROrganization;
 
     private void NotBeforeChanged(DateTime? newDate)
     {

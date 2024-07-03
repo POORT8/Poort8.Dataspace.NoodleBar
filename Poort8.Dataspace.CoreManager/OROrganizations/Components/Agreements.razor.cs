@@ -6,8 +6,9 @@ using Poort8.Dataspace.OrganizationRegistry;
 
 namespace Poort8.Dataspace.CoreManager.OROrganizations.Components;
 
-public partial class Agreements
+public partial class Agreements : ComponentBase, IDisposable
 {
+    private bool disposedValue;
     [Inject]
     public required IDialogService DialogService { get; set; }
     [Inject]
@@ -39,7 +40,8 @@ public partial class Agreements
         if (!result.Cancelled && result.Data is not null)
         {
             await OrganizationRegistry.AddNewAgreementToOrganization(StateContainer.CurrentOROrganization!.Identifier, (Agreement)result.Data);
-            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
+            StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+            StateContainer.CurrentOROrganization = StateContainer.CurrentOROrganizations.First(o => o.Identifier == StateContainer.CurrentOROrganization!.Identifier);
         }
     }
 
@@ -67,7 +69,8 @@ public partial class Agreements
         {
             await OrganizationRegistry.UpdateAgreement((Agreement)result.Data);
         }
-        StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
+        StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+        StateContainer.CurrentOROrganization = StateContainer.CurrentOROrganizations.First(o => o.Identifier == StateContainer.CurrentOROrganization!.Identifier);
     }
 
     private async Task DeleteClicked(Agreement agreement)
@@ -82,7 +85,23 @@ public partial class Agreements
         if (!result.Cancelled)
         {
             await OrganizationRegistry.DeleteAgreement(agreement.AgreementId);
-            StateContainer.CurrentOROrganization = await OrganizationRegistry.ReadOrganization(StateContainer.CurrentOROrganization!.Identifier);
+            StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
+            StateContainer.CurrentOROrganization = StateContainer.CurrentOROrganizations.First(o => o.Identifier == StateContainer.CurrentOROrganization!.Identifier);
         }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing) StateContainer!.OnChange -= StateHasChanged;
+            disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

@@ -1,0 +1,42 @@
+﻿@page "/ar/resourcegroups/details/{ResourceGroupId}"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [Authorize]
+
+<PageTitle>AR @Options.Value.ResourceGroupAlternativeNamePlural</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
+    <FluentLabel Typo="Typography.H1">@(StateContainer.CurrentResourceGroup!.Name) @Options.Value.ResourceGroupAlternativeName Details</FluentLabel>
+
+    <FluentStack Orientation="Orientation.Horizontal" Gap="10">
+        <FluentButton IconStart="@(new Icons.Regular.Size20.ArrowStepBack())" Appearance="Appearance.Accent" OnClick="@(BackClicked)">Back</FluentButton>
+        <FluentButton IconStart="@(new Icons.Regular.Size20.Edit())" Appearance="Appearance.Accent" OnClick="@(EditClicked)">Edit @Options.Value.ResourceGroupAlternativeName</FluentButton>
+    </FluentStack>
+
+    <div>
+        <p>Identifier: <b>@StateContainer.CurrentResourceGroup!.ResourceGroupId</b></p>
+        <p>Name: <b>@StateContainer.CurrentResourceGroup.Name</b></p>
+        <p>Description: <b>@StateContainer.CurrentResourceGroup.Description</b></p>
+        <p>Provider: <b>@GetOROrganizationName(StateContainer.CurrentResourceGroup.Provider)</b></p>
+        <p>URL: <b>@StateContainer.CurrentResourceGroup.Url</b></p>
+    </div>
+
+    <FluentDivider Style="width: 100%;" Role="DividerRole.Presentation"></FluentDivider>
+
+    <FluentLabel Typo="Typography.H2">@Options.Value.ResourceAlternativeNamePlural</FluentLabel>
+    <FluentStack Orientation="Orientation.Horizontal">
+        <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewResourceClicked)">New @Options.Value.ResourceAlternativeName</FluentButton>
+        <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddExistingResourcesClicked)">Add Existing @Options.Value.ResourceAlternativeName</FluentButton>
+    </FluentStack>
+
+    <FluentDataGrid Items="@StateContainer.CurrentResourceGroup.Resources.AsQueryable()">
+        <PropertyColumn Title="Identifier" Property="@(e => e.ResourceId)" Sortable="true" />
+        <PropertyColumn Title="Name" Property="@(e => e.Name)" Sortable="true" />
+        <PropertyColumn Title="Description" Property="@(e => e.Description)" Sortable="false" />
+        <TemplateColumn Title="Actions" Align="@Align.End">
+            <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => ResourceEditClicked(@context))" />
+            <FluentButton Title="Properties" IconEnd="@(new Icons.Regular.Size16.TagMultiple())" OnClick="@(() => ResourcePropertiesClicked(@context))" />
+            <FluentButton Title="Remove" IconEnd="@(new Icons.Regular.Size16.PinOff())" OnClick="@(() => ResourceRemoveClicked(@context))" />
+            <FluentButton Title="Delete" IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => ResourceDeleteClicked(@context))" />
+        </TemplateColumn>
+    </FluentDataGrid>
+</FluentStack>

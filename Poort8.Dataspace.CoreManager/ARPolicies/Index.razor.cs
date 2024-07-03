@@ -1,13 +1,15 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Poort8.Dataspace.AuthorizationRegistry;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using Poort8.Dataspace.CoreManager.ARPolicies.Dialogs;
 using Poort8.Dataspace.CoreManager.Services;
+using Poort8.Dataspace.OrganizationRegistry;
 
 namespace Poort8.Dataspace.CoreManager.ARPolicies;
 
-public partial class Index : IDisposable
+public partial class Index : ComponentBase, IDisposable
 {
     private bool disposedValue;
     [Inject]
@@ -17,15 +19,23 @@ public partial class Index : IDisposable
     [Inject]
     public required IAuthorizationRegistry AuthorizationRegistry { get; set; }
     [Inject]
+    public required IOrganizationRegistry OrganizationRegistry { get; set; }
+    [Inject]
     public required IDialogService DialogService { get; set; }
+    [Inject]
+    public required IOptions<CoreManagerOptions> Options { get; set; }
 
-    public IReadOnlyList<Policy>? Policies;
+    private IReadOnlyList<Policy>? Policies;
+
+    private bool NoOrganizations => !(StateContainer.CurrentOROrganizations?.Count > 0);
 
     protected override async Task OnInitializedAsync()
     {
         StateContainer.OnChange += StateHasChanged;
 
-        Policies = await AuthorizationRegistry!.ReadPolicies();
+        Policies = await AuthorizationRegistry.ReadPolicies(Options.Value.UseCase);
+
+        StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
     }
 
     private async Task AddNewClicked()
@@ -43,8 +53,9 @@ public partial class Index : IDisposable
             OnDialogResult = DialogService.CreateDialogCallback(this, HandleAddNewClicked)
         };
 
-        var policy = new Policy("iSHARE" ,string.Empty, string.Empty, string.Empty, string.Empty)
+        var policy = new Policy(Options.Value.UseCase, StateContainer.CurrentOROrganizations![0].Identifier, StateContainer.CurrentOROrganizations[0].Identifier, string.Empty, string.Empty)
         {
+            ServiceProvider = StateContainer.CurrentOROrganizations[0].Identifier,
             NotBefore = ((DateTimeOffset)DateTimeOffset.Now.Date).ToUnixTimeSeconds(),
             Expiration = ((DateTimeOffset)DateTimeOffset.Now.AddYears(1).Date).ToUnixTimeSeconds()
         };
@@ -58,7 +69,7 @@ public partial class Index : IDisposable
             var policy = (Policy)result.Data;
             policy.IssuedAt = DateTimeOffset.Now.ToUnixTimeSeconds();
             await AuthorizationRegistry.CreatePolicy(policy);
-            Policies = await AuthorizationRegistry.ReadPolicies();
+            Policies = await AuthorizationRegistry.ReadPolicies(Options.Value.UseCase);
         }
     }
 
@@ -92,7 +103,7 @@ public partial class Index : IDisposable
         {
             await AuthorizationRegistry.UpdatePolicy((Policy)result.Data);
         }
-        Policies = await AuthorizationRegistry.ReadPolicies();
+        Policies = await AuthorizationRegistry.ReadPolicies(Options.Value.UseCase);
     }
 
     private async Task DeleteClicked(Policy policy)
@@ -107,7 +118,7 @@ public partial class Index : IDisposable
         if (!result.Cancelled)
         {
             await AuthorizationRegistry.DeletePolicy(policy.PolicyId);
-            Policies = await AuthorizationRegistry.ReadPolicies();
+            Policies = await AuthorizationRegistry.ReadPolicies(Options.Value.UseCase);
         }
     }
 
@@ -124,5 +135,10 @@ public partial class Index : IDisposable
     {
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
+    }
+
+    private string GetOROrganizationName(string? identifier)
+    {
+        return (StateContainer.CurrentOROrganizations?.FirstOrDefault(o => o.Identifier == identifier)?.Name + " " ?? string.Empty) + $"({identifier})";
     }
 }

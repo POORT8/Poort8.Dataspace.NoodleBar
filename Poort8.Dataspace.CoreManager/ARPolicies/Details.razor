@@ -15,9 +15,9 @@
     <div>
         <p>Identifier: <b>@StateContainer.CurrentPolicy!.PolicyId</b></p>
         <p>Use Case: <b>@StateContainer.CurrentPolicy.UseCase</b></p>
-        <p>Issuer: <b>@StateContainer.CurrentPolicy.IssuerId</b></p>
-        <p>Actor: <b>@StateContainer.CurrentPolicy.SubjectId</b></p>
-        <p>Service Provider: <b>@StateContainer.CurrentPolicy.ServiceProvider</b></p>
+        <p>Issuer: <b>@GetOROrganizationName(StateContainer.CurrentPolicy.IssuerId)</b></p>
+        <p>Actor: <b>@GetOROrganizationName(StateContainer.CurrentPolicy.SubjectId)</b></p>
+        <p>Service Provider: <b>@GetOROrganizationName(StateContainer.CurrentPolicy.ServiceProvider)</b></p>
         <p>Not Before: <b>@DateTimeOffset.FromUnixTimeSeconds(StateContainer.CurrentPolicy.NotBefore).ToLocalTime().ToString("dd-MM-yyyy")</b></p>
         <p>Not On Or After: <b>@DateTimeOffset.FromUnixTimeSeconds(StateContainer.CurrentPolicy.Expiration).ToLocalTime().ToString("dd-MM-yyyy")</b></p>
         <p>Issued At: <b>@DateTimeOffset.FromUnixTimeSeconds(StateContainer.CurrentPolicy.IssuedAt).ToLocalTime().ToString("dd-MM-yyyy HH:mm:ss")</b></p>
