@@ -53,7 +53,7 @@ var environmentSettings = {
       }
       JwtTokenAuthority: {
         name: 'CoreManagerOptions:JwtTokenAuthority'
-        value: 'https://poort8.eu.auth0.com/'
+        value: 'https://xxx.auth0.com/'
       }
       JwtTokenAudience: {
         name: 'CoreManagerOptions:JwtTokenAudience'
@@ -233,7 +233,7 @@ resource sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' = {
     type: 'SystemAssigned'
   }
   properties: {
-    administratorLogin: 'Poort8'
+    administratorLogin: 'YourUserName'
     administratorLoginPassword: sqlAdminPassword
     minimalTlsVersion: '1.2'
   }

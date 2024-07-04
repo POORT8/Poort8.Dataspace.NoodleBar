@@ -13,7 +13,7 @@ var environmentAppName = 'Poort8-Dataspace-CoreManager${nameAddition}'
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: 'YourVaultName'
-  scope: resourceGroup('ResourceGroupGuid', 'ResourceGroupName')
+  scope: resourceGroup('SubscriptionId', 'ResourceGroupName')
 }
 
 module workspace '../../deploy/dataspaceWorkspaceModule.bicep' = {
@@ -40,7 +40,7 @@ module appService 'appServiceModule.bicep' = {
     criticalAlertName: 'Dataspace-CoreManager-Critical'
     criticalAlertShortName: 'DCMC${nameAddition}'
     availabilityAlertShortName: 'DCM${nameAddition}'
-    sqlAdminPassword: keyVault.getSecret('Poort8DataspaceSqlAdminPassword-${environment}')
+    sqlAdminPassword: keyVault.getSecret('DataspaceSqlAdminPassword-${environment}')
     brevoApiKey: keyVault.getSecret('BrevoApiKey')
   }
 }
