@@ -1,4 +1,8 @@
-1. Copy the migrations folder from Poort8.Dataspace.(_Organization/Authorization_)Registry.SqliteMigrations to Poort8.Dataspace.CoreManager, depending on whether you changed Organization registry or Authorization registry data models.
+# 9: Database Migrations
+
+### 9.1 Running Migrations
+
+1. 1. Copy the migrations folder from Poort8.Dataspace.(_Organization/Authorization_)Registry.SqliteMigrations, depending on whether you changed Organization registry or Authorization registry data models.
 2. In the AddOrganizationRegistrySqlite method in the Poort8.Dataspace.(_Organization/Authorization_)Registry.Extensions.DefaultExtension class, change the MigrationsAssembly from 'Poort8.Dataspace.(_Organization/Authorization_)Registry.SqliteMigrations' to 'Poort8.Dataspace.CoreManager'. This points the startup process to migration files of step 1.
 3. Execute entity framework command to generate the migration script:
  * Package Manager Console:
