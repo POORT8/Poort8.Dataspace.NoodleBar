@@ -1,4 +1,4 @@
-# Chapter 3: Customer Journeys
+# 3: Customer Journeys
 
 NoodleBar's implementation follows several customer journeys to ensure a seamless and structured approach to setting up and managing a dataspace. These journeys guide users through the process of initiating a dataspace, onboarding data sources, and enabling data providers and consumers to become independent contributors.
 

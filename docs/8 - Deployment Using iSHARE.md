@@ -1,15 +1,17 @@
-# Chapter 6: Stage 1 Deployment Guide
+# 8: Deployment Using iSHARE
 
-The Stage 1 deployment of NoodleBar involves setting up the core components necessary for a functional dataspace prototype. This stage focuses on deploying the Local Identity Server, which handles authentication and authorization, and the NoodleBar Web App for managing organizations and policies.
+The Stage 3 deployment of NoodleBar involves setting up the core components necessary for a highly secure and compliant dataspace prototype using the iSHARE standard. This stage offers the highest level of security and governance, making it suitable for organizations with stringent compliance requirements.
 
-### 6.1 Prerequisites
+### 8.1 Prerequisites
 
 Before you begin the deployment, ensure that you have the following prerequisites in place:
 
 - **NoodleBar fork on GitHub**: Fork the Poort8.Dataspace.NoodleBar repository to your GitHub account.
 - **Azure Subscription**: Ensure you have an active Azure subscription to deploy the necessary resources.
+- **iSHARE Satellite**: Set up the iSHARE Satellite for managing organizational identities.
+- **eIDAS Certificates**: Obtain eIDAS certificates for authentication and secure communication.
 
-### 6.2 Setting Up the Environment
+### 8.2 Setting Up the Environment
 
 1. **Fork the NoodleBar Repository**:
    Fork the Poort8.Dataspace.NoodleBar repository to your GitHub account:
@@ -33,6 +35,9 @@ Before you begin the deployment, ensure that you have the following prerequisite
    - `AZURE_CLIENT_ID`
    - `AZURE_TENANT_ID`
    - `AZURE_SUBSCRIPTION_ID`
+   - `ISHARE_CLIENT_ID`
+   - `ISHARE_CLIENT_SECRET`
+   - `ISHARE_CERTIFICATE`
    - Any other secrets required for your specific setup, such as database connection strings.
 
 4. **Set Up GitHub Workflow to Deploy NoodleBar**:
@@ -108,7 +113,28 @@ Before you begin the deployment, ensure that you have the following prerequisite
              package: publish/app
    ```
 
-### 6.3 Deploying the NoodleBar Application
+### 8.3 Configuring the iSHARE Satellite
+
+1. **Deploy the iSHARE Satellite**:
+   Set up the iSHARE Satellite for managing organizational identities. Refer to the [iSHARE Satellite GitHub repository](https://github.com/iSHAREScheme/iSHARESatellite) for deployment instructions.
+
+2. **Obtain eIDAS Certificates**:
+   Obtain eIDAS certificates for authentication and secure communication. These certificates are mandatory for production environments and ensure secure data exchanges.
+
+3. **Update Configuration in NoodleBar**:
+   Update the NoodleBar configuration to use the iSHARE Satellite for authentication. Modify the `appsettings.json` or environment variables to include the iSHARE settings:
+   ```json
+   "Authentication": {
+     "iSHARE": {
+       "Authority": "https://<your-ishare-satellite>/",
+       "ClientId": "<your-client-id>",
+       "ClientSecret": "<your-client-secret>",
+       "Certificate": "<path-to-your-certificate>"
+     }
+   }
+   ```
+
+### 8.4 Deploying the NoodleBar Application
 
 All components of NoodleBar, including the Organization Register, Authorization Register, and the NoodleBar Web App, are deployed as a single application. Use the GitHub Actions workflow to deploy these components using the modified Bicep files.
 
@@ -121,10 +147,10 @@ All components of NoodleBar, including the Organization Register, Authorization 
    curl http://<your-app-url>/health
    ```
 
-### 6.4 Configuring the NoodleBar System
+### 8.5 Configuring the NoodleBar System
 
 1. **Register as a New User**:
-   Go to `http://<your-app-url>` to register as a new user. 
+   Go to `http://<your-app-url>` to register as a new user using the iSHARE provider.
 
 2. **Add Organizations**:
    Use the NoodleBar web app to add new organizations to the Organization Register.
@@ -135,4 +161,4 @@ All components of NoodleBar, including the Organization Register, Authorization 
 4. **Integrate Data Providers**:
    Modify existing APIs to use the enforce API of the Authorization Register to control data access.
 
-By following these steps, you can successfully deploy NoodleBar using the Local Identity Server, setting up a fully functional dataspace prototype quickly and efficiently.
+By following these steps, you can successfully deploy NoodleBar using the iSHARE standard, setting up a highly secure and compliant dataspace prototype.

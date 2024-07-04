@@ -1,4 +1,4 @@
-# Chapter 5: Tech Stack
+# 5: Tech Stack
 
 NoodleBar is built on a robust and scalable .NET tech stack deployed on Azure. This choice caters to the needs of current partners, stakeholders, and customers, leveraging Azure's extensive capabilities and the versatility of the .NET ecosystem.
 

@@ -1,4 +1,4 @@
-# Chapter 2: Dataspace Concepts
+# 2: Dataspace Concepts
 
 ### 2.1 Dataspace Architecture
 
@@ -119,3 +119,78 @@ In the developing realm of federated dataspace schemes, different—sometimes am
 | product, service  | resourceType                            |
 | features          | attributes                              |
 | policy            | authorization, permission               |
+
+### 2.10 Architectural Overview
+
+```mermaid
+graph TD
+
+%% Dataspace Core
+style Core fill:transparent,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5;
+subgraph Core[Dataspace Core]
+subgraph Admin[Administration]
+    CoreManager[Core Manager]
+    organizationRegister[Organization Register]
+end
+AuthRegister[Authorization Register]
+end
+
+%% BDI Source
+style BDIServiceExt fill:transparent,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5;
+subgraph BDIServiceExt[BDI Source]
+    subgraph Dataspace_Adapter[Dataspace Adapter for non-BDI sources]
+        DataFetcher[Data fetcher]
+        DataMapper[Data Mapper]
+        AuthService[Authentication Service]
+        AuthzService[Authorization Service]
+    end
+    BDIServiceEndpoint[BDI Service]
+end
+
+%% Dataspace Apps
+style Dataspace_Apps fill:transparent,stroke:#333,stroke-width:2px,stroke-dasharray: 5, 5;
+subgraph Dataspace_Apps[Dataspace Apps]
+    subgraph Onboarding[Dataspace Onboarding App]
+        RegisteringUsers[Registering Users]
+        AuthUsers2[Authenticate Users]
+        AuthMan[Registering Authorizations]
+    end
+    subgraph Prototype[Dataspace Prototype App]
+        AuthUsers[Authenticate Users]
+        PEP[Authorize Users]
+        RESTSrc[Retrieve Data from BDI-services]
+        DataStore[Data Storage/Caching]
+        Logic[Add Logic]
+        FrontEnds[Multiple Frontends]
+    end
+end
+
+%% Connections within Dataspace Adapter
+DataFetcher-->DataMapper
+DataMapper-->AuthService
+AuthService-->AuthzService
+
+%% Connections within Dataspace Core
+CoreManager-->organizationRegister
+CoreManager-->AuthRegister
+
+%% Dependencies
+RegisteringUsers-->|Registers in|organizationRegister
+AuthRegister-->|Checked By|PEP
+AuthService-->|Checks|organizationRegister
+organizationRegister-->|Checked By|AuthUsers
+AuthzService-->BDIServiceEndpoint
+BDIServiceEndpoint-->RESTSrc
+AuthMan-->|Registers in|AuthRegister
+AuthzService-->|Checks|AuthRegister
+
+%% Connections within Dataspace Apps
+AuthUsers2-->RegisteringUsers
+RegisteringUsers-->AuthMan
+RESTSrc-->DataStore
+AuthUsers-->PEP
+PEP-->RESTSrc
+DataStore-->Logic
+Logic-->FrontEnds
+Onboarding-->Prototype
+```

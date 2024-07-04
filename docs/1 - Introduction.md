@@ -1,4 +1,4 @@
-# Chapter 1: Introduction
+# 1: Introduction
 
 ### 1.1 Dataspaces and Federated Data Sharing
 
