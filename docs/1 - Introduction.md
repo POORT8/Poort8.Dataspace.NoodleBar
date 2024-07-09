@@ -46,7 +46,7 @@ NoodleBar seamlessly integrates with the iSHARE Trust Framework, leveraging its 
 
 Inspired by the principles of federated data sharing, NoodleBar ensures that data remains at its source while enabling controlled access and sharing across different sectors and organizations. This approach enhances data accessibility and trust, promoting responsible data usage, privacy, and transparency.
 
-For more information on iSHARE, visit the [iSHARE Trust Framework website](https://framework.ishare.eu/is/).
+For more information on iSHARE, visit the [iSHARE Trust Framework website](https://framework.ishare.eu/).
 
 ### 1.7 Context and Objective
 

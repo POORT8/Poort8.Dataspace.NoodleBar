@@ -39,7 +39,7 @@ To facilitate setting up dataspaces that follow certain principles, serving as a
 
 ## Customer Journeys
 
-The wiki describes the following [Customer Journeys](docs/3-Customer-Journeys.md) in more detail:
+The wiki describes the following [Customer Journeys](docs/3%20-%20Customer%20Journeys.md) in more detail:
 
 - Initiating Dataspace Core
 - Onboarding Data Sources
@@ -54,7 +54,7 @@ The first 3 journeys comprise the launch of a first (prototype) of a dataspace. 
 The Dataspace Core provides services for the organization registry, the organization onboarding process, the dataspace manager and (optionally) an authorization registry. With the dataspace manager the dataspace standards can be managed, such as the requirements for authentication and onboarding, and the definition of a dataspace data model.
 Secondly (and optionally), the dataspace initiator can provide Dataspace Adapters to Data Providers, with services to support them with mapping to the dataspace data model, and Identification, Authentication and Authorisation (IAA) according to the Dataspace standards. Dataspace Adapters are expected to be made redundant as Data Providers create independent solutions for this.
 Thirdly (and optionally), the dataspace initiator may choose to launch the dataspace with a prototype app, using the Dataspace Prototype services for logic, IAA, and multiple front-end channels for the end user. Such a Dataspace Prototype app can be removed when additional apps are added to the dataspace.
-See the [architectural outline](docs/2-Dataspace-Concepts.md) of these functions for more detail.
+See the [architectural outline](docs/2%20-%20Dataspace%20Concepts.md) of these functions for more detail.
 
 ## Challenges
 

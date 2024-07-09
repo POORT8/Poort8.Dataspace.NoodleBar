@@ -40,7 +40,7 @@ Finally, expand the dataspace by adding more providers and apps:
 - **Onboarding New Service Providers**: Integrating additional data sources and services.
 - **Launching New Applications**: Developing and deploying new apps that leverage the dataspace for enhanced functionality and user experience.
 
-### Customer Journeys Summary
+### 3.6 Customer Journeys Summary
 
 - **Initiating Dataspace Core**: Set up foundational components and management tools.
 - **Onboarding Data Sources**: Register and integrate data providers and sources.
