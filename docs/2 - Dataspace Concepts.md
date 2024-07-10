@@ -32,9 +32,9 @@ NoodleBar provides different deployment models to suit various organizational ne
 
 1. **Local Identity Server**: This is the most straightforward deployment, functioning as a standalone system. It is ideal for prototypes and a "dataspace in a day."
 
-2. **OAuth Identity Server**: This version supports federated capabilities using the OAuth standard. It allows for standalone operation while enabling integration with external systems, providing a flexible and scalable solution.
+2. **OAuth Identity Server (recommended)**: This version supports federated capabilities using the OAuth standard. It allows for standalone operation while enabling integration with external systems, providing a flexible solution. The widespread adoption of OAuth also makes it highly scalable. There is extensive documentation available, numerous integration possibilities with third-party services, and the capability to be used in conjunction with federated identity providers.
 
-3. **iSHARE**: Fully iSHARE-compliant, this deployment ensures the highest level of security and interoperability. It uses X.509 certificates for authentication and iSHARE-compliant authorization mechanisms, making it suitable for organizations with stringent compliance requirements.
+3. **iSHARE**: Fully iSHARE-compliant, this deployment ensures the highest level of security. It uses X.509 certificates for authentication and iSHARE-compliant authorization mechanisms, making it suitable for organizations with stringent compliance requirements.
 
 ### 2.4 Roles in the iSHARE Trust Framework
 
@@ -55,7 +55,7 @@ These roles ensure that all parties involved in data sharing are properly authen
 - **Modularity**: The components can be customized and integrated with other systems, making it a flexible solution for various organizational needs.
 - **Scalability**: NoodleBar is designed to scale, supporting growing data sharing needs as organizations expand.
 - **Compliance**: Fully aligned with the iSHARE Trust Framework, NoodleBar ensures compliance with stringent data sharing standards.
-- **Versatility**: NoodleBar can be used to quickly set up a dataspace in a day and is also being used in fully compliant federated dataspaces.
+- **Versatility**: NoodleBar supports various [deployment models](/docs/4%20-%20NoodleBar%20Implementation%20Stages.md), from simple local [identity management](/docs/6%20-%20Deployment%20Using%20a%20Local%20Identity%20Server.md) to advanced [OAuth (recommended)](/docs/7%20-%20Deployment%20Using%20OAuth%20Server.md) and [iSHARE](/docs/8%20-%20Deployment%20Using%20iSHARE.md) compliant setups.
 
 ### 2.6 Dataspace Adapters (In Development)
 
