@@ -6,15 +6,16 @@ NoodleBar, developed by Poort8, is a cutting-edge dataspace solution designed to
 
 ## Table of Contents
 
-1. [Introduction](docs/1-Introduction.md)
-2. [Dataspace Concepts](docs/2-Dataspace-Concepts.md)
-3. [Customer Journeys](docs/3-Customer-Journeys.md)
-4. [NoodleBar Implementation Stages](docs/4-NoodleBar-Implementation-Stages.md)
-5. [Tech Stack](docs/5-Tech-Stack.md)
-6. [Deployment Using a Local Identity Server](docs/6-Deployment-Using-a-Local-Identity-Server.md)
-7. [Deployment Using OAuth Server](docs/7-Deployment-Using-OAuth-Server.md)
-8. [Deployment Using iSHARE](docs/8-Deployment-Using-iSHARE.md)
-9. [Database Migrations](docs/9-Database-Migrations.md)
+1. [Introduction](docs/1%20-%20Introduction.md)
+2. [Dataspace Concepts](docs/2%20-%20Dataspace%20Concepts.md)
+3. [Customer Journeys](docs/3%20-%20Customer%20Journeys.md)
+4. [NoodleBar Implementation Stages](docs/4%20-%20NoodleBar%20Implementation%20Stages.md)
+5. [Tech Stack](docs/5%20-%20Tech%20Stack.md)
+6. [Deployment Using a Local Identity Server](docs/6%20-%20Deployment%20Using%20a%20Local%20Identity%20Server.md)
+7. [Deployment Using OAuth Server](docs/7%20-%20Deployment%20Using%20OAuth%20Server.md)
+8. [Deployment Using iSHARE](docs/8%20-%20Deployment%20Using%20iSHARE.md)
+9. [Database Migrations](docs/9%20-%20Database%20Migrations.md)
+10. [Core Manager Showcase](docs/10%20-%20Core%20Manager%20Showcase.md)
 
 ## Context
 
