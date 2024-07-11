@@ -3,17 +3,17 @@ The NoodleBar Core Manager is a web application for managing the Organization Re
 
 ### 10.1 Registering and logging in
 When launching the Core Manager, the user is met with a welcome page. From here, the user can go to the login page. All other menu options are visible, but the user will automatically be directed to the login page if they are not authenticated.
-![Home](showcase-images/1-home.png)
-![Login](showcase-images/2-login.png)
+![Home](showcase-images/01-home.png)
+![Login](showcase-images/02-login.png)
 
 If the user isn't registered yet, they can do so with an email address and password. If the registration is complete, the user can login using their credentials.
-![Registering](showcase-images/3-registering.png)
-![Logging in](showcase-images/4-logging-in.png)
+![Registering](showcase-images/03-registering.png)
+![Logging in](showcase-images/04-logging-in.png)
 
 ### 10.2 Organization Register
 Within the Organization Register, the user can manage their organizations. They can add a new organization using the **New Organization** button.
-![OR](showcase-images/5-or.png)
-![OR - Add organization](showcase-images/6-or-add-organization.png)
+![OR](showcase-images/05-or.png)
+![OR - Add organization](showcase-images/06-or-add-organization.png)
 
 The user can delete an organization by clicking the delete button, or view additional details by clicking the **i** button.
 
@@ -22,11 +22,11 @@ Within the Authorization Register, the user can manage their organizations manda
 
 #### 10.3.1 Organization mandates
 The user can add an organization mandate using the **Add Organization** button. Each organization can only have one mandate, the *Add Organization* form contains a dropdown menu with available organizations from the Organization Register. This means that an organization mandate cannot be added if there are no organizations in the Organization Register. The user can delete an organization mandate by clicking the trash can button.
-![AR - Organization mandates](showcase-images/7-ar-organization-mandates.png)
-![Ar - Add organization mandate](showcase-images/8-ar-add-organization-mandate.png)
+![AR - Organization mandates](showcase-images/07-ar-organization-mandates.png)
+![Ar - Add organization mandate](showcase-images/08-ar-add-organization-mandate.png)
 
 By clicking the label button, the user can manage named properties of an organization mandate.
-![AR - Add organization mandate propery](showcase-images/9-ar-add-organization-mandate-property.png)
+![AR - Add organization mandate propery](showcase-images/09-ar-add-organization-mandate-property.png)
 
 By clicking the **i** button, the user can view additional details of an organization mandate. From here, the user can manage employees of the organization mandate.
 ![AR - Organization mandate details](showcase-images/10-ar-organization-mandate-details.png)
