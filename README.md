@@ -15,7 +15,7 @@ NoodleBar, developed by Poort8, is a cutting-edge dataspace solution designed to
 7. [Deployment Using OAuth Server](docs/7%20-%20Deployment%20Using%20OAuth%20Server.md)
 8. [Deployment Using iSHARE](docs/8%20-%20Deployment%20Using%20iSHARE.md)
 9. [Database Migrations](docs/9%20-%20Database%20Migrations.md)
-10. [Core Manager Showcase](docs/10%20-%20Core%20Manager%20Showcase.md)
+10. [NoodleBar Showcase](docs/10%20-%20NoodleBar%20Showcase.md)
 
 ## Context
 
