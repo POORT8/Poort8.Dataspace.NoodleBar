@@ -55,7 +55,7 @@ These roles ensure that all parties involved in data sharing are properly authen
 - **Modularity**: The components can be customized and integrated with other systems, making it a flexible solution for various organizational needs.
 - **Scalability**: NoodleBar is designed to scale, supporting growing data sharing needs as organizations expand.
 - **Compliance**: Fully aligned with the iSHARE Trust Framework, NoodleBar ensures compliance with stringent data sharing standards.
-- **Versatility**: NoodleBar supports various [deployment models](/docs/4%20-%20NoodleBar%20Implementation%20Stages.md), from simple local [identity management](/docs/6%20-%20Deployment%20Using%20a%20Local%20Identity%20Server.md) to advanced [OAuth (recommended)](/docs/7%20-%20Deployment%20Using%20OAuth%20Server.md) and [iSHARE](/docs/8%20-%20Deployment%20Using%20iSHARE.md) compliant setups.
+- **Versatility**: NoodleBar supports various [deployment models](04%20-%20NoodleBar%20Implementation%20Stages.md), from simple local [identity management](06%20-%20Deployment%20Using%20a%20Local%20Identity%20Server.md) to advanced [OAuth (recommended)](07%20-%20Deployment%20Using%20OAuth%20Server.md) and [iSHARE](08%20-%20Deployment%20Using%20iSHARE.md) compliant setups.
 
 ### 2.6 Dataspace Adapters (In Development)
 

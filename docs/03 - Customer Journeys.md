@@ -18,6 +18,8 @@ After setting up the core, the next step is to onboard data sources:
 - **Integrating Data Sources**: Using Dataspace Adapters to convert legacy APIs and ensure data compatibility with the dataspace schema.
 - **Defining Access Policies**: Setting up rules and permissions for data access through the Authorization Register.
 
+The process of registering data providers and defining access policies using the Core Manager is shown in the [NoodleBar Showcase](10%20-%20NoodleBar%20Showcase).
+
 ### 3.3 Onboarding Data Owners and Consumers
 
 To fully operationalize the dataspace, onboard data owners and consumers:
