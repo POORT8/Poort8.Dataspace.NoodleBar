@@ -6,7 +6,7 @@ namespace Poort8.Dataspace.API.ResourceGroups.GetAllResourceGroups;
 
 public class Endpoint : EndpointWithoutRequest<IReadOnlyList<Response>, Mapper>
 {
-    public const string Name = "ResourceGroups";
+    public const string Name = "Resource Groups";
     private readonly ILogger<Endpoint> _logger;
     private readonly IAuthorizationRegistry _authorizationRegistry;
 
@@ -20,7 +20,7 @@ public class Endpoint : EndpointWithoutRequest<IReadOnlyList<Response>, Mapper>
 
     public override void Configure()
     {
-        Get($"/api/{Name.ToLower()}");
+        Get($"/api/{Name.ToLower().Replace(" ", "")}");
         Options(x => x.WithTags(Name));
         AuthSchemes(AuthenticationConstants.IdentityBearer, AuthenticationConstants.Auth0Jwt);
         Policies(AuthenticationConstants.ReadResourcesPolicy);

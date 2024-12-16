@@ -5,7 +5,7 @@ using Poort8.Dataspace.Identity;
 
 namespace Poort8.Dataspace.API.Resources.UpdateResource;
 
-public class Endpoint : Endpoint<Request, Resource, Mapper>
+public class Endpoint : Endpoint<Request, Response, Mapper>
 {
     public const string Name = "Resources";
     private readonly ILogger<Endpoint> _logger;
@@ -23,6 +23,8 @@ public class Endpoint : Endpoint<Request, Resource, Mapper>
     {
         Put($"/api/{Name.ToLower()}");
         Options(x => x.WithTags(Name));
+        Description(x => x.Produces(404));
+
         AuthSchemes(AuthenticationConstants.IdentityBearer, AuthenticationConstants.Auth0Jwt);
         Policies(AuthenticationConstants.WriteResourcesPolicy);
     }

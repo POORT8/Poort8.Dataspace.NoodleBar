@@ -13,7 +13,7 @@
         <FluentLabel>The Organization Registry contains no organizations which you can add</FluentLabel>
     }
 
-    <FluentDataGrid Items="@AROrganizations?.AsQueryable()">
+    <FluentDataGrid Items="@AROrganizations?.AsQueryable()" ResizableColumns="true" ShowHover="true" AutoFit="true">
         <PropertyColumn Property="@(o => o.Identifier)" Sortable="true" />
         <PropertyColumn Property="@(o => o.Name)" Sortable="true" />
         <PropertyColumn Property="@(o => o.Url)" Sortable="false" />

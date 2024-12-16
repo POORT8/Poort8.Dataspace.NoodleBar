@@ -31,7 +31,7 @@ public class Endpoint : Endpoint<Request, Policy>
         string issuerId;
         if (string.IsNullOrEmpty(request.IssuerId))
             issuerId = User.Identity!.Name!;
-        else if (User.IsInRole("CanSetPolicyIssuer"))
+        else if (User.IsInRole("CanSetPolicyIssuer") || User.HasClaim("scope", "trusted-app"))
             issuerId = request.IssuerId;
         else
         {

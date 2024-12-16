@@ -2,7 +2,7 @@
 
 <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Certificate</FluentButton>
 
-<FluentDataGrid Items="@StateContainer.CurrentOROrganization?.Certificates.AsQueryable()">
+<FluentDataGrid Items="@StateContainer.CurrentOROrganization?.Certificates.AsQueryable()" ResizableColumns="true" ShowHover="true" AutoFit="true">
     <PropertyColumn Title="Enabled From" Format="dd-MM-yyyy" Property="@(c => c.EnabledFrom)" Sortable="true" />
     <TemplateColumn Title="Actions" Align="@Align.End">
         <FluentButton Title="Edit" IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="@(() => EditClicked(@context))" />

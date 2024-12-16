@@ -14,6 +14,11 @@ public class EnforceAuditRecord
     public string Action { get; set; }
     public bool Allow { get; set; }
     public string Explain { get; set; }
+    public string? IssuerId { get; set; }
+    public string? ServiceProvider { get; set; }
+    public string? Type { get; set; }
+    public string? Attribute { get; set; }
+    public string? RequestContext { get; set; }
 
     public EnforceAuditRecord(string id, DateTime timestamp, string user, string useCase, string subjectId, string resourceId, string action, bool allow, string explain)
     {

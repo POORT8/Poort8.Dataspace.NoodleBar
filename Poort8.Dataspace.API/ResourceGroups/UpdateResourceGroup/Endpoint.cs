@@ -7,7 +7,7 @@ namespace Poort8.Dataspace.API.ResourceGroups.UpdateResourceGroup;
 
 public class Endpoint : Endpoint<Request, Response, Mapper>
 {
-    public const string Name = "ResourceGroups";
+    public const string Name = "Resource Groups";
     private readonly ILogger<Endpoint> _logger;
     private readonly IAuthorizationRegistry _authorizationRegistry;
 
@@ -21,10 +21,12 @@ public class Endpoint : Endpoint<Request, Response, Mapper>
 
     public override void Configure()
     {
-        Put($"/api/{Name.ToLower()}");
+        Put($"/api/{Name.ToLower().Replace(" ", "")}");
         Options(x => x.WithTags(Name));
+        Description(x => x.Produces(404));
+
         AuthSchemes(AuthenticationConstants.IdentityBearer, AuthenticationConstants.Auth0Jwt);
-        Policies(AuthenticationConstants.WritePoliciesPolicy);
+        Policies(AuthenticationConstants.WriteResourcesPolicy);
     }
 
     public override async Task HandleAsync(Request request, CancellationToken ct)

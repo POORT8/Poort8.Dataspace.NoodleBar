@@ -17,7 +17,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -34,12 +34,24 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.Property<bool>("Allow")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Attribute")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Explain")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IssuerId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestContext")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ResourceId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ServiceProvider")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubjectId")
@@ -48,6 +60,9 @@ namespace Poort8.Dataspace.CoreManager.Migrations
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UseCase")
                         .IsRequired()

@@ -27,7 +27,7 @@ public partial class Index : ComponentBase, IDisposable
     public required IOptions<CoreManagerOptions> Options { get; set; }
 
     private IReadOnlyList<AROrganization>? AROrganizations;
-    private IReadOnlyList<OROrganization>? NotAddedOROrganizations;
+    private List<OROrganization>? NotAddedOROrganizations;
 
     private bool NoOrganizations => !(NotAddedOROrganizations?.Count > 0);
 
@@ -67,7 +67,7 @@ public partial class Index : ComponentBase, IDisposable
     {
         if (!result.Cancelled && result.Data is not null)
         {
-            await AuthorizationRegistry.CreateOrganization((((AROrganization AROrganization, IReadOnlyList<OROrganization>))result.Data).AROrganization);
+            await AuthorizationRegistry.CreateOrganization((((AROrganization AROrganization, List<OROrganization>))result.Data).AROrganization);
             await FetchOrganizations();
         }
     }

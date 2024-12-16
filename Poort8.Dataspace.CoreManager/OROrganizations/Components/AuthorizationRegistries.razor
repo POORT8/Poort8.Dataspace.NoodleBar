@@ -2,7 +2,7 @@
 
 <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Authorization Register</FluentButton>
 
-<FluentDataGrid Items="@StateContainer.CurrentOROrganization?.AuthorizationRegistries.AsQueryable()">
+<FluentDataGrid Items="@StateContainer.CurrentOROrganization?.AuthorizationRegistries.AsQueryable()" ResizableColumns="true" ShowHover="true" AutoFit="true">
     <PropertyColumn Title="Authorization Register Organization" Property="@(a => a.AuthorizationRegistryOrganizationId)" Sortable="true" />
     <PropertyColumn Title="URL" Property="@(a => a.AuthorizationRegistryUrl)" Sortable="true" />
     <TemplateColumn Title="Actions" Align="@Align.End">

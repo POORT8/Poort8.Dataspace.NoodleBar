@@ -648,11 +648,18 @@ public class Repository : IRepository
             .ToListAsync();
     }
 
-    public async Task<EnforceAuditRecord> CreateEnforceAuditRecord(string user, string useCase, string subjectId, string resourceId, string action, bool allow, List<Policy>? explains = null)
+    public async Task<EnforceAuditRecord> CreateEnforceAuditRecord(string user, string useCase, string subjectId, string resourceId, string action, bool allow, List<Policy>? explains, string? issuerId, string? serviceProvider, string? type, string? attribute, string? requestContext)
     {
         using var context = _contextFactory.CreateDbContext();
 
-        var record = new EnforceAuditRecord(user, useCase, subjectId, resourceId, action, allow, explains);
+        var record = new EnforceAuditRecord(user, useCase, subjectId, resourceId, action, allow, explains)
+        {
+            IssuerId = issuerId,
+            ServiceProvider = serviceProvider,
+            Type = type,
+            Attribute = attribute,
+            RequestContext = requestContext
+        };
 
         var enforceAuditRecord = await context.AddAsync(record);
         await context.SaveChangesAsync();

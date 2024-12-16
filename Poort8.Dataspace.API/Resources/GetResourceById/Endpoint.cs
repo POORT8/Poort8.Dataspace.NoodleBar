@@ -22,6 +22,8 @@ public class Endpoint : EndpointWithoutRequest<Response, Mapper>
     {
         Get($"/api/{Name.ToLower()}/{{id}}");
         Options(x => x.WithTags(Name));
+        Description(x => x.Produces(404));
+
         AuthSchemes(AuthenticationConstants.IdentityBearer, AuthenticationConstants.Auth0Jwt);
         Policies(AuthenticationConstants.ReadResourcesPolicy);
     }

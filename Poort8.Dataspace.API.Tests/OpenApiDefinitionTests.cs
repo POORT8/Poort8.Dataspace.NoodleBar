@@ -2,9 +2,9 @@ using FastEndpoints.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using NSwag.Generation;
 using Snapshooter.Xunit;
+using System.Text.Json;
 using System.Text.Json.Nodes;
-using FluentAssertions.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Serialization;
 
 namespace Poort8.Dataspace.API.Tests;
 
@@ -19,18 +19,16 @@ public class OpenApiDefinitionTests(ApiApp App) : TestBase<ApiApp>
         var jsonNode = JsonNode.Parse(apiDefinition.ToJson());
         var orderedApiDefinition = OrderApiDefinition(jsonNode!);
 
-        try
+        var serializerOptions = new JsonSerializerOptions
         {
-            Snapshot.Match(orderedApiDefinition);
-        }
-        catch (Exception)
-        {
-            //On GitHub workflow Snapshot.Match fails, so try again with FluentAssertions
-            var snapshot = await File.ReadAllTextAsync("__snapshots__/OpenApiDefinitionTests.TestApiDefinitionChangedUsingDoc.snap");
-            var snapshotDoc = JToken.Parse(snapshot);
-            var apiDefinitionDoc = JToken.Parse(apiDefinition.ToJson());
-            apiDefinitionDoc.Should().BeEquivalentTo(snapshotDoc);
-        }
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
+        var jsonString = orderedApiDefinition!.ToJsonString(serializerOptions);
+
+        Snapshot.Match(jsonString
+            .Replace("\r\n", "\n")
+            .Replace("\\r\\n", "\\n"));
     }
 
     private static JsonNode? OrderApiDefinition(JsonNode? jsonNode)

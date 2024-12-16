@@ -1,6 +1,6 @@
 ﻿@using AROrganization = Poort8.Dataspace.AuthorizationRegistry.Entities.Organization;
 @using OROrganization = Poort8.Dataspace.OrganizationRegistry.Organization;
-@implements IDialogContentComponent<(AROrganization AROrganization, IReadOnlyList<OROrganization> OROrganizations)>
+@implements IDialogContentComponent<(AROrganization AROrganization, List<OROrganization> OROrganizations)>
 
 <FluentSelect Label="Identifier" @bind-Value="Content.AROrganization.Identifier" @bind-SelectedOption="@selectedOROrganization" Items="@Content.OROrganizations" OptionValue="@(o => o?.Identifier)" OptionText="@(o => o?.Identifier)" />
 <FluentSelect Label="Name" @bind-Value="Content.AROrganization.Name" @bind-SelectedOption="@selectedOROrganization" Items="@Content.OROrganizations" OptionValue="@(o => o?.Name)" OptionText="@(o => o?.Name)" />
@@ -10,7 +10,7 @@
 
 @code {
     [Parameter]
-    public required (AROrganization AROrganization, IReadOnlyList<OROrganization> OROrganizations) Content { get; set; }
+    public required (AROrganization AROrganization, List<OROrganization> OROrganizations) Content { get; set; }
 
     OROrganization? selectedOROrganization;
 }

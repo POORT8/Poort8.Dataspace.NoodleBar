@@ -1,0 +1,73 @@
+﻿@page "/catalog"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<PageTitle>Catalog</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap=20>
+    <FluentLabel Typo="Typography.H1">Catalog</FluentLabel>
+
+    <p>This page displays a catalog of available data services within the dataspace. The catalog showcases various data services, each with an OpenAPI or Swagger specification that defines its available operations and endpoints. To ensure a seamless integration experience, users can add their data services directly to the catalog.</p>
+
+    <h4>Adding Your Data Service</h4>
+    <ol>
+        <li>
+            <strong>Capabilities URL:</strong>
+            Go to the organization details in the Organization register and enter the URL to your data service's OpenAPI/Swagger definition in the
+            <strong>Capabilities URL</strong> field. For example:
+            <code>https://your-service-domain.com/api/swagger.json</code>.
+            <ul>
+                <li>If your service uses the <strong>iSHARE</strong> standard, these capabilities are supported but are not automatically processed.</li>
+                <li>For data services following the <strong>W3C DCAT</strong> standard, you can enter the value for <code>dcat:endpointDescription</code>.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Logo URL:</strong> You may also add your logo, which will appear in the catalog, helping your service stand out visually.
+        </li>
+    </ol>
+
+    <p>Once your data service endpoint is added with a valid OpenAPI/Swagger definition, it will be listed in this catalog alongside other available services, making it discoverable to users in the dataspace.</p>
+
+    <FluentGrid Spacing=4 Justify="JustifyContent.FlexStart">
+        @foreach (var dataSource in DataSources)
+        {
+            <FluentGridItem xs="12" sm="6" md="4" lg="3">
+                <FluentCard>
+                    <div>
+                        <div style="display: flex; align-items: center;">
+                            <img src="@dataSource.LogoUrl" width="50" />
+                            <FluentSpacer />
+                            <FluentBadge Circular=true Appearance="Appearance.Lightweight">
+                                API version: @dataSource.Version
+                            </FluentBadge>
+                            <FluentSpacer Width="10" />
+                            <FluentBadge Circular=true Appearance="Appearance.Lightweight">
+                                @dataSource.Type
+                            </FluentBadge>
+                        </div>
+
+                        <h3>@dataSource.Organization</h3>
+                        <h5>@dataSource.Title</h5>
+                        <div>
+                            @dataSource.DescriptionMarkdown
+                        </div>
+                    </div>
+
+                    <div>
+                        <b>@dataSource.Host</b>
+
+                        <br />
+                        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="15" VerticalAlign="VerticalAlignment.Center">
+                            <a href="@dataSource.Terms">Terms</a>
+                            <a href="@dataSource.License">License</a>
+                            <a href="@dataSource.Contact">Contact</a>
+                            <a href="@dataSource.Docs">Docs</a>
+                        </FluentStack>
+                    </div>
+
+                    <br />
+                    <FluentButton OnClick="@(() => GoToScalar(dataSource))" Appearance="Appearance.Accent">Open API reference</FluentButton>
+                </FluentCard>
+            </FluentGridItem>
+        }
+    </FluentGrid>
+</FluentStack>

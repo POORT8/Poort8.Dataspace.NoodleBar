@@ -2,7 +2,7 @@
 
 <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Service</FluentButton>
 
-<FluentDataGrid Items="@StateContainer.CurrentOROrganization?.Services.AsQueryable()">
+<FluentDataGrid Items="@StateContainer.CurrentOROrganization?.Services.AsQueryable()" ResizableColumns="true" ShowHover="true" AutoFit="true">
     <PropertyColumn Property="@(s => s.Name)" Sortable="true" />
     <PropertyColumn Property="@(s => s.Description)" Sortable="false" />
     <PropertyColumn Property="@(s => s.Color)" Sortable="false" />

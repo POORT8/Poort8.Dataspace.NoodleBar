@@ -6,7 +6,7 @@ namespace Poort8.Dataspace.API.Resources.RemoveResourceFromResourceGroup;
 
 public class Endpoint : EndpointWithoutRequest
 {
-    public const string Name = "ResourceGroups";
+    public const string Name = "Resource Groups";
     public const string NameId = "resourceGroupId";
     public const string NameChild = "Resources";
     public const string NameChildId = "resourceId";
@@ -24,8 +24,10 @@ public class Endpoint : EndpointWithoutRequest
 
     public override void Configure()
     {
-        Delete("/api/" + Name.ToLower() + "/{" + NameId + "}/" + NameChild.ToLower() + "/{" + NameChildId + "}");
+        Delete("/api/" + Name.ToLower().Replace(" ", "") + "/{" + NameId + "}/" + NameChild.ToLower() + "/{" + NameChildId + "}");
         Options(x => x.WithTags(Name));
+        Description(x => x.Produces(404));
+
         AuthSchemes(AuthenticationConstants.IdentityBearer, AuthenticationConstants.Auth0Jwt);
         Policies(AuthenticationConstants.DeleteResourcesPolicy);
         Summary(s => { s.Summary = EndpointSummary; });

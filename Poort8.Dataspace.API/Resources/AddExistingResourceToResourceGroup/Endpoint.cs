@@ -6,7 +6,7 @@ namespace Poort8.Dataspace.API.Resources.AddExistingResourceToResourceGroup;
 
 public class Endpoint : EndpointWithoutRequest
 {
-    public const string Name = "ResourceGroups";
+    public const string Name = "Resource Groups";
     public const string NameId = "resourceGroupId";
     public const string NameChild = "Resources";
     public const string NameChildId = "resourceId";
@@ -24,8 +24,10 @@ public class Endpoint : EndpointWithoutRequest
 
     public override void Configure()
     {
-        Put("/api/" + Name.ToLower() + "/{" + NameId + "}/" + NameChild.ToLower() + "/{" + NameChildId + "}");
+        Put("/api/" + Name.ToLower().Replace(" ", "") + "/{" + NameId + "}/" + NameChild.ToLower() + "/{" + NameChildId + "}");
         Options(x => x.WithTags(Name));
+        Description(x => x.Produces(404));
+
         AuthSchemes(AuthenticationConstants.IdentityBearer, AuthenticationConstants.Auth0Jwt);
         Policies(AuthenticationConstants.WriteResourcesPolicy);
         Summary(s => { s.Summary = EndpointSummary; });

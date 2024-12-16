@@ -28,7 +28,7 @@
         <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddExistingResourcesClicked)">Add Existing @Options.Value.ResourceAlternativeName</FluentButton>
     </FluentStack>
 
-    <FluentDataGrid Items="@StateContainer.CurrentResourceGroup.Resources.AsQueryable()">
+    <FluentDataGrid Items="@StateContainer.CurrentResourceGroup.Resources.AsQueryable()" ResizableColumns="true" ShowHover="true" AutoFit="true">
         <PropertyColumn Title="Identifier" Property="@(e => e.ResourceId)" Sortable="true" />
         <PropertyColumn Title="Name" Property="@(e => e.Name)" Sortable="true" />
         <PropertyColumn Title="Description" Property="@(e => e.Description)" Sortable="false" />

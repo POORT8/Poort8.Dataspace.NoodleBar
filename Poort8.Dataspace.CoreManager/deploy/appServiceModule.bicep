@@ -327,7 +327,7 @@ resource appService 'Microsoft.Web/sites@2022-09-01' = {
         }
       ]
       phpVersion: 'OFF'
-      netFrameworkVersion: 'v8.0'
+      netFrameworkVersion: 'v9.0'
       alwaysOn: true
       webSocketsEnabled: true
       ipSecurityRestrictionsDefaultAction: 'Allow'

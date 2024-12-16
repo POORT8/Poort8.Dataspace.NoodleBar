@@ -1,6 +1,6 @@
 ﻿namespace Poort8.Dataspace.AuthorizationRegistry.Exceptions;
 [Serializable]
-internal class EnforcerException : Exception
+public class EnforcerException : Exception
 {
     public EnforcerException()
     {

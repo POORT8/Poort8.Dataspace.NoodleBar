@@ -22,6 +22,13 @@ public class Endpoint : EndpointWithoutRequest
     {
         Delete($"/api/{Name.ToLower()}/{{id}}");
         Options(x => x.WithTags(Name));
+        Description(x =>
+        {
+            x.ClearDefaultProduces(200);
+            x.Produces(204);
+            x.Produces(404);
+        });
+
         AuthSchemes(AuthenticationConstants.IdentityBearer, AuthenticationConstants.Auth0Jwt);
         Policies(AuthenticationConstants.DeleteResourcesPolicy);
     }

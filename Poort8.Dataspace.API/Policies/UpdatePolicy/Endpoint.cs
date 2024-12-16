@@ -22,6 +22,8 @@ public class Endpoint : Endpoint<Request, Policy>
     {
         Put("/api/policies");
         Options(x => x.WithTags("Policies"));
+        Description(x => x.Produces(404));
+
         AuthSchemes(AuthenticationConstants.IdentityBearer, AuthenticationConstants.Auth0Jwt);
         Policies(AuthenticationConstants.WritePoliciesPolicy);
     }

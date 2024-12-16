@@ -1,7 +1,9 @@
 ﻿namespace Poort8.Dataspace.AuthorizationRegistry.Exceptions;
 [Serializable]
-internal class RepositoryException : Exception
+public class RepositoryException : Exception
 {
+    public const string IdNotUnique = "The id is not unique";
+
     public RepositoryException()
     {
     }

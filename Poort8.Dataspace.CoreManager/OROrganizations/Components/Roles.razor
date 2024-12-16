@@ -2,7 +2,7 @@
 
 <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Role</FluentButton>
 
-<FluentDataGrid Items="@StateContainer.CurrentOROrganization?.Roles.AsQueryable()">
+<FluentDataGrid Items="@StateContainer.CurrentOROrganization?.Roles.AsQueryable()" ResizableColumns="true" ShowHover="true" AutoFit="true">
     <PropertyColumn Property="@(r => r.Role)" Sortable="true" />
     <PropertyColumn Title="Start Date" Format="dd-MM-yyyy" Property="@(r => r.StartDate)" Sortable="false" />
     <PropertyColumn Title="End Date" Format="dd-MM-yyyy" Property="@(r => r.EndDate)" Sortable="false" />
