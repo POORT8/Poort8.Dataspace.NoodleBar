@@ -22,11 +22,12 @@ public class AuditTests
         serviceCollection.AddSingleton<IHttpContextAccessor>(new HttpContextAccessor() { HttpContext = new DefaultHttpContext() { User = claimsPrincipal } });
 
         _serviceProvider = serviceCollection.BuildServiceProvider();
-        _authorizationRegistry = _serviceProvider.GetRequiredService<IAuthorizationRegistry>();
 
         var factory = _serviceProvider.GetRequiredService<IDbContextFactory<AuthorizationContext>>();
         using var context = factory.CreateDbContext();
         context.Database.Migrate();
+
+        _authorizationRegistry = _serviceProvider.GetRequiredService<IAuthorizationRegistry>();
     }
 
     [Fact]
@@ -37,10 +38,10 @@ public class AuditTests
         var auditRecords = await _authorizationRegistry.GetEntityAuditRecords();
 
         Assert.NotNull(auditRecords);
-        Assert.Single(auditRecords.Where(a =>
+        Assert.Single(auditRecords, a =>
             a.EntityId == organizationEntity.Identifier &&
             a.EntityType == "Organization" &&
-            a.Action == "Added"));
+            a.Action == "Added");
     }
 
     [Fact]

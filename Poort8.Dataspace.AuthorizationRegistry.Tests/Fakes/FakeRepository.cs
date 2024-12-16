@@ -8,6 +8,7 @@ namespace Poort8.Dataspace.AuthorizationRegistry.Tests.Fakes;
 public class FakeRepository : IRepository
 {
     private readonly List<Organization> _organizations = new();
+    private readonly List<Employee> _employees = new();
     private readonly List<ResourceGroup> _resourceGroups = new();
     private readonly List<Resource> _resources = new();
     private readonly List<Policy> _policies = new();
@@ -74,7 +75,7 @@ public class FakeRepository : IRepository
 
     public Task<Organization?> ReadOrganization(string identifier)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(_organizations.FirstOrDefault(p => p.Identifier == identifier));
     }
 
     public Task<Organization> UpdateOrganization(Organization organization)
@@ -91,7 +92,7 @@ public class FakeRepository : IRepository
 
     public Task<Employee?> ReadEmployee(string employeeId)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(_employees.FirstOrDefault(p => p.EmployeeId == employeeId));
     }
 
     public Task<IReadOnlyList<Employee>> ReadEmployees(string? useCase, string? organizationId = null, string? familyName = null, string? email = null, string? propertyKey = null, string? propertyValue = null)
@@ -168,7 +169,7 @@ public class FakeRepository : IRepository
 
     public Task<Resource?> ReadResource(string resourceId)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(_resources.FirstOrDefault(p => p.ResourceId == resourceId));
     }
 
     public Task<IReadOnlyList<Resource>> ReadResources(string? useCase, string? name = null, string? propertyKey = null, string? propertyValue = null)
@@ -219,7 +220,7 @@ public class FakeRepository : IRepository
         throw new NotImplementedException();
     }
 
-    public Task<EnforceAuditRecord> CreateEnforceAuditRecord(string user, string useCase, string subjectId, string resourceId, string action, bool allow, List<Policy>? explains = null)
+    public Task<EnforceAuditRecord> CreateEnforceAuditRecord(string user, string useCase, string subjectId, string resourceId, string action, bool allow, List<Policy>? explains, string? issuerId, string? serviceProvider, string? type, string? attribute, string? requestContext)
     {
         return Task.FromResult(new EnforceAuditRecord(user, useCase, subjectId, resourceId, action, allow, explains));
     }

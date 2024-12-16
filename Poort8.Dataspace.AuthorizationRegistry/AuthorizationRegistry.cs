@@ -4,21 +4,21 @@ using Poort8.Dataspace.AuthorizationRegistry.Audit;
 using Poort8.Dataspace.AuthorizationRegistry.Entities;
 using Poort8.Dataspace.AuthorizationRegistry.Exceptions;
 using Poort8.Dataspace.AuthorizationRegistry.Extensions;
-using System.Security.Claims;
+using System.Text.Json;
 
 namespace Poort8.Dataspace.AuthorizationRegistry;
 public class AuthorizationRegistry : IAuthorizationRegistry
 {
     private readonly IRepository _repository;
     private readonly IEnforcer _enforcer;
-    private readonly ClaimsPrincipal? _currentUser;
+    private readonly IHttpContextAccessor? _httpContextAccessor;
 
     //TODO: Add tests for group reset in all cases.
 
     public AuthorizationRegistry(IRepository repository, IHttpContextAccessor? httpContextAccessor = null)
     {
         _repository = repository;
-        _currentUser = httpContextAccessor?.HttpContext?.User;
+        _httpContextAccessor = httpContextAccessor;
 
         _enforcer = new Enforcer(EnforcerModel.Create());
 
@@ -45,6 +45,10 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Organization> CreateOrganization(Organization organization)
     {
+        var existingEntity = await ReadOrganization(organization.Identifier);
+        if (existingEntity != null)
+            throw new RepositoryException($"{RepositoryException.IdNotUnique}: Organization with identifier {organization.Identifier} already exists.");
+
         var organizationEntity = await _repository.CreateOrganization(organization);
         await ResetSubjectGroup();
         return organizationEntity;
@@ -52,6 +56,10 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<ResourceGroup> CreateResourceGroup(ResourceGroup resourceGroup)
     {
+        var existingEntity = await ReadResourceGroup(resourceGroup.ResourceGroupId);
+        if (existingEntity != null)
+            throw new RepositoryException($"{RepositoryException.IdNotUnique}: ResourceGroup with id {resourceGroup.ResourceGroupId} already exists.");
+
         var resourceGroupEntity = await _repository.CreateResourceGroup(resourceGroup);
         await ResetResourceGroup();
         return resourceGroupEntity;
@@ -59,6 +67,10 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<ResourceGroup> CreateResourceGroupWithExistingResources(ResourceGroup resourceGroup, ICollection<string> resourceIds)
     {
+        var existingEntity = await ReadResourceGroup(resourceGroup.ResourceGroupId);
+        if (existingEntity != null)
+            throw new RepositoryException($"{RepositoryException.IdNotUnique}: ResourceGroup with id {resourceGroup.ResourceGroupId} already exists.");
+
         var resourceGroupEntity = await CreateResourceGroup(resourceGroup);
 
         foreach (var resourceId in resourceIds)
@@ -92,6 +104,10 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Employee> AddNewEmployeeToOrganization(string organizationId, Employee employee)
     {
+        var existingEntity = await ReadEmployee(employee.EmployeeId);
+        if (existingEntity != null)
+            throw new RepositoryException($"{RepositoryException.IdNotUnique}: Employee with id {employee.EmployeeId} already exists.");
+
         var employeeEntity = await _repository.AddNewEmployeeToOrganization(organizationId, employee);
         await ResetSubjectGroup();
         return employeeEntity;
@@ -99,6 +115,10 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Resource> CreateResource(Resource resource)
     {
+        var existingEntity = await ReadResource(resource.ResourceId);
+        if (existingEntity != null)
+            throw new RepositoryException($"{RepositoryException.IdNotUnique}: Resource with id {resource.ResourceId} already exists.");
+
         var resourceEntity = await _repository.CreateResource(resource);
         await ResetResourceGroup();
         return resourceEntity;
@@ -113,6 +133,10 @@ public class AuthorizationRegistry : IAuthorizationRegistry
 
     public async Task<Resource> AddNewResourceToResourceGroup(string resourceGroupId, Resource resource)
     {
+        var existingEntity = await ReadResource(resource.ResourceId);
+        if (existingEntity != null)
+            throw new RepositoryException($"{RepositoryException.IdNotUnique}: Resource with id {resource.ResourceId} already exists.");
+
         var resourceEntity = await _repository.AddNewResourceToResourceGroup(resourceGroupId, resource);
         await ResetResourceGroup();
         return resourceEntity;
@@ -324,8 +348,8 @@ public class AuthorizationRegistry : IAuthorizationRegistry
         var now = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
         var allowed = await _enforcer.EnforceAsync(useCase.ToLower(), now, subjectId.ToLower(), resourceId.ToLower(), action.ToLower());
 
-        var user = _currentUser?.Identity?.Name ?? "unknown";
-        await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed);
+        var user = _httpContextAccessor?.HttpContext?.User?.Identity?.Name ?? "unknown";
+        await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed, null, null, null, null, null, null);
 
         return allowed;
     }
@@ -342,8 +366,8 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             explainPolicies.Add(explainPolicy);
         }
 
-        var user = _currentUser?.Identity?.Name ?? "unknown";
-        await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed, explainPolicies);
+        var user = _httpContextAccessor?.HttpContext?.User?.Identity?.Name ?? "unknown";
+        await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed, explainPolicies, null, null, null, null, null);
 
         return (allowed, explainPolicies);
     }
@@ -361,8 +385,8 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             explainPolicies.Add(explainPolicy);
         }
 
-        var user = _currentUser?.Identity?.Name ?? "unknown";
-        await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed, explainPolicies);
+        var user = _httpContextAccessor?.HttpContext?.User?.Identity?.Name ?? "unknown";
+        await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed, explainPolicies, issuerId, serviceProvider, type, attribute, null);
 
         return (allowed, explainPolicies);
     }
@@ -381,8 +405,8 @@ public class AuthorizationRegistry : IAuthorizationRegistry
             explainPolicies.Add(explainPolicy);
         }
 
-        var user = _currentUser?.Identity?.Name ?? "unknown";
-        await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed, explainPolicies);
+        var user = _httpContextAccessor?.HttpContext?.User?.Identity?.Name ?? "unknown";
+        await _repository.CreateEnforceAuditRecord(user, useCase, subjectId, resourceId, action, allowed, explainPolicies, issuerId, serviceProvider, type, attribute, JsonSerializer.Serialize(requestContext));
 
         return (allowed, explainPolicies);
     }

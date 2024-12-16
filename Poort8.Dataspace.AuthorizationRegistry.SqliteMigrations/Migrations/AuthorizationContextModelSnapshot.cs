@@ -15,7 +15,7 @@ namespace Poort8.Dataspace.CoreManager.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
 
             modelBuilder.Entity("Poort8.Dataspace.AuthorizationRegistry.Audit.EnforceAuditRecord", b =>
                 {
@@ -29,12 +29,24 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                     b.Property<bool>("Allow")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Attribute")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Explain")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("IssuerId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RequestContext")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ResourceId")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ServiceProvider")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SubjectId")
@@ -42,6 +54,9 @@ namespace Poort8.Dataspace.CoreManager.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Type")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UseCase")

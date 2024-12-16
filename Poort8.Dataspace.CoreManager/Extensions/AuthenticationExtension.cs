@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Poort8.Dataspace.Identity;
 
 namespace Poort8.Dataspace.CoreManager.Extensions;
@@ -23,6 +24,10 @@ public static class AuthenticationExtension
             {
                 options.Authority = coreManagerOptions.JwtTokenAuthority;
                 options.Audience = coreManagerOptions.JwtTokenAudience;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = "organizationId"
+                };
             })
             .AddIdentityCookies();
 
@@ -39,6 +44,7 @@ public static class AuthenticationExtension
             .RequireAuthenticatedUser()
             .RequireAssertion(context =>
                 context.User.HasClaim(claim => claim.Type == "permission" && claim.Value == "read:resources") ||
+                context.User.HasClaim(claim => claim.Type == "scope" && claim.Value == "trusted-app") ||
                 context.User.IsInRole("ManageEntitiesApi"))
             .Build();
         services.AddAuthorizationBuilder()
@@ -49,6 +55,7 @@ public static class AuthenticationExtension
             .RequireAuthenticatedUser()
             .RequireAssertion(context =>
                 context.User.HasClaim(claim => claim.Type == "permission" && claim.Value == "write:resources") ||
+                context.User.HasClaim(claim => claim.Type == "scope" && claim.Value == "trusted-app") ||
                 context.User.IsInRole("ManageEntitiesApi"))
             .Build();
         services.AddAuthorizationBuilder()
@@ -59,6 +66,7 @@ public static class AuthenticationExtension
             .RequireAuthenticatedUser()
             .RequireAssertion(context =>
                 context.User.HasClaim(claim => claim.Type == "permission" && claim.Value == "delete:resources") ||
+                context.User.HasClaim(claim => claim.Type == "scope" && claim.Value == "trusted-app") ||
                 context.User.IsInRole("ManageEntitiesApi"))
             .Build();
         services.AddAuthorizationBuilder()
@@ -69,6 +77,7 @@ public static class AuthenticationExtension
             .RequireAuthenticatedUser()
             .RequireAssertion(context =>
                 context.User.HasClaim(claim => claim.Type == "permission" && claim.Value == "read:policies") ||
+                context.User.HasClaim(claim => claim.Type == "scope" && claim.Value == "trusted-app") ||
                 context.User.IsInRole("ManageEntitiesApi"))
             .Build();
         services.AddAuthorizationBuilder()
@@ -79,6 +88,7 @@ public static class AuthenticationExtension
             .RequireAuthenticatedUser()
             .RequireAssertion(context =>
                 context.User.HasClaim(claim => claim.Type == "permission" && claim.Value == "write:policies") ||
+                context.User.HasClaim(claim => claim.Type == "scope" && claim.Value == "trusted-app") ||
                 context.User.IsInRole("ManageEntitiesApi"))
             .Build();
         services.AddAuthorizationBuilder()
@@ -89,6 +99,7 @@ public static class AuthenticationExtension
             .RequireAuthenticatedUser()
             .RequireAssertion(context =>
                 context.User.HasClaim(claim => claim.Type == "permission" && claim.Value == "delete:policies") ||
+                context.User.HasClaim(claim => claim.Type == "scope" && claim.Value == "trusted-app") ||
                 context.User.IsInRole("ManageEntitiesApi"))
             .Build();
         services.AddAuthorizationBuilder()
@@ -99,10 +110,22 @@ public static class AuthenticationExtension
             .RequireAuthenticatedUser()
             .RequireAssertion(context =>
                 context.User.HasClaim(claim => claim.Type == "permission" && claim.Value == "read:or-organizations") ||
+                context.User.HasClaim(claim => claim.Type == "scope" && claim.Value == "trusted-app") ||
                 context.User.HasClaim(claim => claim.Type == "scope" && claim.Value == "read:or-organizations") || //For Auth0 M2M Action
                 context.User.IsInRole("ManageEntitiesApi"))
             .Build();
         services.AddAuthorizationBuilder()
             .AddPolicy(AuthenticationConstants.ReadOROrganizationsPolicy, readOROrganizations);
+
+        var readAROrganizations = new AuthorizationPolicyBuilder()
+            .AddAuthenticationSchemes(AuthenticationConstants.IdentityBearer, AuthenticationConstants.Auth0Jwt)
+            .RequireAuthenticatedUser()
+            .RequireAssertion(context =>
+                context.User.HasClaim(claim => claim.Type == "permission" && claim.Value == "read:ar-organizations") ||
+                context.User.HasClaim(claim => claim.Type == "scope" && claim.Value == "trusted-app") ||
+                context.User.IsInRole("ManageEntitiesApi"))
+            .Build();
+        services.AddAuthorizationBuilder()
+            .AddPolicy(AuthenticationConstants.ReadAROrganizationsPolicy, readAROrganizations);
     }
 }

@@ -3,18 +3,20 @@
 namespace Poort8.Dataspace.AuthorizationRegistry;
 public class UseCases
 {
-    private static readonly Dictionary<string, string> _authorizationModels = new()
+    public static readonly Dictionary<string, string> AuthorizationModels = new()
     {
         { "hwct", "default" },
         { "ishare", "ishare" },
         { "isharerules", "isharerules" },
         { "gir", "isharerules" },
-        { "noodlebarscopes", "default"}
+        { "noodlebarscopes", "default"},
+        { "dvu-mock", "ishare" },
+        { "efti", "ishare" }
     };
 
     public static string GetAuthorizationModel(string useCase)
     {
-        return _authorizationModels.TryGetValue(useCase.ToLower(), out var authModel) ? authModel : "default";
+        return AuthorizationModels.TryGetValue(useCase.ToLower(), out var authModel) ? authModel : "default";
     }
 
     public static string GetPolicyType(Policy policy)

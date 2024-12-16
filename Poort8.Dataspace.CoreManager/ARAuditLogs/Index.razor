@@ -8,28 +8,31 @@
     <FluentLabel Typo="Typography.H1">Authorization register - Audit logs</FluentLabel>
 
     <FluentTabs>
+        <FluentTab Label="Enforce logs" Id="enforceLogsTab">
+            <FluentDataGrid Items="@EnforceAuditRecords?.AsQueryable()" ResizableColumns="true" ShowHover="true">
+                <PropertyColumn Property="@(o => o.Timestamp)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.User)" Sortable="true" />
+                <PropertyColumn Title="Use case" Property="@(o => o.UseCase)" Sortable="true" />
+                <PropertyColumn Title="Issuer" Property="@(o => GetOROrganizationName(o.IssuerId))" Sortable="true" />
+                <PropertyColumn Title="Subject" Property="@(o => GetOROrganizationName(o.SubjectId))" Sortable="true" />
+                <PropertyColumn Title="Service Provider" Property="@(o => GetOROrganizationName(o.ServiceProvider))" Sortable="true" />
+                <PropertyColumn Title="Resource" Property="@(o => o.ResourceId)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.Action)" Sortable="true" />
+                <PropertyColumn Title="Type" Property="@(o => o.Type)" Sortable="true" />
+                <PropertyColumn Title="Attribure" Property="@(o => o.Attribute)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.Allow)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.Explain)" Sortable="true" Tooltip="true" />
+                <PropertyColumn Title="Context" Property="@(o => o.RequestContext)" Sortable="true" />
+            </FluentDataGrid>
+        </FluentTab>
         <FluentTab Label="Entity logs" Id="entityLogsTab">
-            <FluentDataGrid Items="@EntityAuditRecords?.AsQueryable()">
-                <PropertyColumn Title="Identifier" Property="@(o => o.Id)" Sortable="true" />
+            <FluentDataGrid Items="@EntityAuditRecords?.AsQueryable()" ResizableColumns="true" ShowHover="true">
                 <PropertyColumn Property="@(o => o.Timestamp)" Sortable="true" />
                 <PropertyColumn Property="@(o => o.User)" Sortable="true" />
                 <PropertyColumn Title="Entity type" Property="@(o => o.EntityType)" Sortable="true" />
                 <PropertyColumn Title="Entity identifier" Property="@(o => o.EntityId)" Sortable="true" />
                 <PropertyColumn Property="@(o => o.Action)" Sortable="true" />
-                <PropertyColumn Property="@(o => o.Entity)" Sortable="true" />
-            </FluentDataGrid>
-        </FluentTab>
-        <FluentTab Label="Enforce logs" Id="enforceLogsTab">
-            <FluentDataGrid Items="@EnforceAuditRecords?.AsQueryable()">
-                <PropertyColumn Title="Identifier" Property="@(o => o.Id)" Sortable="true" />
-                <PropertyColumn Property="@(o => o.Timestamp)" Sortable="true" />
-                <PropertyColumn Property="@(o => o.User)" Sortable="true" />
-                <PropertyColumn Title="Use case" Property="@(o => o.UseCase)" Sortable="true" />
-                <PropertyColumn Title="Subject" Property="@(o => o.SubjectId)" Sortable="true" />
-                <PropertyColumn Title="Resource" Property="@(o => o.ResourceId)" Sortable="true" />
-                <PropertyColumn Property="@(o => o.Action)" Sortable="true" />
-                <PropertyColumn Property="@(o => o.Allow)" Sortable="true" />
-                <PropertyColumn Property="@(o => o.Explain)" Sortable="true" />
+                <PropertyColumn Property="@(o => o.Entity)" Sortable="true" Tooltip="true" />
             </FluentDataGrid>
         </FluentTab>
     </FluentTabs>

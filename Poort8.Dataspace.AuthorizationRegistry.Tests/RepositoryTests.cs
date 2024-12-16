@@ -16,11 +16,12 @@ public class RepositoryTests
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddAuthorizationRegistrySqlite(options => options.ConnectionString = $"Data Source={Guid.NewGuid()}.db");
         _serviceProvider = serviceCollection.BuildServiceProvider();
-        _authorizationRegistry = _serviceProvider.GetRequiredService<IAuthorizationRegistry>();
 
         var factory = _serviceProvider.GetRequiredService<IDbContextFactory<AuthorizationContext>>();
         using var context = factory.CreateDbContext();
         context.Database.Migrate();
+
+        _authorizationRegistry = _serviceProvider.GetRequiredService<IAuthorizationRegistry>();
     }
 
     [Fact]

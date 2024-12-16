@@ -26,7 +26,7 @@
 
     <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewEmployeeClicked)">New @Options.Value.EmployeeAlternativeName</FluentButton>
 
-    <FluentDataGrid Items="@StateContainer.CurrentAROrganization.Employees.AsQueryable()">
+    <FluentDataGrid Items="@StateContainer.CurrentAROrganization.Employees.AsQueryable()" ResizableColumns="true" ShowHover="true" AutoFit="true">
         <PropertyColumn Title="Identifier" Property="@(e => e.EmployeeId)" Sortable="true" />
         <PropertyColumn Title="Given Name" Property="@(e => e.GivenName)" Sortable="true" />
         <PropertyColumn Title="Familiy Name" Property="@(e => e.FamilyName)" Sortable="false" />

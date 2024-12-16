@@ -3,7 +3,7 @@
 @using OROrganization = Poort8.Dataspace.OrganizationRegistry.Organization;
 @implements IDialogContentComponent<Policy>
 
-<FluentTextField Label="Use Case" @bind-Value="Content.UseCase" />
+<FluentSelect Label="Use Case" @bind-Value="Content.UseCase" @bind-SelectedOption="@selectedUseCase" Items="@UseCaseService.UseCases" OptionValue="@(u => u?.Name)" OptionText="@(u => u?.Name)" />
 @if (StateContainer.CurrentOROrganizations is not null && StateContainer.CurrentOROrganizations.Any(o => o.Identifier.Equals(Content.IssuerId)))
 {
     <FluentSelect Label="Issuer" @bind-Value="Content.IssuerId" @bind-SelectedOption="@selectedIssuerOROrganization" Items="@StateContainer.CurrentOROrganizations" OptionValue="@(o => o?.Identifier)" OptionText="@(o => $"{o?.Name} ({o?.Identifier})")" />
@@ -30,17 +30,48 @@ else
 }
 <FluentDatePicker Label="Not Before" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@DateTimeOffset.FromUnixTimeSeconds(Content.NotBefore).LocalDateTime.Date" ValueChanged=NotBeforeChanged />
 <FluentDatePicker Label="Not On Or After" Culture=@(new System.Globalization.CultureInfo("nl-NL")) Value="@DateTimeOffset.FromUnixTimeSeconds(Content.Expiration).LocalDateTime.Date" ValueChanged=ExpirationChanged />
-<FluentTextField Label="Action" @bind-Value="Content.Action" />
-<FluentTextField Label="Resource Type" @bind-Value="Content.Type" />
-<FluentTextField Label="Resource Identifier" @bind-Value="Content.ResourceId" />
-<FluentTextField Label="Resource Attribute" @bind-Value="Content.Attribute" />
+@if (selectedUseCase is not null && selectedUseCase.Actions.Any())
+{
+    <FluentSelect Label="Action" @bind-Value="Content.Action" Items="@selectedUseCase.Actions.Distinct()" SelectedOption="@selectedUseCase.Actions.First()" />
+}
+else
+{
+    <FluentTextField Label="Action" @bind-Value="Content.Action" />
+}
+@if (selectedUseCase is not null && selectedUseCase.ResourceTypes.Any())
+{
+    <FluentSelect Label="Resource Type" @bind-Value="Content.Type" Items="@selectedUseCase.ResourceTypes.Distinct()" SelectedOption="@selectedUseCase.ResourceTypes.First()" />
+}
+else
+{
+    <FluentTextField Label="Resource Type" @bind-Value="Content.Type" />
+}
+@if (selectedUseCase is not null && selectedUseCase.ResourceIdentifiers.Any())
+{
+    <FluentSelect Label="Resource Identifier" @bind-Value="Content.ResourceId" Items="@selectedUseCase.ResourceIdentifiers.Distinct()" SelectedOption="@selectedUseCase.ResourceIdentifiers.First()" />
+}
+else
+{
+    <FluentTextField Label="Resource Identifier" @bind-Value="Content.ResourceId" />
+}
+@if (selectedUseCase is not null && selectedUseCase.ResourceAttributes.Any())
+{
+    <FluentSelect Label="Resource Attribute" @bind-Value="Content.Attribute" Items="@selectedUseCase.ResourceAttributes.Distinct()" SelectedOption="@selectedUseCase.ResourceAttributes.First()" />
+}
+else
+{
+    <FluentTextField Label="Resource Attribute" @bind-Value="Content.Attribute" />
+}
 
 @code {
     [Parameter]
     public required Policy Content { get; set; }
     [Inject]
     public required StateContainer StateContainer { get; set; }
+    [Inject]
+    public required UseCaseService UseCaseService { get; set; }
 
+    private UseCase? selectedUseCase;
     private OROrganization? selectedIssuerOROrganization;
     private OROrganization? selectedActorOROrganization;
     private OROrganization? selectedServiceProviderOROrganization;

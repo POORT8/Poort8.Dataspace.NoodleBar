@@ -13,7 +13,8 @@
         <FluentLabel>The Organization Registry contains no organizations which you can add policies to</FluentLabel>
     }
 
-    <FluentDataGrid Items="@Policies?.AsQueryable()">
+    <FluentDataGrid Items="@Policies?.AsQueryable()" ResizableColumns="true" ShowHover="true" AutoFit="true">
+        <PropertyColumn Title="Use Case" Property="@(p => p.UseCase)" Sortable="true" />
         <PropertyColumn Title="Issuer" Property="@(p => GetOROrganizationName(p.IssuerId))" Sortable="true" />
         <PropertyColumn Title="Actor" Property="@(p => GetOROrganizationName(p.SubjectId))" Sortable="true" />
         <PropertyColumn Title="Service Provider" Property="@(p => GetOROrganizationName(p.ServiceProvider))" Sortable="true" />

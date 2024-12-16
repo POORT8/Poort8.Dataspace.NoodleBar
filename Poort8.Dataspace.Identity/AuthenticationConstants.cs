@@ -11,4 +11,5 @@ public class AuthenticationConstants
     public const string WritePoliciesPolicy = "WritePoliciesPolicy";
     public const string DeletePoliciesPolicy = "DeletePoliciesPolicy";
     public const string ReadOROrganizationsPolicy = "ReadOROrganizationsPolicy";
+    public const string ReadAROrganizationsPolicy = "ReadAROrganizationsPolicy";
 }

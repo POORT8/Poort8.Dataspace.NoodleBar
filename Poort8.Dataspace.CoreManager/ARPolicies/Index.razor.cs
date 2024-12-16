@@ -33,7 +33,7 @@ public partial class Index : ComponentBase, IDisposable
     {
         StateContainer.OnChange += StateHasChanged;
 
-        Policies = await AuthorizationRegistry.ReadPolicies(Options.Value.UseCase);
+        Policies = await AuthorizationRegistry.ReadPolicies();
 
         StateContainer.CurrentOROrganizations = await OrganizationRegistry.ReadOrganizations();
     }
@@ -69,7 +69,7 @@ public partial class Index : ComponentBase, IDisposable
             var policy = (Policy)result.Data;
             policy.IssuedAt = DateTimeOffset.Now.ToUnixTimeSeconds();
             await AuthorizationRegistry.CreatePolicy(policy);
-            Policies = await AuthorizationRegistry.ReadPolicies(Options.Value.UseCase);
+            Policies = await AuthorizationRegistry.ReadPolicies();
         }
     }
 
@@ -103,7 +103,7 @@ public partial class Index : ComponentBase, IDisposable
         {
             await AuthorizationRegistry.UpdatePolicy((Policy)result.Data);
         }
-        Policies = await AuthorizationRegistry.ReadPolicies(Options.Value.UseCase);
+        Policies = await AuthorizationRegistry.ReadPolicies();
     }
 
     private async Task DeleteClicked(Policy policy)
@@ -118,7 +118,7 @@ public partial class Index : ComponentBase, IDisposable
         if (!result.Cancelled)
         {
             await AuthorizationRegistry.DeletePolicy(policy.PolicyId);
-            Policies = await AuthorizationRegistry.ReadPolicies(Options.Value.UseCase);
+            Policies = await AuthorizationRegistry.ReadPolicies();
         }
     }
 
@@ -139,6 +139,9 @@ public partial class Index : ComponentBase, IDisposable
 
     private string GetOROrganizationName(string? identifier)
     {
-        return (StateContainer.CurrentOROrganizations?.FirstOrDefault(o => o.Identifier == identifier)?.Name + " " ?? string.Empty) + $"({identifier})";
+        if (string.IsNullOrEmpty(identifier))
+            return string.Empty;
+        else
+            return (StateContainer.CurrentOROrganizations?.FirstOrDefault(o => o.Identifier == identifier)?.Name + " " ?? string.Empty) + $"({identifier})";
     }
 }

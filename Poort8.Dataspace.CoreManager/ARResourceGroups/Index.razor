@@ -13,7 +13,7 @@
         <FluentLabel>The Organization Registry contains no organizations which you can add @Options.Value.ResourceGroupAlternativeNamePlural to</FluentLabel>
     }
 
-    <FluentDataGrid Items="@ResourceGroups?.AsQueryable()">
+    <FluentDataGrid Items="@ResourceGroups?.AsQueryable()" ResizableColumns="true" ShowHover="true" AutoFit="true">
         <PropertyColumn Title="Identifier" Property="@(o => o.ResourceGroupId)" Sortable="true" />
         <PropertyColumn Property="@(o => o.Name)" Sortable="true" />
         <PropertyColumn Property="@(o => o.Description)" Sortable="false" />

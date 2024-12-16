@@ -35,11 +35,10 @@ public class AuditTests
         var organizationEntity = await _organizationRegistry.CreateOrganization(organization);
         var auditRecords = await _organizationRegistry.GetAuditRecords();
 
-        Assert.NotNull(auditRecords);
-        Assert.Single(auditRecords.Where(a =>
+        Assert.Single(auditRecords, a =>
             a.EntityId == organizationEntity.Identifier &&
             a.EntityType == "Organization" &&
-            a.Action == "Added"));
+            a.Action == "Added");
     }
 
     [Fact]

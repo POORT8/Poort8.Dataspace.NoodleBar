@@ -1,8 +1,10 @@
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.FeatureManagement;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Poort8.Dataspace.API;
+using Poort8.Dataspace.API.Extensions;
 using Poort8.Dataspace.API.Ishare.ConnectToken;
 using Poort8.Dataspace.AuthorizationRegistry.Extensions;
 using Poort8.Dataspace.CoreManager;
@@ -12,10 +14,18 @@ using Poort8.Dataspace.CoreManager.Services;
 using Poort8.Dataspace.Identity;
 using Poort8.Dataspace.OrganizationRegistry.Extensions;
 using Poort8.Ishare.Core;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (!string.IsNullOrEmpty(builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING")))
+    builder.Services.AddOpenTelemetry().UseAzureMonitor();
+
 builder.Services.AddHttpClient();
+
+#pragma warning disable EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+builder.Services.AddHybridCache();
+#pragma warning restore EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents(options => options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromHours(1));
@@ -44,6 +54,8 @@ bool ishareEnabled = builder.Configuration.GetSection("FeatureManagement").GetVa
 if (ishareEnabled) builder.Services.AddIshareCoreServices(builder.Configuration);
 
 builder.Services.AddScoped<StateContainer>();
+builder.Services.AddScoped<UseCaseService>();
+builder.Services.AddScoped<OpenApiService>();
 
 builder.Services.AddAuthenticationSchemes(options =>
 {
@@ -52,12 +64,8 @@ builder.Services.AddAuthenticationSchemes(options =>
 });
 
 //API
-builder.Services.AddFastEndpoints(o => o.Assemblies = [typeof(Poort8.Dataspace.API.Ishare.ConnectToken.Endpoint).Assembly])
-    .SwaggerDocument(options =>
-    {
-        options.AutoTagPathSegmentIndex = 0;
-        options.EndpointFilter = ep => !(ep.EndpointTags?.Contains("ExcludeFromSwagger") ?? false);
-    });
+builder.Services.AddFastEndpoints(o => o.Assemblies = [typeof(Poort8.Dataspace.API.Ishare.ConnectToken.Endpoint).Assembly]);
+builder.Services.AddApiDefinition();
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
@@ -74,7 +82,7 @@ app.RunIdentityMigrations();
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+app.MapStaticAssets();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
@@ -84,11 +92,14 @@ var featureManager = app.Services.GetRequiredService<IFeatureManager>();
 var apiDisabled = await featureManager.IsEnabledAsync(FeatureManagement.ApiDisabled);
 if (!apiDisabled)
 {
-    app.UseFastEndpoints(c =>
+    app.UseDefaultExceptionHandler().UseFastEndpoints(c =>
     {
         EndpointsConfiguration.Filter(c, ishareEnabled);
         EndpointsConfiguration.ConfigureProcessors(c);
-    }).UseSwaggerGen();
+    }).UseSwaggerGen(); //Swagger
+
+    app.UseOpenApi(options => options.Path = "/openapi/{documentName}.json"); //Scalar
+    app.MapScalarApiReference(); //Scalar
 }
 
 app.UseMiddleware<ResponseModificationMiddleware>();
@@ -96,6 +107,25 @@ app.UseMiddleware<ResponseModificationMiddleware>();
 app.MapHealthChecks("/health");
 app.MapIdentityApi<User>();
 app.MapAdditionalIdentityEndpoints();
+
+app.MapApiReferenceEndpoints();
+
+var registerDisabled = await featureManager.IsEnabledAsync(FeatureManagement.RegisterNewUsersDisabled);
+if (registerDisabled)
+{
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path.StartsWithSegments("/register"))
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            await context.Response.WriteAsync("Register endpoint is disabled.");
+        }
+        else
+        {
+            await next.Invoke();
+        }
+    });
+}
 
 app.SetUserRoles();
 

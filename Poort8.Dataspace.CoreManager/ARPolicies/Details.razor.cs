@@ -80,6 +80,9 @@ public partial class Details : ComponentBase, IDisposable
 
     private string GetOROrganizationName(string? identifier)
     {
-        return (StateContainer.CurrentOROrganizations?.FirstOrDefault(o => o.Identifier == identifier)?.Name + " " ?? string.Empty) + $"({identifier})";
+        if (string.IsNullOrEmpty(identifier))
+            return string.Empty;
+        else
+            return (StateContainer.CurrentOROrganizations?.FirstOrDefault(o => o.Identifier == identifier)?.Name + " " ?? string.Empty) + $"({identifier})";
     }
 }

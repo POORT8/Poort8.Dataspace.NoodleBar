@@ -2,7 +2,7 @@
 
 <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Appearance="Appearance.Accent" OnClick="@(AddNewClicked)">New Agreement</FluentButton>
 
-<FluentDataGrid Items="@StateContainer.CurrentOROrganization?.Agreements.AsQueryable()">
+<FluentDataGrid Items="@StateContainer.CurrentOROrganization?.Agreements.AsQueryable()" ResizableColumns="true" ShowHover="true" AutoFit="true">
     <PropertyColumn Property="@(a => a.Type)" Sortable="true" />
     <PropertyColumn Property="@(a => a.Title)" Sortable="true" />
     <PropertyColumn Property="@(a => a.Status)" Sortable="true" />

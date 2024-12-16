@@ -6,7 +6,7 @@ namespace Poort8.Dataspace.API.ResourceGroups.DeleteResourceGroup;
 
 public class Endpoint : EndpointWithoutRequest
 {
-    public const string Name = "ResourceGroups";
+    public const string Name = "Resource Groups";
     private readonly ILogger<Endpoint> _logger;
     private readonly IAuthorizationRegistry _authorizationRegistry;
 
@@ -20,8 +20,15 @@ public class Endpoint : EndpointWithoutRequest
 
     public override void Configure()
     {
-        Delete($"/api/{Name.ToLower()}/{{id}}");
+        Delete($"/api/{Name.ToLower().Replace(" ", "")}/{{id}}");
         Options(x => x.WithTags(Name));
+        Description(x =>
+        {
+            x.ClearDefaultProduces(200);
+            x.Produces(204);
+            x.Produces(404);
+        });
+
         AuthSchemes(AuthenticationConstants.IdentityBearer, AuthenticationConstants.Auth0Jwt);
         Policies(AuthenticationConstants.DeleteResourcesPolicy);
     }

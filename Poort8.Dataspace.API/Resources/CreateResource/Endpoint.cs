@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using Poort8.Dataspace.AuthorizationRegistry;
+using Poort8.Dataspace.AuthorizationRegistry.Exceptions;
 using Poort8.Dataspace.Identity;
 
 namespace Poort8.Dataspace.API.Resources.CreateResource;
@@ -22,6 +23,13 @@ public class Endpoint : Endpoint<Request, Response, Mapper>
     {
         Post($"/api/{Name.ToLower()}");
         Options(x => x.WithTags(Name));
+        Description(x =>
+        {
+            x.ClearDefaultProduces(200);
+            x.Produces<Response>(201);
+            x.Produces(409);
+        });
+
         AuthSchemes(AuthenticationConstants.IdentityBearer, AuthenticationConstants.Auth0Jwt);
         Policies(AuthenticationConstants.WriteResourcesPolicy);
     }
@@ -30,8 +38,20 @@ public class Endpoint : Endpoint<Request, Response, Mapper>
     {
         var entity = Map.ToEntity(request);
 
-        var resource = await _authorizationRegistry.CreateResource(entity);
-
-        await SendMapped(resource, 201, ct);
+        try
+        {
+            var resource = await _authorizationRegistry.CreateResource(entity);
+            await SendMapped(resource, 201, ct);
+        }
+        catch (RepositoryException e)
+        {
+            if (e.Message.StartsWith(RepositoryException.IdNotUnique))
+                ThrowError(e.Message, 409);
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical("P8.crit - Error in endpoint {endpointName}: {msg}", Name, e.Message);
+            throw;
+        }
     }
 }

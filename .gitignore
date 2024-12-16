@@ -371,3 +371,4 @@ FodyWeavers.xsd
 **/Identity.db
 **/Identity.db-shm
 **/Identity.db-wal
+**/http-client.env.json
