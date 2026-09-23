@@ -2,7 +2,7 @@
 
 ## Why this repository looks quiet
 
-A repo that hasn't moved in ten months usually means a dead project. That isn't what happened here.
+A repo this quiet usually means a dead project. That isn't what happened here.
 
 NoodleBar is moving faster now than at any point in its history. That development happens in a private monorepo: an authorization registry, identity and trust components, connectors and tooling that all move together. A change to the authorization contract touches the registry, the policy model and the docs in one commit.
 
